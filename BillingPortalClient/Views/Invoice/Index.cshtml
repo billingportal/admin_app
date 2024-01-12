@@ -1,0 +1,475 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@using System.Text.Json
+@using BillingPortalClient.Components;
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_Layout";
+}
+@model BillingPortalClient.ModelViews.InvoiceViewModel;
+
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
+
+    <!-- ROW-1 -->
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="">
+                              <img src="../assets/images/dashboard/coins-icon-purple.png" />
+                                    <h6 class="text title">Open <br />Transactions</h6>
+                                    <h2 class="mb-0 number-font text">SAR @Model.openTransactions</h2>
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="@Url.Action("RefreshInvoices","Invoice")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
+                              </span>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/clock-icon-blue.png" />
+                                    <h6 class="text title">Overdue <br />Amount</h6>
+                                    <h2 class="mb-0 number-font text">SAR @Model.overdueAmount</h2>
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="javascript:void(0)" onclick="payNowButtonClick()" class="btn btn-primary mt-2"><i class="fe fe-credit-card"></i> Pay Now </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c3">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/file-icon-orange.png" />
+                                    <h6 class="text title">Disputed <br />Invoices</h6>
+                                    @if(@Model.disputedInvoices != null)
+                                    {
+                                      <h2 class="mb-0 number-font text">@Model.disputedInvoices.Count</h2>
+
+                                    }
+                                    else
+                                    {
+                                      <h2 class="mb-0 number-font text">0</h2>
+                                    }
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a class="btn btn-primary mt-2" onclick="disputedInvoicesOnClick()"> View All </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c4">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/clock-icon-green.png" />
+                                    <h6 class="text title">Rated But Not Invoiced</h6>
+                                    <h2 class="mb-0 number-font text">765</h2>
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="#" class="btn btn-primary mt-2"> View All </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+      
+ <!-- Row -->
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
+                  <div class="row" style="width:100%;">
+
+                    <div class="col-md-10 col-sm-12">
+                       <h5 class="card-title" style="color:black;">Showing details of @Model.accountName</h5>
+                     <h5 class="card-sub-title" style="color:black"><span>Account No: </span><span class="orange">@Model.accountNumber</span></h5>
+
+                    </div>
+
+                    <div class="col-md-2 col-sm-12">
+                      <div class="row filters-bar">
+
+                        <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
+                          <button class="btn filtering" onclick="filtermodal()">Filters</button>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
+                          <div class="btn-export" id="exportButtonsDiv"></div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+                  
+                  <div class="row mb-2">
+
+                    <div class="panel" id="datePanel">
+                      <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+
+                        <div class="col-md-3">
+                          <input class="form-control" type="date" id="minDateSelection" />
+                        </div>
+                        <div class="col-md-3">
+                            <input class="form-control" type="date" id="maxDateSelection" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </div>
+
+                    <div class="table-responsive">
+
+                        <table id="file-datatable" data-show-refresh="true" class="table table-bordered text-nowrap key-buttons border-bottom">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="border-bottom-0" id="invoiceNumberColumn">Invoice No.</th>
+                                    <th class="border-bottom-0" id="invoiceDateColumn">Invoice Date</th>
+                                    <th class="border-bottom-0" id="dueDateColumn">Due Date</th>
+                                    <th class="border-bottom-0">Account No.</th>
+                                    <th class="border-bottom-0">Region</th>
+                                    <th class="border-bottom-0">Status</th>
+                                    <th class="border-bottom-0">Total</th>
+                                    <th class="border-bottom-0">Paid</th>
+                                    <th class="border-bottom-0">Balance</th>
+                                    <th class="border-bottom-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @{int i = 1;}
+                             
+                            
+                              @if(Model.invoiceTable.Count > 0)
+                                {
+                                    
+                                    foreach( var item in Model.invoiceTable )
+                                    {
+                                      if(i > 25)
+                                        {
+                                            i = 1;
+                                        }
+
+                                        <tr id="@string.Format("tr{0}",item.id)" data-docNumber="@item.docNumber" data-InvoiceIdAttribute ="@item.id" data-day="@item.invoiceDate.Day" data-month="@item.invoiceDate.Month" data-year="@item.invoiceDate.Year" data-dueDay="@item.dueDate.Day" data-dueMonth="@item.dueDate.Month" data-dueYear="@item.dueDate.Year">
+                                            @*<td name="invoiceId" hidden>@item.id</td>*@
+                                            <td><input type="checkbox" id="@string.Format("{0}",item.docNumber)" class="invoiceTableCheckbox"/></td>
+                                            <td><strong>@item.docNumber</strong></td>
+                                             <td>@item.invoiceDate.ToString("dd MMM, yyyy")</td>
+                                            <td>@item.dueDate.ToString("dd MMM, yyyy")</td>
+                                            <td><strong>@item.accountNumber</strong></td>
+                                            <td><strong>@item.region</strong></td>
+                                            @if(item.status == "CL")
+                                            {
+                                                <td style="text-align:center"><span class="badge rounded-pill bg-success">@item.status</span></td>
+                                            }
+                                            else if(item.status == "Unpaid")
+                                            {
+                                                <td style="text-align:center"><span class="badge rounded-pill bg-danger">@item.status</span></td>
+                                            }
+                                            else
+                                            {
+                                                <td style="text-align:center"><span class="badge rounded-pill bg-warning">@item.status</span></td>
+                                                
+                                            }
+                                            <td><strong>@item.total</strong></td>
+                                            <td>@item.paid</td>
+                                            <td><strong>@item.balance</strong> SAR</td>
+                                            <td>
+                                                <button type="button" class="btn btn-success btn-ticket productButton"
+                                                  data-itemId="@item.id" data-docNumber="@item.docNumber" data-invoiceDate="@item.invoiceDate.ToShortDateString()" data-dueDate="@item.dueDate.ToShortDateString()"
+                                                  data-status="@item.status" data-total="@item.total" data-paid="@item.paid" data-balance="@item.balance"
+                                                ><i class="fe fe-download"></i></button>
+                                            </td>
+                                        </tr>
+
+                                        i++;
+                                    }
+                                }                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Row -->
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+
+<!--***********************************************************************************************************************************************-->
+<!--***********************************************************************************************************************************************-->
+<!--***********************************************************************************************************************************************-->
+
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+
+        <div class="container">
+          <div class="row">
+            <h1>Filters</h1>
+          </div>
+            <form id="filterForm">
+              <div class="row mb-3">
+                                            <div class="panel" id="datePanel">
+                                              <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                 <label style="text-align:left; float:left;">Invoice Date</label>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                  <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <div class="panel" id="dueDatePanel">
+                                              <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                  <label style="text-align:left; float:left;">Invoice Due Date</label>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                  <input class="form-control" type="date" id="minDueDateSelection" onchange="mDateOnChange()" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input class="form-control" type="date" id="maxDueDateSelection" onchange="mDateOnChange()" />
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <div class="panel" id="invoiceNumberPanel">
+                                              <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                  <label style="text-align:left; float:left;">Invoice Number</label>
+                                                <input type="text" class="form-control" id="invoiceNumberSelection" placeholder="Search Invoice Number" />
+
+                                                </div>
+                                                </div>
+                                            </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <button type="submit"id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                </div>
+              </div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedRows = [];
+
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  console.log({model})
+
+  $("#minDateSelection").val("");
+  $("#maxDateSelection").val("");
+  $("#minDueDateSelection").val("");
+  $("#maxDueDateSelection").val("");
+
+  var statusCriteria = "all";
+  var isDisputedInvoices = false;
+
+  $(document).ready(function(){
+    console.log('*******************************************');
+
+  });
+
+   var table = $("#file-datatable").DataTable({
+      // ... (your existing DataTable configuration)
+      drawCallback: function () {
+        var minInvoiceDate = new Date($("#minDateSelection").val());
+        var maxInvoiceDate = new Date($("#maxDateSelection").val());
+        var minDueDate = new Date($("#minDueDateSelection").val());
+        var maxDueDate = new Date($("#maxDueDateSelection").val());
+        var invoiceNumberFilter = $("#invoiceNumberSelection").val().toLowerCase();
+        var isDisputedInvoices = $("#isDisputedInvoicesCheckbox").prop("checked");
+
+        this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
+          var data = this.data();
+          var invoiceNumber = data[1].toLowerCase(); // Assuming the "Invoice No." column is the second column (index 1)
+          var invoiceDate = new Date(data[2]); // Assuming the "Invoice Date" column is the third column (index 2)
+          var dueDate = new Date(data[3]); // Assuming the "Due Date" column is the fourth column (index 3)
+          var inv = model.disputedInvoices.find((x) => x.Id === Number($(this.node()).data("invoiceidattribute")));
+
+          if (
+            (!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
+            (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
+            (!isNaN(minDueDate) && dueDate < minDueDate) ||
+            (!isNaN(maxDueDate) && dueDate > maxDueDate) ||
+            (invoiceNumber !== '' && !invoiceNumber.includes(invoiceNumberFilter)) ||
+            (isDisputedInvoices && inv === undefined)
+          ) {
+             $(this.node()).css("display", "none");
+            } else {
+             $(this.node()).css("display", "");
+            }
+        });
+      },
+    });
+
+  $("#minDateSelection, #maxDateSelection, #minDueDateSelection, #maxDueDateSelection").on("change", function () {
+      console.log("date change",  $("#minDateSelection").val);
+      table.rows().invalidate().draw();// Redraw the DataTable on date range change
+    });
+
+    // Event listener for the "Apply Filter" button in the modal
+  $("#filterForm").on("submit", function (event) {
+      console.log("submit click");
+      event.preventDefault(); 
+      table.rows().invalidate().draw();// Redraw the DataTable when the filter is applied
+      $("#testModalCenter2").modal("hide"); // Hide the modal after applying the filter
+    });
+
+    // Event listener for the "Invoice Number" input
+  $("#invoiceNumberSelection").on("keyup", function () {
+      console.log("invoice number change");
+      table.rows().invalidate().draw();// Redraw the DataTable on invoice number change
+  });
+
+function filtermodal(){
+    $("#testModalCenter2").modal('show');
+}
+<<<<<<< HEAD
+if (table!=undefined && table!=null)
+{
+    table.destroy();
+}
+=======
+>>>>>>> 9f9c2d3ad4ccc52c8bd15aafada60e0497e55b1c
+
+$(document).on("click",".invoiceTableCheckbox",function(e){
+// your code goes here
+  console.log(event);
+
+  var selectedRow = model.invoices.find(x => x.docNumber == event.target.id)
+
+  console.log('docNumer', selectedRow)
+
+  if(selectedRow.invoiceStatuses.length > 0 && selectedRow.invoiceStatuses[0].Status == 'Paid')
+  {
+    event.target.checked = false;
+    alert('Selected invoice is already paid.')
+  }
+  else
+  {
+    if(event.target.checked)
+    {
+      selectedRows.push(event.target.id);
+    }
+    else
+    {
+      selectedRows = selectedRows.filter(x => x != event.target.id);
+    }
+    //(... rest of your JS code)
+    console.log(selectedRows);
+    $("#selectedInvoicesCount").text(selectedRows.length);
+    $("#selectedInvoicesCountSummary").text(selectedRows.length);
+    console.log(model)
+
+  }
+});
+
+  function instrumentTypeSelectionOnChange()
+{
+  //var table = $('#file-datatable').DataTable();
+  //table.draw();
+
+}
+
+function issueTypeSelectionOnChange()
+{
+  //var table = $('#file-datatable').DataTable();
+  //table.draw();
+
+}
+
+
+  function disputedInvoicesOnClick()
+  {
+    isDisputedInvoices = true;
+    statusCriteria = 'disputedInvoices'
+    var table = $('#file-datatable').DataTable();
+    table.draw();
+  }
+
+
+
+
+
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+  for (i = 0; i < y.length; i++) {
+    // If a field is empty...
+    if (y[i].value == "") {
+      // add an "invalid" class to the field:
+      //y[i].className += " invalid";
+      // and set the current valid status to false
+      valid = true;
+    }
+  }
+  // If the valid status is true, mark the step as finished and valid:
+  if (valid) {
+    
+  }
+  return valid; // return the valid status
+}
+
+
+</script>
+
+ 

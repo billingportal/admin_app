@@ -1,0 +1,233 @@
+﻿
+@using System.Text.Json;
+
+@{
+    Layout = "_Layout";
+}
+@model BillingPortalClient.ModelViews.CustomerUserViewModel;
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid"  style="margin-top:1%; padding-left:0; padding-right:0;">
+
+    <!-- ROW-1 -->
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="">
+                              <img src="../assets/images/dashboard/coins-icon-purple.png" />
+                                    <h6 class="text title">Manage <br />Users</h6>
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                                Manage User
+                              </span>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/clock-icon-blue.png" />
+                                    <h6 class="text title">Manage <br />Customers</h6>
+                                </div>
+                                
+                            </div>
+                            <span class="text-muted fs-12">
+                              Manage Customer
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="container">
+          <h2 class="text-center" style="color:black;">Create User</h2>
+          <p class="text-center"style="color:black">Enter the details below to create a user.</p>
+          <form asp-controller="User" asp-action="AddCustomerUser" method="post">
+            <input asp-for="customerUserDTO.accountName" hidden value="@Model.customerUserDTO.accountName" />
+            <input asp-for="customerUserDTO.accountNumber" hidden value="@Model.customerUserDTO.accountNumber" />
+            <div class="row mb-3">
+              <div class="col-md-12">
+      	        <label style="font-weight:bold;color:black">Name<span style="color:red; margin-left:2px">*</span></label>
+                <input asp-for="customerUserDTO.name" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Name">
+                
+              </div>
+      
+              
+      
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-12">
+      	        <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px">*</span></label>
+                <input asp-for="customerUserDTO.email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
+                
+              </div>
+
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label style="font-weight:bold;color:black">Mobile Number<span style="color:red; margin-left:2px;">*</span></label>
+                  <input asp-for="customerUserDTO.phone" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Mobile Number">
+        	        
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold;color:black">Designation<span style="color:red; margin-left:2px;">*</span></label>
+                  <input asp-for="customerUserDTO.designation" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Designation">
+
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold;color:black">Password</label><br>
+                  <input asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Password">
+            
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
+
+              </div>
+              <div class="col-md-4">
+
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-md" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="container">
+          <h1>Create User</h1>
+          <h5>Enter the details below to create a user.</h5>
+          <form asp-controller="User" asp-action="UpdateCustomerUser" method="post">
+            <input asp-for="customerUserDTO.accountName" hidden value="@Model.customerUserDTO.accountName" />
+            <input asp-for="customerUserDTO.accountNumber" hidden value="@Model.customerUserDTO.accountNumber" />
+            <input asp-for="customerUserDTO.id" hidden id="customerUserId" />
+            
+            <div class="row mb-3">
+              <div class="col-md-12 d-flex">
+      	        <label style="font-weight:bold;color:black">Active<span style="color:red; margin-left:2px"></span></label>
+                <input id="userStatusCheckbox" asp-for="customerUserDTO.isActive" class="col-2" type="checkbox">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+      	        <label style="font-weight:bold;color:black">Name<span style="color:red; margin-left:2px">*</span></label>
+                <input id="userNameText" asp-for="customerUserDTO.name" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Name">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+      	        <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px">*</span></label>
+                <input id="userEmailText" asp-for="customerUserDTO.email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">  
+              </div>
+            </div>
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label style="font-weight:bold;color:black">Mobile Number<span style="color:red; margin-left:2px;">*</span></label>
+                  <input id="userPhoneText" asp-for="customerUserDTO.phone" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Mobile Number">
+                </div>
+            </div>
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold;color:black">Designation<span style="color:red; margin-left:2px;">*</span></label>
+                  <input id="userDesignationText" asp-for="customerUserDTO.designation" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Designation">
+
+                </div>
+            </div>
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold;color:black">Password</label><br>
+                  <input id="userPasswordText" asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Password">
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3">
+              </div>
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-primary" style="width:100% !important;">Update</button>
+              </div>
+              <div class="col-md-3">
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  function openUsersModal()
+  {
+    $("#testModalCenter1").modal('show');
+
+  }
+
+  $(document).ready(function () {
+    $('.editCustomerUserButton').on('click', function () {
+      
+
+      var customerId = $(this).closest("tr").find('[name=id]').html();
+      var name = $(this).closest("tr").find('[name=username]').html();
+      var status = $(this).closest("tr").find('[name=status]').html();
+      var email = $(this).closest("tr").find('[name=email]').html();
+      var designation = $(this).closest("tr").find('[name=designation]').html();
+      var phone = $(this).closest("tr").find('[name=phone]').html();
+      var id = $(this).closest("tr").find('[name=id]').html();
+        
+      $("#userNameText").val(name)
+      $("#userEmailText").val(email)
+      $("#userPhoneText").val(phone)
+      $("#userDesignationText").val(designation)
+      //$("#userStatusCheckbox").prop("checked", status.toLocaleLowerCase=="active"?true:false);
+      document.getElementById("userStatusCheckbox").checked = status.toLowerCase()=="active"?true:false
+      $("#customerUserId").val(id);
+      $("#testModalCenter2").modal('show');
+
+    });
+  });
+
+</script>

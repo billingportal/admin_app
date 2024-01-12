@@ -1,0 +1,133 @@
+﻿/** {
+  box-sizing: border-box;
+}*/
+
+
+/* The actual timeline (the vertical ruler) */
+/*.timelineT {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}*/
+
+  /* The actual timeline (the vertical ruler) */
+  /*.timelineT::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    background-color: #ff4c00;
+    top: 0;
+    bottom: 0;
+    left: 0px;
+    margin-left: -3px;
+  }*/
+
+/* Container around content */
+/*.containerT {
+  position: relative;
+  background-color: inherit;
+  width: 100%;
+  margin-left:11%;
+}
+
+  .containerT::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+  }*/
+
+  /* The circles on the timeline */
+  /*.containerT::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right: -17px;
+    background-color: #ff4c00;
+    border: 4px solid #ff4c00;
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+  }*/
+
+/* Place the container to the left */
+/*.leftT {
+  left: 0;
+}*/
+
+/* Place the container to the right */
+/*.rightT {
+  left: 0%;
+}*/
+
+/* Add arrows to the left container (pointing right) */
+/*.leftT::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 22px;
+  width: 0;
+  z-index: 1;
+  right: 30px;
+  border: medium solid white;
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent white;
+}*/
+
+/* Add arrows to the right container (pointing left) */
+/*.rightT::before {
+  content: " ";
+  height: 0;
+  position: absolute;
+  top: 22px;
+  width: 0;
+  z-index: 1;
+  left: 30px;
+  border: medium solid white;
+  border-width: 10px 10px 10px 0;
+  border-color: transparent white transparent transparent;
+}*/
+
+/* Fix the circle for containers on the right side */
+/*.rightT::after {
+  left: 15px;
+}
+
+.leftT::after {
+  left: 15px;
+}*/
+
+/* The actual content */
+/*.contentT {
+  padding: 1px 15px;
+  position: relative;
+}*/
+
+
+.pointerClass {
+  height: 10px;
+  background: #ff4c00;
+  width: 10px;
+  border-radius: 50%;
+  margin-left: -6px;
+}
+
+.innerContainer {
+  margin-left: 15px;
+  margin-top: -15px;
+  height: 70%;
+  width: 90%;
+}
+
+.timeLineContainer {
+  border-left: 2px solid #ff4c00;
+}
+
+.colorBlack{
+  color:black;
+}
+
+.colorGray{
+  color:gray;
+}

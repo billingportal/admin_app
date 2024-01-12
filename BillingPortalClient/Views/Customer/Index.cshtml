@@ -1,0 +1,353 @@
+﻿
+@using System.Text.Json;
+
+@{
+    Layout = "_Layout";
+}
+@model BillingPortalClient.ModelViews.CustomerViewModel;
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid"  style="margin-top:1%; padding-left:0; padding-right:0;">
+
+
+  <!-- ROW-1 -->
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                          <a href="@Url.Action("ManageAdminUsers","User")" style="color:white">
+                            <div class="d-flex">
+                                <div class="">
+                              <img  width="45" height="45" src="../assets/images/dashboard/employee-icon.png" />
+                                    <h6 class="text title">Manage <br />Employees</h6>
+                                </div>
+                                
+                            </div>
+                            <span style="color: var(--unnamed-color-e9eaed); text-align: left; font: normal normal normal 10px/12px Inter; letter-spacing: 0px; color: #E9EAED; opacity: 1; ">
+                                All Employees with their region, status. Organize, view all and update Status.
+                            </span>
+                          </a>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2_user">
+                            <a href="@Url.Action("Index","Customer")" style="color:white">
+
+                            <div class="d-flex">
+                                <div class="">
+                                <img width="45" height="45" src="../assets/images/dashboard/users-icons.png" />
+                                    <h6 class="text title">Manage <br />Customers</h6>
+                                </div>
+                                
+                            </div>
+                            <span style="color: var(--unnamed-color-e9eaed); text-align: left; font: normal normal normal 10px/12px Inter; letter-spacing: 0px; color: #E9EAED; opacity: 1; ">
+                                All Registered customers. Organize, view all and update customer Status.
+                            </span>
+                          </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+    <!-- Row -->
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="padding: 0px; border-bottom:none;">
+                    <div class="col-md-6">
+                      <h5 class="card-title">Customers Detail</h5>
+                    </div>
+                    
+                    <div class="col-md-4">
+                      <div class="row">
+                      </div>
+                    </div>
+
+                    @*<div class="col-md-2" style="text-align:end;">
+                      <button type="button" onclick="openUsersModal()" class="btn btn-success ticket">
+                       <i class="fe fe-file-text"></i> Add New User
+                      </button>
+
+                    </div>*@
+                </div>
+                <hr>
+                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+
+                  @*<div class="row mb-2">
+                    <div class="panel" id="datePanel">
+                      <div class="row">
+                        <div class="col-md-6">
+                        </div>
+                        <div class="col-md-3">
+                          <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                        </div>
+                        <div class="col-md-3">
+                            <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>*@
+
+                    <div class="table-responsive">
+                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
+                            <thead>
+                                <tr>
+                                    @*<th></th>*@
+                                    <th class="border-bottom-0">Account Number</th>
+                                    <th class="border-bottom-0">Customer Name</th>
+                                    <th class="border-bottom-0">Email</th>
+                                    <th class="border-bottom-0">Type of User</th>
+                                    <th class="border-bottom-0">Status</th>
+                                  @*  <th class="border-bottom-0">Region</th>*@
+                                    <th class="border-bottom-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @foreach(var item in Model.CustomerRows)
+                                {
+                                    <tr id="@string.Format("tr{0}",item.Id)" data-itemId=@item.Id>
+                                        @*<td hidden name="id">@item.Id</td>
+        <td hidden name="designation">@item.Designation</td>
+        <td hidden name="phone">@item.PhoneNumber</td>*@
+
+                                        @*<td style="text-align:center"><input type="checkbox" id="@string.Format("{0}",item.Id)" class="customerTableCheckbox"/></td>*@
+                                        <td><span style="color: var(--primary-purple); text-align: left; font: normal normal 600 14px/16px Inter; letter-spacing: 0px; color: #3F058F; opacity: 1;" name="firstName">@item.AccountNumber</span></td>
+                                        <td><span style="color: var(--black); text-align: left; font: normal normal normal 14px/16px Inter; letter-spacing: 0px; color: #191616; opacity: 1;" name="lastName">@item.Name</td>
+                                        <td name="email">@item.Email</td>
+                                        /////////
+                                        @if(@item.IsMain == true)
+     {
+                                        <td><span style="font: normal normal normal 14px/16px Inter;">Primary</span></td>
+     }
+     else
+     {
+                                        <td><span style="font: normal normal normal 14px/16px Inter;">Secondary</span></td>
+                                        
+     }
+                                        /////////
+                                        @if(@item.Status == "Inactive")
+                                            {
+                                        <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(91deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; " name="status">@item.Status</span></td>
+                                            }
+                                            else if(@item.Status == "Active")
+                                            {
+                                        <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; " name="status">@item.Status</span></td>
+
+                                            }
+                                            else
+                                            {
+                                        <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1;" name="status">@item.Status</span></td>
+
+                                            }
+
+                                        @*<td style="text-align:center" name="createdDate">
+            @item.Region
+        </td>*@
+                                        <td style="text-align: center; display: flex; gap: 5px;">
+                                            <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
+                                            <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                @if(item.Status == "Active")
+                                                {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Suspended"})">Suspended</a></li>
+
+                                                }
+                                                @if(item.Status == "Inactive")
+                                                {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Active"})">Active</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Suspended"})">Suspended</a></li>
+
+                                                }
+                                                @if(item.Status == "Suspended")
+                                                {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Active"})">Active</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetCustomerStatus","Customer", new {customerId = @item.Id, status = "Inactive"})">Inactive</a></li>
+
+                                                }
+
+                                            </ul>
+
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Row -->
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+
+<script>
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  console.log({model})
+
+  function submitPermissionButton()
+  {
+    $("#adminPermissionsForm").submit();
+  }
+
+  function openUserPermissions()
+  {
+    $("#adminPermissionsModal").modal('show')
+  }
+
+  function openUsersModal()
+  {
+    $("#testModalCenter1").modal('show');
+
+  }
+
+  $(document).ready(function () {
+
+    $("#adminUserViewModalViewModel_regions").select2({
+      width: '100%',
+      //pointer-events:none,
+      //tags: tags1,
+      //templateResult:null,
+      tags:true,
+      //tokenSeparators: [',', ' '],
+      //disabled: true
+      //readonly: true
+    })
+
+    $("#regionFormAddUser").select2({
+      width: '100%',
+      //pointer-events:none,
+      //tags: tags1,
+      //templateResult:null,
+      tags:true,
+      //tokenSeparators: [',', ' '],
+      //disabled: true
+      //readonly: true
+    })
+
+    $('.editAdminUserButton').on('click', function () {
+      
+
+      var adminId = $(this).closest("tr").find('[name=id]').html();
+      var firstName = $(this).closest("tr").find('[name=firstName]').html();
+      var lastName = $(this).closest("tr").find('[name=lastName]').html();
+      var email = $(this).closest("tr").find('[name=email]').html();
+      var createdDate = $(this).closest("tr").find('[name=createdDate]').html();
+      var status = $(this).closest("tr").find('[name=status]').html();
+
+      //var phone = $(this).closest("tr").find('[name=phone]').html();
+      //var id = $(this).closest("tr").find('[name=id]').html();
+        
+      $("#userFirstNameText").val(firstName)
+      $("#userLastNameText").val(lastName)
+      $("#userEmailText").val(email)
+      $("#userStatusText").val(status)
+
+      //$("#userPasswordText").val()
+      //$("#userStatusCheckbox").prop("checked", status.toLocaleLowerCase=="active"?true:false);
+      //document.getElementById("userStatusCheckbox").checked = status.toLowerCase()=="active"?true:false
+      $("#adminUserId").val($(this).closest("tr")[0].getAttribute("data-itemId"));
+      
+
+      //---------------------------------------set permissions checkboxes-----------------------------------
+
+      var adminId1 = $(this).closest("tr")[0].getAttribute("data-itemId");
+      $("#adminIdPermissions").val(adminId);
+
+      var adminPermissions = model.adminUsers.find(x => x.id == adminId1).adminPermissions[0];
+
+      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+      document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
+      document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
+      document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
+      document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
+      document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
+      document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
+      document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
+      document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
+      document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
+
+      if(model.adminUsers.find(x => x.id== adminId1).adminRegions.length > 0)
+      {
+        model.adminUsers.find(x => x.id== adminId1).adminRegions.forEach(row => {
+          var data = {
+
+            value: row.regionId,
+            text: row.region.region1,
+      
+          };
+
+
+          var newOption = new Option(data.text, data.value, true, true);
+          $('#adminUserViewModalViewModel_regions').append(newOption).trigger('change');
+        })
+      }
+
+      $("#testModalCenter2").modal('show');
+
+    });
+
+    $('.userPermissionsButton').on('click', function () {
+      console.log(model)
+
+      var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
+      $("#adminIdPermissions").val(adminId);
+
+      var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+
+      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+      document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
+      document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
+      document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
+      document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
+      document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
+      document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
+      document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
+      document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
+      document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
+
+      $("#adminPermissionsModal").modal('show');
+
+    });
+  });
+
+  function setPermissionCheckboxes()
+  {
+    var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
+    $("#adminIdPermissions").val(adminId);
+
+    var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+
+    document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+    document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+    document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
+    document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
+    document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
+    document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
+    document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
+    document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
+    document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
+    document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
+    document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
+
+    $("#adminPermissionsModal").modal('show');
+  }
+
+</script>
+@section scripts {
+    <script src="~/js/customerSel.js"></script>
+}

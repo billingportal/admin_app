@@ -1,0 +1,409 @@
+﻿
+@model BillingPortalClient.ModelViews.DashboardModelView;
+@using System.Text.Json
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid" style="margin-top:7%;">
+
+
+    <!-- ROW-1 -->
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Open Transactions</h6>
+                                    <h2 class="mb-0 number-font">
+                                        <div class="s"></div>144,278</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="saleschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-secondary"><i
+                                        class="fe fe-arrow-up-circle  text-secondary"></i> 5%</span>
+                                Last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Overdue Amount</h6>
+                                    <h2 class="mb-0 number-font">167,987</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="leadschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-pink"><i
+                                        class="fe fe-arrow-down-circle text-pink"></i> 0.75%</span>
+                                Last 6 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c3">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Disputed Invoices</h6>
+                                    <h2 class="mb-0 number-font">584</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="profitchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-green"><i
+                                        class="fe fe-arrow-up-circle text-green"></i> 0.9%</span>
+                                Last 9 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c4">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Rated But Not Invoiced</h6>
+                                    <h2 class="mb-0 number-font">765</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="costchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-warning"><i
+                                        class="fe fe-arrow-up-circle text-warning"></i> 0.6%</span>
+                                Last year</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+        <!-- ROW-1 -->
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Open Transactions</h6>
+                                    <h2 class="mb-0 number-font">
+                                        <div class="s"></div>144,278</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="saleschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-secondary"><i
+                                        class="fe fe-arrow-up-circle  text-secondary"></i> 5%</span>
+                                Last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Overdue Amount</h6>
+                                    <h2 class="mb-0 number-font">167,987</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="leadschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-pink"><i
+                                        class="fe fe-arrow-down-circle text-pink"></i> 0.75%</span>
+                                Last 6 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Disputed Invoices</h6>
+                                    <h2 class="mb-0 number-font">584</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="profitchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-green"><i
+                                        class="fe fe-arrow-up-circle text-green"></i> 0.9%</span>
+                                Last 9 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Rated But Not Invoiced</h6>
+                                    <h2 class="mb-0 number-font">765</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="costchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-warning"><i
+                                        class="fe fe-arrow-up-circle text-warning"></i> 0.6%</span>
+                                Last year</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+        <!-- ROW-1 -->
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Open Transactions</h6>
+                                    <h2 class="mb-0 number-font">
+                                        <div class="s"></div>144,278</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="saleschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-secondary"><i
+                                        class="fe fe-arrow-up-circle  text-secondary"></i> 5%</span>
+                                Last week</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Overdue Amount</h6>
+                                    <h2 class="mb-0 number-font">167,987</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="leadschart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-pink"><i
+                                        class="fe fe-arrow-down-circle text-pink"></i> 0.75%</span>
+                                Last 6 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Disputed Invoices</h6>
+                                    <h2 class="mb-0 number-font">584</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="profitchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-green"><i
+                                        class="fe fe-arrow-up-circle text-green"></i> 0.9%</span>
+                                Last 9 days</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Rated But Not Invoiced</h6>
+                                    <h2 class="mb-0 number-font">765</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="costchart"
+                                            class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12"><span class="text-warning"><i
+                                        class="fe fe-arrow-up-circle text-warning"></i> 0.6%</span>
+                                Last year</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+
+<script>
+
+    let selectedRows = [];
+
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  console.log({model})
+
+$(document).on("click",".receiptsTableCheckbox",function(e){
+// your code goes here
+  console.log(event);
+
+  var selectedRow = model.invoices.find(x => x.DocNumber == event.target.id)
+
+  console.log('docNumer', selectedRow)
+
+  if(selectedRow.InvoiceStatuses.length > 0 && selectedRow.InvoiceStatuses[0].Status == 'Paid')
+  {
+    event.target.checked = false;
+    alert('Selected invoice is already paid.')
+  }
+  else
+  {
+    if(event.target.checked)
+    {
+      selectedRows.push(event.target.id);
+    }
+    else
+    {
+      selectedRows = selectedRows.filter(x => x != event.target.id);
+    }
+    //(... rest of your JS code)
+    console.log(selectedRows);
+    $("#selectedInvoicesCount").text(selectedRows.length);
+    console.log(model)
+
+  }
+
+
+  
+});
+
+
+  $(document).ready(function(){
+    console.log('*******************************************')
+    //document.getElementById("fullPayment").checked = true;
+
+
+
+    $("#ticketViewModel_instrumentNumbers").select2({
+      width: '100%',
+      //pointer-events:none,
+      //tags: tags1,
+      templateResult:null,
+      tags:true,
+      //tokenSeparators: [',', ' '],
+      //disabled: true
+      //readonly: true
+    })
+
+    //$('#collapseOne').collapse({
+    //  toggle: false
+    //})
+  //let selectedRows = [];
+
+
+  //    $(".invoiceTableCheckbox").on('click', function(event){
+    
+  //        console.log(event);
+  //        if(event.target.checked)
+  //        {
+  //          selectedRows.push(event.target.id);
+  //        }
+  //        else
+  //        {
+  //          selectedRows = selectedRows.filter(x => x != event.target.id);
+  //        }
+  //        //(... rest of your JS code)
+  //        console.log(selectedRows);
+  //    });
+  
+
+
+
+  });
+
+  function addReceiptsForTicket()
+  {
+    //document.getElementById("ticketViewModel_instrumentNumbers").style.pointerEvents = "none";
+
+    selectedRows.forEach(row => {
+      var data = {
+
+        value: row,
+        text: row,
+      
+      };
+
+
+      var newOption = new Option(data.text, data.value, true, true);
+      $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
+    })
+
+  }
+
+
+</script>
+

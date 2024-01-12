@@ -1,0 +1,663 @@
+﻿
+@{
+    ViewData["Title"] = "Ticket";
+    Layout = "_Layout";
+}
+@model BillingPortalClient.ModelViews.TicketViewModel;
+
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Ticket Details";
+    Layout = "_Layout";
+}
+<input type="text" hidden id="adminId" value="@User.Claims.FirstOrDefault( x => x.Type == "adminId" ).Value"/>
+
+<div class="main-container container-fluid" style="margin-top:1%">
+
+
+  <hr>
+  <div class="row">
+      <div class="col-md-8">
+          <div class="row">
+          <span class="purple">#@Model.ticket.Id.ToString()</span> <span class="badge ticket-status bg-danger" id="ticketStatusSpan">@Model.ticket.Status</span>
+          <hr>
+              <div class="col-md-12">
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="color:black">Status</label>
+                      </div>
+                      <div class="col-md-2">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="ticketStatusDropDown" data-bs-toggle="dropdown" aria-expanded="false">
+                          @Model.ticket.Status
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="ticketStatusDropDown">
+                          <li><a class="dropdown-item" onclick="changeTicketStatus(@Model.ticket.Id, 'Closed')" href="javascript:void(0)">Closed</a></li>
+                          <li><a class="dropdown-item" onclick="changeTicketStatus(@Model.ticket.Id, 'Inprogress')" href="javascript:void(0)">In Progress</a></li>
+                          <li><a class="dropdown-item" onclick="changeTicketStatus(@Model.ticket.Id, 'Rejected')" href="javascript:void(0)">Rejected</a></li>
+                        </ul>
+                        @*<select class="form-select" id="ticketStatusSelect"  aria-label="Default select example">
+                          <option value="closed">Close</option>
+                          <option value="open">Open</option>
+                          <option value="inprogress">In Progress</option>
+                        </select>*@
+                      </div>
+                      <div class="col-md-2">
+
+                      </div>
+                      <div clas="col-md-2">
+                        <label style="color:black">Assignee</label>
+                      </div>
+                      <div>
+                        @if(Model.ticket.Admin == null)
+                        {
+                          <button class="btn btn-secondary dropdown-toggle" type="button" id="ticketAssigneeDropDown" data-bs-toggle="dropdown" aria-expanded="false">
+                            -no assignee-
+                          </button>
+                        }
+                        else
+                        {
+                          <button class="btn btn-secondary dropdown-toggle" type="button" id="ticketAssigneeDropDown" data-bs-toggle="dropdown" aria-expanded="false">
+                            @Model.ticket.Admin.FirstName @Model.ticket.Admin.LastName
+                          </button>               
+                        }
+
+                        <ul class="dropdown-menu" aria-labelledby="ticketAssigneeDropDown">
+                          @foreach(var item in Model.rolesUsers)
+                          {
+                            <li>
+                              <h4>@item.roleName</h4>
+                              <ul>
+                                @foreach(var user in item.users)
+                                {
+                                  <li><a class="dropdown-item" onclick="changeTicketAssignee(@Model.ticket.Id, @user.Id)" href="javascript:void(0)">@user.FirstName @user.LastName</a></li>
+                                }
+                              </ul>
+                            </li>
+                          }
+                        </ul>
+                        @*<ul class="dropdown-menu" aria-labelledby="ticketAssigneeDropDown">
+                          <li><a class="dropdown-item" onclick="changeTicketStatus(@Model.ticket.Id, 'Closed')" href="javascript:void(0)">Closed</a></li>
+                        </ul>*@
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card tickets">
+                  <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Account Name</label><br>
+                            <span>@Model.ticket.Account.AccountName</span>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Account Number</label><br>
+                            <span>@Model.ticket.Account.AccountNumber</span>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Email</label><br>
+                            <span>@Model.ticket.Account.Customer.Email</span>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Region</label><br>
+                            <span>@Model.ticket.Account.Customer.Region</span>
+                        </div>
+                        
+                    </div>
+                    <hr style="height:1px;background:gray;" />
+
+                    <div class="row">
+                      
+                        <div class="col-md-2">
+                            <label>Instrument Type</label><br>
+                            <span>@Model.ticket.InstumentType</span>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Instrument Number</label><br>
+                            <span>@Model.ticket.InstrumentNumber</span>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Created On</label><br>
+                            <span>@Model.ticket.TicketDate.Value.ToString("dd MMMM, yyyy")</span>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Issue Type</label><br>
+                            <span>@Model.ticket.IssueType</span>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Uploaded File</label><br>
+                            <span>Complain screenshot.png</span>
+                        </div>
+
+                       
+                      
+                    </div>
+                    <hr style="height:1px;background:gray;" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label style="font-weight:bold;color:gray;">Note</label><br>
+                            <label class="text black">@Model.ticket.Description</label>
+                        </div>
+                    </div>
+
+                  </div>
+
+                
+
+                </div>
+              </div>
+          </div>
+
+          <div class="row" style="margin-bottom:10px">
+            <div class="col-md-12" id="fileSection">
+              <h4 style="color:black">Files</h4>
+              @if(Model.ticket.TicketFiles != null)
+                    {
+                        @foreach(var item in Model.ticket.TicketFiles)
+                        {
+                            <a href="@item.EncodedFile" download="@item.FileName" style="color:blue; display:block">@item.FileName</a>
+                        }
+                    }
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12" id="commentsSection">
+              <h4 style="color:black">Comments</h4>
+              @if(Model.ticket.TicketComments.Count > 0)
+                {
+                  foreach(var item in Model.ticket.TicketComments)
+                  {
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="card comments">
+                          <div class="card-body">
+
+                            <div class="d-flex flex-row align-items-center">
+                              @if(item.Admin != null)
+                              {
+                              <div class="p-2 bd-highlight" style="border-radius:50%; width:5%;text-align:center; background:lightblue">@item.Admin.FirstName[0]</div>
+                                            
+                              }
+                              else
+                              {
+                              <div class="p-2 bd-highlight" style="border-radius:50%; width:5%;text-align:center; background:lightblue">@item.CustomerAccount.AccountName[0]</div>
+                                            
+                              }
+                              <div class="p-2 bd-highlight">
+                                @if(item.Admin != null)
+                                {
+                                    <label>@item.Admin.FirstName @item.Admin.LastName</label>
+                                }
+                                else
+                                {
+                                    <label>@item.CustomerAccount.AccountName</label>
+                                }
+                                <span>@item.CreatedDate.Value.ToShortDateString()</span>
+                              </div>
+                      
+                            </div>
+                    
+                            <div class="comment">@item.Comment</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                
+                  }    
+                }
+
+            </div>
+          </div>
+
+          
+          <div class="row">
+            <div class="col-8">
+              <input type="file" id="myFile" name="filename" style="color:black; width:400px">
+              @*<input type="text" id="messageText" class="form-control" placeholder="add comment here..." />*@
+              <textarea placeholder="Add comment for ticket" class="form-control mb-2" id="ticketCommentText" rows="2" maxlength="300"></textarea>
+
+            </div>
+            <div class="col-2">
+              <button type="button" onclick="sendButtonOnClick()">Comment</button>
+            </div>
+
+          </div>
+@*            
+          <div class="row">
+              <div class="col-md-3">
+                  <button type="button" onclick="addCommentButtonClick()" class="btn btn-primary"  style="width:100%;">Add Comment</button>
+                
+              </div>
+          </div>*@
+
+@*          @if(Convert.ToBoolean( @User.Claims.FirstOrDefault( x => x.Type == "updateTicket" ).Value) == true)
+            {
+              <div class="row">
+                <form id="ticketStatusForm" method="post" asp-controller="Ticket" asp-action="UpdateTicketStatus">
+                  <input hidden name="ticketId" value="@Model.ticket.Id" />
+                  <input hidden name="status" id="ticketStatus" />
+                  <div class="col-md-3">
+                    <a href="javascript:void(0)" onclick="changeTicketStatus('Closed')" class="btn btn-primary"  style="width:100%;">Close</a>
+              
+                  </div>
+
+                  <div class="col-md-3">
+                    <a href="javascript:void(0)" onclick="changeTicketStatus('InProgress')" class="btn btn-primary"  style="width:100%;">In-Progress</a>
+
+                  </div>
+                </form>
+              </div>            
+            }*@
+            
+      </div>
+      <div class="col-md-4">
+            <div class="card tickets">
+              <h3 class="card-header">Activity Log</h3>
+              <div class="card-body">
+                <h5>Timeline</h5>
+
+                  <div class="timeLineContainer">
+                    @foreach(var item in Model.ticket.ActivityLogs)
+                        {
+                          <div style="min-height:70px;margin-bottom:25px;">
+    	                      <div class="pointerClass">
+                            </div>
+        
+                            <div class="innerContainer colorBlack">
+                              <div class="row">
+                                <div class="col-md-7">
+                                  <label style="font-weight:bold; font-size:14px">@item.CreatedDate.Value.ToString("dd MMMM, yyyy")</label>
+                                </div>
+
+                                <div class="col-md-5">
+                                  @*<label style="font-size:14px">Status: Open</label>*@
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12 colorGray">
+                                  @item.LogValue
+                                </div>
+
+                              </div>
+                            
+                            </div>
+                          </div>                     
+                        }
+                        @*<div style="min-height:70px;margin-bottom:25px;">
+    	                    <div class="pointerClass">
+                          </div>
+        
+                          <div class="innerContainer colorBlack">
+                            <div class="row">
+                              <div class="col-md-7">
+                                <label style="font-weight:bold; font-size:14px">Wed, 08 Nov, 2023</label>
+                              </div>
+
+                              <div class="col-md-5">
+                                
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12 colorGray">
+                                asdf as fdas dfas df as df asdf as df asddf asd f sdf saa fdsad df
+                              </div>
+
+                            </div>
+                            
+                          </div>
+                        </div>*@
+
+
+                      @*<div style="min-height:70px;margin-bottom:25px;">
+    	                  <div class="pointerClass">
+                          </div>
+        
+                          <div class="innerContainer colorBlack">
+                            <div class="row">
+                              <div class="col-md-7">
+                                <label style="font-weight:bold; font-size:14px">Wed,08 Nov, 2023</label>
+                              </div>
+
+                              <div class="col-md-5">
+                                <label style="font-size:14px">Status: Open</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12 colorGray">
+                                asdf as fdas dfas df as df asdf as df asddf asd f sdf saa fdsad df
+                              </div>
+
+                            </div>
+                            
+                          </div>
+                      </div>*@
+
+                  </div>
+
+
+              </div> 
+            </div>
+
+            <div class="card tickets">
+              <h3 class="card-header">Notes</h3>
+              <div class="card-body">
+                <h5>You can add private notes which will be visible to your team members only.</h5>
+                <div class="row">
+                  <div class="col-md-8">
+                    <input type="text" style="width:100%" id="notesTextBox" />
+                  </div>
+                  <div class="col-md-4">
+                    <a style="width:100%" href="javascript:void(0);" onclick="addNotesButtonClick()">ADD</a>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12" id="ticketNotes">
+                    <h5>Previously Added Notes</h5>
+                    @foreach(var item in Model.ticket.TicketNotes)
+                            {
+                                <label>@item.Notes</label>
+                                <label>@item.Admin.FirstName @item.CreatedDate</label>
+                            }
+                        </div>
+                </div>
+              </div> 
+            </div>
+      </div>
+  </div>
+
+</div>
+
+<div class="modal fade" id="addCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="container">
+          <h2 class="text-center">Comment</h2>
+          <p class="text-center">Enter the comment for ticket.</p>
+          <form asp-controller="Ticket" asp-action="addTicketComment" method="post">
+            <input type="text" asp-for="ticketComment.ticketId" hidden value="@Model.ticket.Id" />
+            <textarea asp-for="ticketComment.comment" placeholder="Add comment for ticket" class="form-control mb-2" id="ticketCommentText" rows="2" maxlength="300"></textarea>
+            <div class="row">
+              <div class="col-md-4">
+
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="form-control btn btn-primary" style="width:100%;">Post</button>
+
+              </div>
+              <div class="col-md-4">
+
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  
+  var connection = new signalR.HubConnectionBuilder().withUrl("https://billingportalapis.azurewebsites.net/chatHub").build();
+
+  //var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:7069/chatHub").withAutomaticReconnect().build();
+  var username = "aa1";
+
+  connection.on("ReceiveMessage", function(ticketComment){
+    //alert(user + ': ' + message)
+    //alert(ticketComment)
+    console.log(ticketComment)
+    var comment = ticketComment.comment;
+    var createdDate = new Date(ticketComment.createDate).toLocaleDateString();
+    var ticketId = ticketComment.ticketId;
+    var commentId = ticketComment.commentId;
+    var adminId = ticketComment.adminId;
+    var adminFullName = ticketComment.adminFirstName + ' ' + ticketComment.adminLastName;
+    var customerAccountId = ticketComment.customerAccountId;
+    var customerName = ticketComment.customerName;
+    var customerNameFirstChar = customerName != null ? customerName[0] : '';
+    var roundLogo = '';
+    var adminNameFirstChar = adminFullName != null ? adminFullName[0] : '';
+    var commenterName = '';
+
+
+
+    if(adminId != null)
+    {                                
+      roundLogo = `<div class="p-2 bd-highlight" style="border-radius:50%; width:5%;text-align:center; background:lightblue">${adminNameFirstChar}</div>`
+      commenterName = `<label>${adminFullName}</label>`
+    }
+    else
+    {
+      roundLogo = `<div class="p-2 bd-highlight" style="border-radius:50%; width:5%;text-align:center; background:lightblue">${customerNameFirstChar}</div>`
+      commenterName = `<label>${customerName}</label>`
+    }
+
+    var newComment = `<div class="row">
+                        <div class="col-md-12">
+                          <div class="card comments">
+                            <div class="card-body">
+                              <div class="d-flex flex-row align-items-center">` + roundLogo + `
+                                
+                                <div class="p-2 bd-highlight">
+                                  `+ commenterName +`
+                                  <span>${createdDate}</span>
+                                </div>
+                      
+                              </div>
+                              
+                            
+                    
+                              <div class="comment">${comment}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>`
+    $("#commentsSection").append(newComment);
+
+    if(ticketComment.filename != "" && ticketComment.base64String != "" )
+    {
+      createDownloadLink(ticketComment.base64String, ticketComment.filename, "sql");
+    }
+
+
+  })
+
+  connection.start().then(function() {
+    console.log('connection started')
+  }).catch(function(err){
+    return console.error(err.toString());
+  })
+
+  function sendButtonOnClick()
+  {
+    var comment = $("#ticketCommentText").val();
+    if(comment == null)
+    {
+      alert('Kindly add comment.')
+      return 
+    }
+    
+    var ticketId = model.ticket.id
+    var adminId = $("#adminId").val();
+    var customerId = 0
+    var base64String = '';
+
+    const fileInput = document.getElementById('myFile');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        // Set up FileReader onload event
+        reader.onload = function(event) {
+            base64String = event.target.result; // Result will contain the base64 string
+            console.log(base64String); // Use or display the base64 string as needed
+
+
+            connection.invoke("SaveComment", Number(adminId), customerId, comment, Number(ticketId), base64String, file.name).then(function() {
+              //alert(res)
+      
+              $("#ticketCommentText").val('');
+            }).catch(function(err) {
+              return console.error(err.toString());
+            })
+        };
+
+        // Read file as Data URL (base64)
+        reader.readAsDataURL(file);
+    }
+    else
+    {
+      connection.invoke("SaveComment", Number(adminId), customerId, comment, Number(ticketId), '', '').then(function() {
+      //alert(res)
+      
+        $("#ticketCommentText").val('');
+      }).catch(function(err) {
+        return console.error(err.toString());
+      })
+    }
+
+    fileInput.value = '';
+  }
+
+
+  function createDownloadLink(base64String, fileName, fileType) {
+
+    // Create a link element
+    const downloadLink = document.createElement('a');
+    downloadLink.href = base64String;
+    downloadLink.download = fileName;
+    downloadLink.innerText = fileName;
+    downloadLink.style.color = "blue";
+    downloadLink.style.display = 'block';
+
+    $("#fileSection").append(downloadLink);
+}
+
+
+
+ function addCommentButtonClick()
+ {
+   $("#addCommentModal").modal('show');
+ }
+
+ function changeTicketStatus(status)
+ {
+   $("#ticketStatus").val(status)
+   $("#ticketStatusForm").submit();
+ }
+
+ function changeTicketStatus(val1, val2)
+ {
+   console.log(val1,val2)
+   var postObject = new Object();  
+   postObject.ticketId = val1;
+   postObject.status = val2;
+
+   if (postObject != null) {  
+    console.log({postObject})
+
+    $.ajax({  
+        type: "POST",  
+        url: "/ticket/UpdateTicketStatus1",  
+        data: JSON.stringify(postObject),  
+        contentType: "application/json; charset=utf-8",  
+        dataType: "json",  
+        success: function(response) {  
+          if(response == true)
+          {
+            $("#ticketStatusDropDown").text(val2)
+            $("#ticketStatusSpan").text(val2)
+            
+
+          }
+        },  
+        failure: function(response) {  
+            alert(response.responseText);  
+        },  
+        error: function(response) {  
+            alert(response.responseText);  
+        }  
+    });  
+    }
+ }
+
+ function changeTicketAssignee(val1, val2)
+ {
+   console.log(val1,val2)
+   var postObject = new Object();  
+   postObject.ticketId = val1;
+   postObject.assigneeId = val2;
+
+   $.ajax({  
+        type: "POST",  
+        url: "/ticket/UpdateTicketAssignee",  
+        data: JSON.stringify(postObject),  
+        contentType: "application/json; charset=utf-8",  
+        dataType: "json",  
+        success: function(response) {  
+          if(response != null)
+          {
+            $("#ticketAssigneeDropDown").text(response.admin.firstName + ' ' + response.admin.lastName)
+
+          }
+        },  
+        failure: function(response) {  
+            alert(response.responseText);  
+        },  
+        error: function(response) {  
+            alert(response.responseText);  
+        }  
+    }); 
+ }
+
+ function addNotesButtonClick()
+ {
+   if($("#notesTextBox").val() == '')
+   {
+     alert('Kindly add notes.')
+     return 
+   }
+   //console.log(val1,val2)
+   var postObject = new Object();  
+   postObject.ticketId = model.ticket.id;
+   postObject.adminId = $("#adminId").val();
+   postObject.notes = $("#notesTextBox").val();
+
+   $.ajax({  
+        type: "POST",  
+        url: "/ticket/AddTicketNotes",  
+        data: JSON.stringify(postObject),  
+        contentType: "application/json; charset=utf-8",  
+        dataType: "json",  
+        success: function(response) {  
+          if(response != null)
+          {
+
+            var ticketNotesRow = `<p>${response.notes}</p>
+                                <label>${response.admin.firstName} ${new Date(response.createdDate).toLocaleDateString()}</label>`
+            $("#ticketNotes").append(ticketNotesRow);
+            $("#notesTextBox").val('');
+          }
+        },  
+        failure: function(response) {  
+            alert(response.responseText);  
+        },  
+        error: function(response) {  
+            alert(response.responseText);  
+        }  
+    }); 
+ }
+
+</script>

@@ -1,0 +1,611 @@
+﻿@using System.Text.Json
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_Layout";
+}
+@model BillingPortalClient.ModelViews.StatementViewModel
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
+
+                    
+
+
+    <!-- ROW-1 -->
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/flow-icon-purple.png" />
+                                    <h6 class="text title"> All <br />Transactions</h6>
+                                    <h2 class="mb-0 number-font text">@Model.allTransactionCount</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c3">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/coin-icon-orange.png" />
+                                    <h6 class="text title">Debit <br />Amount</h6>
+                                    <h2 class="mb-0 number-font text">SAR @Model.debitAmountTotal</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c4">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/coins-icon-green.png" />
+                                    <h6 class="text title">Credit <br />Amount</h6>
+                                    <h2 class="mb-0 number-font text">SAR @Model.creditAmountTotal</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+
+
+    <!-- Row -->
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
+                  <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-sm-12">
+                      <h5 class="card-title text black">Showing details of @Model.accountName</h5>
+                      <h5 class="card-sub-title text"><span>Account No: </span><span class="orange">@Model.accountNumber</span></h5>
+                    </div>
+
+                    <div class="col-md-4 col-sm-12">
+                      <div class="row filters-bar">
+
+                        <div class="col-md-2 col-sm-2">
+                          <button class="btn btn-secondary search-btn" type="button" onclick="searchButtonOnClick()">
+                            <i class="fa fa-search"></i>
+                          </button>
+                        </div>
+
+                        <div class="col-md-8 col-sm-8">
+                          <select class="form-select w-100" id="searchSelectBox" onchange="searchSelectOnChange()">
+                            <option value="">Filter by:</option>
+                            <option value="instrumentType">Instrument Type</option>
+                            <option value="createdOn">Created On</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-2 col-sm-2">
+                          <div class="btn-export" id="exportButtonsDiv"></div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    @*<div class="col-md-2 col-sm-12">
+                      <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Raise Ticket </button>
+                    </div>*@
+                  </div>
+                </div>
+                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+                  <div class="row mb-2">
+                    <div class="panel" id="datePanel">
+                      <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+
+                        <div class="col-md-3">
+                          <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                        </div>
+                        <div class="col-md-3">
+                            <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="panel" id="instrumentPanel">
+                      <div class="row">
+                        <div class="col-md-9">
+
+                        </div>
+                        <div class="col-md-3">
+                          <input type="text" class="form-control" id="instrumentTypeSelection" onkeyup="instrumentTypeSelectionOnChange()" placeholder="Search Instrument Type" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                    <div class="table-responsive">
+                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="border-bottom-0">Ref No.</th>
+                                    <th class="border-bottom-0">Doc No.</th>
+                                    <th class="border-bottom-0">Account No.</th>
+                                    <th class="border-bottom-0">Region</th>
+
+                                    <th class="border-bottom-0">Date</th>
+                                    <th class="border-bottom-0">Type</th>
+                                    <th class="border-bottom-0">Debit</th>
+                                    <th class="border-bottom-0">Credit</th>
+                                    <th class="border-bottom-0">Balance</th>
+                                    <th class="border-bottom-0">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @foreach(var item in Model.statementRows)
+                                {
+                                  <tr id="@string.Format("tr{0}",item.id)" data-InstrumentTypeAttribute="@item.type" data-day="@item.createdDate.Day" data-month="@item.createdDate.Month" data-year="@item.createdDate.Year">
+                                    @*<td name="itemIdForTicket" hidden>@item.id</td>*@
+                                    
+                                    
+                                    <td><input type="checkbox" id="@string.Format("{0}",item.id)" class="receiptsTableCheckbox"/></td>
+                                    <td><strong>@item.refNo</strong></td>
+                                    <td>@item.docNumber</td>
+                                    <td>@item.accountNumber</td>
+                                    <td>@item.region</td>
+
+                                    <td>@item.createdDate.ToString("dd MMM, yyyy")</td>
+
+
+                                     @if(@item.type == "Invoice")
+                                      {
+                                          <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="font-size:small; width:60px">@item.type</span></td>
+                                      }
+                                      else if(@item.type == "Paymemt")
+                                      {
+                                          <td style="text-align:center"><span class="badge rounded-pill bg-danger" style="font-size:small; width:60px">@item.type</span></td>
+
+                                      }
+                                      else
+                                      {
+                                          <td style="text-align:center"><span class="badge rounded-pill bg-warning"  style="font-size:small; width:60px">@item.type</span></td>
+                                                
+                                      }
+                                   
+                                   @if(item.debit == 0){
+                                       <td></td>
+                                    }else{
+                                       <td style="color: #C95955;">@item.debit</td>
+                                    }
+
+                                     @if(item.credit == 0){
+                                       <td></td>
+                                    }else{
+                                       <td style="color: #3BC4B6;">@item.credit</td>
+                                    }
+                                    <td><strong>@item.balance</strong> SAR</td>
+                                    <td>
+                                      <button type="button" class="btn btn-primary btn-download statementPrintRowButton" 
+                                        data-itemId=@item.id
+                                        data-refNo=@item.refNo
+                                        data-docNumber=@item.docNumber
+                                        data-createDate=@item.createdDate.ToShortDateString()
+                                        data-type=@item.type
+                                        data-debit=@item.debit
+                                        data-credit=@item.credit
+                                        data-balance=@item.balance
+                                      ><i class="fe fe-file-text"></i></button>
+
+
+                                      <button data-itemId=@item.id type="button" class="btn btn-success btn-pay ticketModalButton"><i class="fe fe-credit-card"></i></button>
+                                    </td>
+                                  </tr>
+                                }
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Row -->
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+<div class="modal fade" id="testModalCenter1"  role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+    <div class="modal-content">
+      @*<div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>*@
+      <div class="modal-body">
+        <div class="container">
+          <h1>Create Ticket</h1>
+          <h5>Enter the details below to create a ticket.</h5>
+          <form asp-controller="Ticket" asp-action="SaveTicket" method="post">
+            <div class="row mb-3">
+              <div class="col-md-6">
+      	        <label style="font-weight:bold">Instrument Type<span style="color:red; margin-left:2px">*</span></label>
+                <select asp-for="ticketViewModel.instrumentType" class="form-select" aria-label="Default select example">
+                  
+                  @*<option value="Invoice" disabled>Invoice</option>
+                  <option value="Receipt" disabled>Receipt</option>*@
+                  <option value="Statement" selected>Statement</option>
+                </select>
+              </div>
+      
+              <div class="col-md-6">
+      	        <label style="font-weight:bold">Issue Type<span style="color:red; margin-left:2px">*</span></label>
+                <select asp-for="ticketViewModel.issueType" class="form-select" aria-label="Default select example">
+                  @*<option selected>Select your issue type</option>*@
+                  <option value="Complain" selected>Complain</option>
+                  <option value="Dispute">Dispute</option>
+                  <option value="Feedback">Feedback</option>
+                </select>
+              </div>
+      
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label style="font-weight:bold">Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
+        	        @*<input type="text" class="form-control" placeholder="Enter Instrument number" name="email">*@
+                      <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers" multiple class="form-select" >
+                      
+                        @*<option value="a" selected>a</option>
+                        <option value="b" selected>b</option>
+                        <option value="c" selected>c</option>*@
+                      </select>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold">Description<span style="color:red; margin-left:2px;">*</span></label>
+        	        <textarea asp-for="ticketViewModel.description" required placeholder="Give a description of your ticket" class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+                </div>
+            </div>
+    
+            <div class="row mb-3">
+    	        <div class="col-md-12">
+        	        <label  style="font-weight:bold">Upload Image</label><br>
+        	        <input type="file" id="myFile" name="filename" class="btn btn-primary">
+            
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+
+              </div>
+              <div class="col-md-4">
+                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
+
+              </div>
+              <div class="col-md-4">
+
+              </div>
+
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+    let selectedRows = [];
+
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  console.log({model})
+
+$(document).on("click",".receiptsTableCheckbox",function(e){
+// your code goes here
+  console.log(event);
+
+  var selectedRow = model.statementRows.find(x => x.id == event.target.id)
+
+
+  if(event.target.checked)
+    {
+      selectedRows.push(event.target.id);
+    }
+    else
+    {
+      selectedRows = selectedRows.filter(x => x != event.target.id);
+    }
+  //console.log('docNumer', selectedRow)
+
+  //if(selectedRow.InvoiceStatuses.length > 0 && selectedRow.InvoiceStatuses[0].Status == 'Paid')
+  //{
+  //  event.target.checked = false;
+  //  alert('Selected invoice is already paid.')
+  //}
+  //else
+  //{
+  //  if(event.target.checked)
+  //  {
+  //    selectedRows.push(event.target.id);
+  //  }
+  //  else
+  //  {
+  //    selectedRows = selectedRows.filter(x => x != event.target.id);
+  //  }
+  //  //(... rest of your JS code)
+  //  console.log(selectedRows);
+  //  $("#selectedInvoicesCount").text(selectedRows.length);
+  //  console.log(model)
+
+  //}
+  
+});
+
+
+  $(document).ready(function(){
+    console.log('*******************************************')
+
+    //var table = $('#file-datatable').DataTable();
+    //table.column( 0 ).visible( false );
+
+
+    $("#ticketViewModel_instrumentNumbers").select2({
+      width: '100%',
+      //pointer-events:none,
+      //tags: tags1,
+      templateResult:null,
+      tags:true,
+      //tokenSeparators: [',', ' '],
+      //disabled: true
+      //readonly: true
+    })
+  
+
+
+
+  });
+
+
+  
+var statusCriteria = "all";
+
+$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+  var trNode = settings.aoData[dataIndex].nTr;
+
+  //var inv = model.disputedInvoices.find(x => x.Id == Number(trNode.getAttribute("data-InvoiceIdAttribute")))
+  //if(inv != null && inv != undefined)
+  //{
+  //  //alert('row found')
+  //  return true;
+  //}
+  //return false;
+  if(statusCriteria == "all")
+  {
+    if($("#searchSelectBox").val() == "")
+    {
+      return true;
+    }
+    //else if($("#searchSelectBox").val() == "issueType")
+    //{
+    //  if(trNode.getAttribute("data-IssueTypeAttribute").toLowerCase().includes($("#issueTypeSelection").val().toLowerCase()))
+    //  {
+    //    return true;
+    //  }
+    //}
+    else if($("#searchSelectBox").val() == "instrumentType")
+    {
+      if(trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase().includes($("#instrumentTypeSelection").val().toLowerCase()))
+      {
+        return true;
+      }
+
+    }
+    else if($("#searchSelectBox").val() == "createdOn")
+    {
+      var minDate = new Date( $("#minDateSelection").val());
+      var maxDate = new Date( $("#maxDateSelection").val());
+      //var ticketDate = trNode.getAttribute("data-CreatedDateAttribute");
+      var ticketDateDay = trNode.getAttribute("data-day");
+      var ticketDateMonth = trNode.getAttribute("data-month");
+      var ticketDateYear = trNode.getAttribute("data-year");
+      var ticketDate = new Date(ticketDateYear, Number(ticketDateMonth) - 1, ticketDateDay);
+
+      if(maxDate.toString() == "Invalid Date")
+      {
+        maxDate = new Date(9999,12,30);
+      }
+      if(minDate.toString() == "Invalid Date")
+      {
+        minDate = new Date(0000,00,00);
+      }
+
+      if(ticketDate >= minDate && ticketDate <= maxDate)
+      {
+        return true;
+      }
+
+    }
+  }
+  return false;
+
+});
+
+
+
+
+
+  function instrumentTypeSelectionOnChange()
+{
+  //var table = $('#file-datatable').DataTable();
+  //table.draw();
+
+}
+
+function issueTypeSelectionOnChange()
+{
+  //var table = $('#file-datatable').DataTable();
+  //table.draw();
+
+}
+
+function mDateOnChange()
+{
+  //var table = $('#file-datatable').DataTable();
+  //table.draw();
+}
+
+function searchButtonOnClick()
+{
+  var table = $('#file-datatable').DataTable();
+  table.draw();
+}
+
+
+
+  function searchSelectOnChange()
+  {
+    console.log($("#searchSelectBox").val())
+    //if($("#searchSelectBox").val() == "issueType")
+    //{
+    //  document.getElementById('instrumentPanel').style.maxHeight = null;
+    //  document.getElementById('datePanel').style.maxHeight = null;
+    //  $("#instrumentTypeSelection").val("");
+    //  $("#minDateSelection").val("");
+    //  $("#maxDateSelection").val("");
+
+    //  var panel = document.getElementById('issuePanel');
+    //  if (panel.style.maxHeight) {
+    //  panel.style.maxHeight = null;
+    //  } else {
+    //    panel.style.maxHeight = panel.scrollHeight + "px";
+    //  } 
+
+    //}
+    if($("#searchSelectBox").val() == "")
+    {
+      document.getElementById('datePanel').style.maxHeight = null;
+      document.getElementById('instrumentPanel').style.maxHeight = null;
+      //$("#issueTypeSelection").val("");
+      $("#minDateSelection").val("");
+      $("#maxDateSelection").val("");
+      $("#instrumentTypeSelection").val("");
+
+    }
+    else if($("#searchSelectBox").val() == "instrumentType")
+    {
+      document.getElementById('datePanel').style.maxHeight = null;
+      //document.getElementById('issuePanel').style.maxHeight = null;
+      //$("#issueTypeSelection").val("");
+      $("#minDateSelection").val("");
+      $("#maxDateSelection").val("");
+
+      var panel = document.getElementById('instrumentPanel');
+      if (panel.style.maxHeight) 
+      {
+        panel.style.maxHeight = null;
+      } 
+      else 
+      {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      } 
+
+
+    }
+    else if($("#searchSelectBox").val() == "createdOn")
+    {
+      document.getElementById('instrumentPanel').style.maxHeight = null;
+      //document.getElementById('issuePanel').style.maxHeight = null;
+      //$("#issueTypeSelection").val("");
+      $("#instrumentTypeSelection").val("");
+
+      var panel = document.getElementById('datePanel');
+      if (panel.style.maxHeight) 
+      {
+        panel.style.maxHeight = null;
+      } 
+      else 
+      {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      } 
+    }
+  }
+
+
+
+
+  function addReceiptsForTicket()
+  {
+    //document.getElementById("ticketViewModel_instrumentNumbers").style.pointerEvents = "none";
+
+    if(selectedRows.length > 0)
+    {
+      selectedRows.forEach(row => {
+        var data = {
+
+          value: row,
+          text: row,
+      
+        };
+
+
+        var newOption = new Option(data.text, data.value, true, true);
+        $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
+       
+      })
+      $("#testModalCenter1").modal('show');
+    }
+    else
+    {
+      alert('Kindly select a transaction.')
+    }
+
+  }
+
+  $(document).on("click",".ticketModalButton",function(e){
+
+    var id = this.dataset.itemid;
+
+    var data = {
+      value: id,
+      text: id,
+    };
+
+
+    var newOption = new Option(data.text, data.value, true, true);
+    $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
+
+    $("#testModalCenter1").modal('show');
+  
+  });
+
+
+</script>
