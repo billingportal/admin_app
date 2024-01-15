@@ -146,7 +146,7 @@
                 </div>
 
                 <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
-                  <div class="row mb-2">
+                  @* <div class="row mb-2">
                     <div class="panel" id="issuePanel">
                       <div class="row">
                         <div class="col-md-9">
@@ -182,18 +182,17 @@
                       </div>
                       </div>
                     </div>
-                  </div>
+                  </div> *@
                     <div class="table-responsive">
                         <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
                             <thead>
                                 <tr>
                                     <th class="border-bottom-0">Ticket No.</th>
                                     <th class="border-bottom-0">Account No.</th>
-                                    <th class="border-bottom-0">Region</th>
-
+                                    <th class="border-bottom-0">Account Name</th>
                                     <th class="border-bottom-0">Instrument</th>
                                     <th class="border-bottom-0">Issue Type</th>
-                                    <th class="border-bottom-0">Note</th>
+                                    @* <th class="border-bottom-0">Note</th> *@
                                     <th class="border-bottom-0">Created On</th>
                                     <th class="border-bottom-0">Status</th>
                                     <th></th>
@@ -203,37 +202,90 @@
                               @foreach(var item in Model.tickets)
                                 {
                                   <tr data-StatusAttribute="@item.Status" data-InstrumentTypeAttribute="@item.InstumentType" data-IssueTypeAttribute="@item.IssueType" data-CreatedDateAttribute="@item.TicketDate.Value.ToShortDateString()" data-day="@item.TicketDate.Value.Day" data-month="@item.TicketDate.Value.Month" data-year="@item.TicketDate.Value.Year">
-                                    <td>@item.Id</td>
+                                    <td  style="color: var(--primary-purple);
+text-align: left;
+font: normal normal 600 14px/12px Inter;
+letter-spacing: 0px;
+color: #3F058F;
+opacity: 1;">#@item.Id</td>
                                     <td>@item.Account.AccountNumber</td>
-                                    <td>@item.Account.Customer.Region</td>
+                                    <td>@item.Account.AccountName</td>
+                                    @* <td>@item.Account.Customer.Region</td> *@
 
-                                    <td>@item.InstumentType</td>
+                                    <td style="color: var(--black);
+text-align: left;
+font: normal normal bold 14px/16px Inter;
+letter-spacing: 0px;
+color: #191616;
+opacity: 1;">@item.InstumentType</td>
                                     <td>@item.IssueType</td>
-                                    <td>@item.Description</td>
+                                    @* <td>@item.Description</td> *@
                                     @*<td>@item.TicketDate.Value.Year-@item.TicketDate.Value.Month-@item.TicketDate.Value</td>*@
                                     @*<td>@item.TicketDate.Value.ToString("yyyy-MM-dd")</td>*@
                                     @*<td>2001/04/15</td>*@
-                                    <td>@item.TicketDate.Value.ToString("dd MMMM, yyyy")</td>
+                                    <td>@item.TicketDate.Value.ToString("dd MMM, yyyy")</td>
                                     @if(item.Status == "Closed")
                                     {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="font-size:small; width:60px">@item.Status</span></td>
+                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="top: 713px;
+left: 1114px;
+width: 110px;
+height: 24px;
+/* UI Properties */
+background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box;
+border-radius: 6px;
+opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
                                     }
                                     else if(item.Status == "Open")
                                     {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-danger" style="font-size:small; width:60px">@item.Status</span></td>
+                                        <td style="text-align:center"><span class="badge rounded-pill bg-danger" style=" top: 406px;
+left: 1114px;
+width: 110px;
+height: 24px;
+/* UI Properties */
+background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box;
+border-radius: 6px;
+opacity: 1;
+ font-size:small; width:100px !important">@item.Status</span></td>
 
                                     }
                                     else
                                     {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-warning text-dark"  style="font-size:small; width:60px">@item.Status</span></td>
+                                        <td style="text-align:center"><span class="badge rounded-pill text-dark"  style="top: 470px;
+left: 1114px;
+width: 110px;
+height: 24px;
+/* UI Properties */
+background: transparent linear-gradient(90deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box;
+border-radius: 6px;
+opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
                                                 
                                     }
-                                    <td>@Html.ActionLink("View Details",
+                                    @* <td>@Html.ActionLink("View Details",
                                                             "TicketDetail",
                                                             "Ticket",
                                                             new { ticketId = @item.Id},
                                                             new { @class = "text-primary ms-1" })</td>
-                                  </tr>
+                                  </tr> *@
+                           <td style="color: var(--primary-purple);
+text-align: centre;
+font: normal normal bold 12px/44px Inter;
+letter-spacing: 0px;
+color: #3F058F;
+opacity: 1;">
+    @Html.ActionLink("View Details",
+        "TicketDetail",
+        "Ticket",
+        new { ticketId = @item.Id },
+        new { @class = "text-primary ms-1" })
+
+    <span>
+        <img src="../../assets/images/arrow-circle-right-solid.svg" alt="Arrow Icon">
+    </span>
+</td>
+</tr>
+
+
+
                                     
                                 }
                             </tbody>
@@ -424,30 +476,25 @@ function searchButtonOnClick()
   table.draw();
 }
 
+$(document).on("click", ".statusCriteriaButton", function (event) {
+  console.log(event);
+  if (event.target.id == "allStatusRadio") {
+    statusCriteria = "all";
+  } else if (event.target.id == "openStatusRadio") {
+    statusCriteria = "Open";
+  } else if (event.target.id == "inprogressStatusRadio") {
+    statusCriteria = "Inprogress";
+  } else if (event.target.id == "closedStatusRadio") {
+    statusCriteria = "Closed";
+  }
 
-  $(document).on("click",".statusCriteriaButton",function(event){
-
-    console.log(event);
-    if(event.target.id == "allStatusRadio")
-    {
-      statusCriteria = "all";
-
-    }
-    else if(event.target.id == "openStatusRadio")
-    {
-      statusCriteria = "Open"
-    }
-    else if(event.target.id == "inprogressStatusRadio")
-    {
-      statusCriteria = "in progress"
-    }
-    else if(event.target.id == "closedStatusRadio")
-    {
-      statusCriteria = "Closed"
-    }
+  // Log statusCriteria to verify the selected status
+  console.log("Selected Status Criteria:", statusCriteria);
 
     var table = $('#file-datatable').DataTable();
+    console.log(table.rows().data().toArray());
     table.draw();
+
 
   });
 
