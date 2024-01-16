@@ -5,7 +5,29 @@
     Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.CustomerViewModel;
-
+<style>
+  .card-widget:first-child:before {
+    content: "\e92a";
+    font-family: feather !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    position: absolute;
+    left: 510px;
+    background: #ff5900;
+    height: 32px;
+    width: 32px;
+    border-radius: 50px;
+    top: -10px;
+    z-index: 1;
+    -webkit-font-smoothing: antialiased;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+    padding-top: 6px;
+}
+</style>
  <!-- CONTAINER -->
 <div class="main-container container-fluid"  style="margin-top:1%; padding-left:0; padding-right:0;">
 
@@ -152,7 +174,7 @@
             @item.Region
         </td>*@
                                         <td style="text-align: center; display: flex; gap: 5px;">
-                                            <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
+                                            @* <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button> *@
                                             <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 @if(item.Status == "Active")

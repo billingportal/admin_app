@@ -140,7 +140,8 @@
     }
 
     .comment-div {
-        padding: 15px;
+            padding-top: 10px;
+    padding-left: 15px;
     }
 
     .comment-user {
@@ -206,10 +207,10 @@
         background: var(--white) 0% 0% no-repeat padding-box;
         background: #FFFFFF 0% 0% no-repeat padding-box;
         border: 1px solid #E9EFF5;
-        border-radius: 4px;
+        border-radius: 10px;
         opacity: 1;
         width: 100%;
-        height: 40px;
+        height: 50px;
         display: flex;
         overflow: hidden
     }
@@ -224,13 +225,13 @@
         }
 
     .comment-write-button {
-        width: 120px;
-        height: 40px;
+        width: 200px;
+        height: 50px;
         background: #F4F8FA 0% 0% no-repeat padding-box;
         border-left: 1px solid #E9EFF5;
         border-radius: 0px 4px 4px 0px;
         opacity: 1;
-        font: normal normal 600 12px/15px Inter;
+        font: normal normal 600 20px/15px Inter;
         letter-spacing: 1.2px;
         color: #FC6719;
         text-transform: uppercase;
@@ -610,7 +611,7 @@
                     </ul>
                 </span>
                 <span>
-                    <button class="open-ticket-button dropdown-toggle" type="button" id="ticketStatusDropDown" data-bs-toggle="dropdown" aria-expanded="false" style="width:200px background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; color: white; margin-left:20px;">
+                    <button class="open-ticket-button dropdown-toggle" type="button" id="ticketStatusDropDown" data-bs-toggle="dropdown" aria-expanded="false" style="width:200px; background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; color: white; margin-left:20px;">
                         @Model.ticket.Status
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="ticketStatusDropDown">
@@ -701,7 +702,7 @@
                 <div class="comment-section-place mt-5">
                     <div class="comment-section-place-wrap">
                         <div class="comment-write-wrap">
-                            <div class="comment-write-input-img">
+                            <div class="comment-profile" style="margin-left:15px;">
                                 <img src="~/assets/images/png/A-Circle.png" />
                             </div>
                             <div class="comment-write">
@@ -713,6 +714,8 @@
                                 <input type="file" id="myFile" name="filename" style="display:none;">
                             </div>
                         </div>
+                            <a style="color:black; margin-left:80px;">Pro tip : Press <span style="background-color: rgb(255, 181, 69); font-weight: bold;">Enter</span> to Comment
+                        </a>
 
 
                         @*<div class="tickets-button-div-wrap">
@@ -885,13 +888,17 @@
     return console.error(err.toString());
   })
 
-  function sendButtonOnClick()
-  {
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        sendButtonOnClick();
+    }
+});
+
+function sendButtonOnClick() {
     var comment = $("#ticketCommentText").val();
-    if(comment == null)
-    {
-      alert('Kindly add comment.')
-      return
+    if (comment === null || comment.trim() === "") {
+        alert('Kindly add comment.');
+        return;
     }
 
     var ticketId = model.ticket.id
