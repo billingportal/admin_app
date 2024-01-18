@@ -832,7 +832,7 @@
     //alert(ticketComment)
     console.log(ticketComment)
     var comment = ticketComment.comment;
-    var createdDate = new Date(ticketComment.createDate).toLocaleDateString();
+    var createdDate = new Date(ticketComment.createDate).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric' });
     var ticketId = ticketComment.ticketId;
     var commentId = ticketComment.commentId;
     var adminId = ticketComment.adminId;
@@ -857,22 +857,20 @@
       commenterName = `<span>${customerName}</span>`
     }
 
-      var newComment = `
-            <div class="comment-user">
-                <div class="comment-profile">
-                    <span>${roundLogo}</span>
-                </div>
-                <div class="comment-detail">
-                    <h4 class="comment-user-name">${commenterName}</h4>
-                    <span class="comment-date">${createdDate}</span>
-                </div>
-            </div>
-            <div class="comment-description">
-                <p class="comment-p">${comment}</p>
-            </div>
-            <div class="hr-spacer">
-            </div>`
-    $("#commentsSection").append(newComment);
+      var newComment = `<div class="comment-user">
+                            <div class="comment-profile">
+                                    <img src="/assets/images/png/A-Circle.png" style="height:100% ;width:100%">
+                            </div>
+                            <div class="comment-detail d-flex">
+                                    <h4 class="comment-user-name">${commenterName}</h4>
+                                <span class="comment-date" style="margin-left:10px">${createdDate}</span>
+                            </div>
+                        </div>
+                        <div class="comment-description">
+                            <p class="comment-p">${comment}</p>
+                        </div>
+                        <div class="hr-spacer"></div>`
+    $("#commentsSection").prepend(newComment);
 
     if(ticketComment.filename != "" && ticketComment.base64String != "" )
     {
@@ -1042,7 +1040,6 @@ function sendButtonOnClick() {
      alert('Kindly add notes.')
      return
    }
-   //console.log(val1,val2)
    var postObject = new Object();
    postObject.ticketId = model.ticket.id;
    postObject.adminId = $("#adminId").val();
@@ -1057,9 +1054,15 @@ function sendButtonOnClick() {
         success: function(response) {
           if(response != null)
           {
-            var ticketNotesRow = `<h4>${response.notes}</h4>
-                                <span>${response.admin.firstName} ${new Date(response.createdDate).toLocaleDateString()}</span>`
-              $("#ticketNote").append(ticketNotesRow);
+            var ticketNotesRow = `<div class="notes-setion" style="height: 70%; background: #FFFFFF 0% 0% no-repeat padding-box; border-radius: 4px; opacity: 1;  padding: 10px; margin-bottom: 10px;" id="ticketNote">
+                                <h4 class="note-heading" style="text-align: left; font: normal normal bold 12px/16px Inter; letter-spacing: 0px; color: #3B444D; opacity: 1;">${response.notes}</h4>
+                                <span class="note-span" style="text-align: left; font: normal normal normal 12px/16px Inter; letter-spacing: 0px;color: #7C8395;opacity: 1;font-size: 15px;">&#64; ${response.admin.firstName} ${new Date(response.createdDate).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' , hour: 'numeric', minute: 'numeric', second: 'numeric' })}</span>
+                                </div>`
+                  
+@*             
+            `<h4>${response.notes}</h4>
+                                <span>${response.admin.firstName} ${new Date(response.createdDate).toLocaleDateString()}</span>` *@
+              $("#ticketNote").prepend(ticketNotesRow);
             $("#notesTextBox").val('');
           }
         },
