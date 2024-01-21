@@ -8,7 +8,8 @@ namespace BillingPortalClient.Controllers
 
 
     protected string baseUrl = "https://billingportalapis.azurewebsites.net/";
-    Uri baseAddress = new Uri( "https://billingportalapis.azurewebsites.net/api/" );
+   // Uri baseAddress = new Uri( "https://billingportalapis.azurewebsites.net/api/" );
+   Uri baseAddress = new Uri( "http://localhost:7069/api/" );
     Uri oracleBaseAddress = new Uri( "http://88.85.242.29/api/" );
 
     protected readonly HttpClient _httpClient;

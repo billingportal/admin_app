@@ -103,7 +103,7 @@
                                         <td hidden name="password">@item.Password</td>                                     
                                         <td><strong name="firstName">@item.FirstName</strong></td>
                                         <td name="email">@item.Email</td>
-                                        <td name="phone">+966 12345678</td>
+                                        <td name="phone">@item.LastName</td>
                                         <td name="designation">@item.Role</td>
                                         @if(@item.Status == "Inactive") {
                                             <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(91deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; " name="status">@item.Status</span></td>
@@ -181,13 +181,13 @@
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Password<span style="color:red; margin-left:2px;">*</span></label><br>
-                                    <input asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
+                                    <input id="modalPassword" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
                                 </div>
                             </div>
 
                             <div class="col-md-12" style="padding-top: 10px; padding-bottom: 10px;">
                                     <label style="font-weight:bold;color:black">Role<span style="color:red; margin-left:2px;">*</span></label>
-                                    <select asp-for="adminUser.Role" id="SelectedRole" class="form-control">
+                                    <select id="SelectedRole" asp-for="adminUser.Role" class="form-control">
                                         <option value="super">Super Admin</option>
                                         <option value="admin">Admin</option>
                                         <option value="regional">Regional User</option>
@@ -202,8 +202,78 @@
                                             <option id="@item.Id" value="@item.Id">@item.Region1</option>
                                             }
                                         </select>
+
+                              <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Invoice: </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="viewInvoiceCheckbox"><input asp-for="adminPermission.ViewInvoice" type="checkbox" />View</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="updateInvoiceCheckbox"><input asp-for="adminPermission.UpdateInvoice" type="checkbox" />Update</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Payment: </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="viewPaymentCheckbox"><input asp-for="adminPermission.ViewPayment" type="checkbox" />View</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="updatePaymentCheckbox"><input asp-for="adminPermission.UpdatePayment" type="checkbox" />Update</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Statement: </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="viewStatementCheckbox"><input asp-for="adminPermission.ViewStatement" type="checkbox" />View</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="updateStatementCheckbox"><input asp-for="adminPermission.UpdateStatement" type="checkbox" />Update</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Ticket: </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="viewTicketCheckbox"><input asp-for="adminPermission.ViewTicket" type="checkbox" />View</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="updateTicketCheckbox"><input asp-for="adminPermission.UpdateTicket" type="checkbox" />Update</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-6">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Customers: </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="viewCustomerCheckbox"><input asp-for="adminPermission.ViewCustomer" type="checkbox" />View</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="updateCustomerCheckbox"><input asp-for="adminPermission.UpdateCustomer" type="checkbox" />Update</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                            </div>
+                        </div>
+
+                      
 
                         <div class="row">
                             <div class="col-md-3"></div>
@@ -253,6 +323,9 @@
      role = role.toLowerCase();
 
     $('#SelectedRole').val(role);
+
+    // Disable the email input field
+    $('#modalEmail').prop('disabled', true);
 
     // Set permissions checkboxes
    var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
