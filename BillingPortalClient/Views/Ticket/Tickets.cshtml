@@ -121,7 +121,7 @@
 
                       <div class="col-md-2 col-sm-12"> </div>
                       
-                      @* <div class="col-md-4 col-sm-12">
+                      <div class="col-md-4 col-sm-12">
                         <div class="row filters-bar">
 
                           <div class="col-md-2 col-sm-2">
@@ -138,29 +138,6 @@
                           <div class="col-md-2 col-sm-2">
                             <div class="btn-export" id="exportButtonsDiv"></div>
                           </div>
-
-                        </div>
-                      </div> *@
-                      <div class="col-md-4 col-sm-12">
-                        <div class="row filters-bar">
-
-                          @* <div class="col-md-2 col-sm-2">
-                            <button class="btn btn-secondary search-btn" type="button" onclick="searchButtonOnClick()"><i class="fa fa-search"></i></button>
-                          </div> *@
-                          <div class="col-md-8 col-sm-8">
-                              <button class="btn btn-primary filtering" id="searchSelectBox" onclick="filtermodal()">Filters</button>
-                              <button class="btn" style="background-color:gray; color:white !important  " id="clearButton">Clear</button>
-
-                  @*<select class="form-select w-100" id="searchSelectBox" onchange="searchSelectOnChange()">
-                                  <option value="">Filter by:</option>
-                                  <option value="instrumentType">Instrument Type</option>
-                                  <option value="issueType">Issue Type</option>
-                                  <option value="createdOn">Created On</option>
-                              </select>*@
-                          </div>
-                          @* <div class="col-md-2 col-sm-2">
-                            <div class="btn-export" id="exportButtonsDiv"></div>
-                          </div> *@
 
                         </div>
                       </div>
@@ -325,116 +302,7 @@ opacity: 1;">
 </div>
 <!-- CONTAINER CLOSED -->
 
-<!--filter modal -->
-<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-        <div class="modal-content">
-
-            <div class="modal-body">
-              <div class="container">
-                  <div class="row">
-                      <h1>Filters</h1>
-                  </div>
-                  <form id="filterForm">
-                      <div class="row mb-3">
-                          <div class="panel" id="datePanel">
-                              <div class="row mb-3">
-                                  <div class="col-md-6">
-                                      <label class="form-label">Min Invoice Date</label>
-                                      <input class="form-control" type="date" id="minDateSelection" />
-                                  </div>
-                                  <div class="col-md-6">
-                                      <label class="form-label">Max Invoice Date</label>
-                                      <input class="form-control" type="date" id="maxDateSelection" />
-                                  </div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-md-6">
-                                      <label class="form-label">Instrument Type</label>
-                                      <select class="form-select" id="instrumenttype">
-                                          <option value="">Instrument Type</option>
-                                          <option value="Invoice">Invoice</option>
-                                          <option value="Receipt">Receipt</option>
-                                          <option value="Statement">Statement</option>
-                                      </select>
-                                  </div>
-                                  <div class="col-md-6">
-                                      <label class="form-label">Issue Type</label>
-                                      <select class="form-select" id="issuetype">
-                                          <option value="">Issue Type</option>
-                                          <option value="Complain">Complain</option>
-                                          <option value="Dispute">Dispute</option>
-                                          <option value="Feedback">Feedback</option>
-                                      </select>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="row">
-                          <div class="col-md-12 text-center">
-                              <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          </div>
-
-
-        </div>
-    </div>
-</div>
-
 <script>
-$(document).ready(function () {
-  
-    var table = $("#file-datatable").DataTable();
-    function applyDateFilter() {
-            var minInvoiceDate = new Date($("#minDateSelection").val());
-            var maxInvoiceDate = new Date($("#maxDateSelection").val());
-            var instrumentType = $("#instrumenttype").val();
-            var issueType = $("#issuetype").val();
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                var data = this.data();
-                console.log(data);
-                var invoiceDate = new Date(data[5]);
-                var DatainstrumentType = data[3];
-                var DataissueType = data[4];
-
-                if ((!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
-                    (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
-                    (instrumentType !== "" && DatainstrumentType !== instrumentType) ||
-                    (issueType !== "" && DataissueType !== issueType)) 
-                    {
-                    $(this.node()).hide();
-                } else {
-                    $(this.node()).show();
-                }
-            });
-        }
-
-        table.on('draw', function () {
-            console.log("DataTable Draw Callback");
-            applyDateFilter();
-        });
-
-        $('#filterForm').submit(function (e) {
-            e.preventDefault();
-            console.log("Form Submitted");
-            $('#testModalCenter2').modal('hide');
-            applyDateFilter();
-        });
-
-        $('.filtering').click(function () {
-            console.log("Filter Modal Function");
-            $("#testModalCenter2").modal('show');
-        });
-
-        $('#clearButton').click(function () {
-            $('#filterForm').find(':input').val('');
-            applyDateFilter();
-        });
-});
 
 
 var statusCriteria = "all";
@@ -457,6 +325,14 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 
 $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
   var trNode = settings.aoData[dataIndex].nTr;
+
+  //var inv = model.disputedInvoices.find(x => x.Id == Number(trNode.getAttribute("data-InvoiceIdAttribute")))
+  //if(inv != null && inv != undefined)
+  //{
+  //  //alert('row found')
+  //  return true;
+  //}
+  //return false;
   if(statusCriteria == "all")
   {
     if($("#searchSelectBox").val() == "")
@@ -482,6 +358,7 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
     {
       var minDate = new Date( $("#minDateSelection").val());
       var maxDate = new Date( $("#maxDateSelection").val());
+      //var ticketDate = trNode.getAttribute("data-CreatedDateAttribute");
       var ticketDateDay = trNode.getAttribute("data-day");
       var ticketDateMonth = trNode.getAttribute("data-month");
       var ticketDateYear = trNode.getAttribute("data-year");
@@ -678,6 +555,6 @@ $(document).on("click", ".statusCriteriaButton", function (event) {
       } 
     }
   }
-  
-</script>
 
+
+</script>
