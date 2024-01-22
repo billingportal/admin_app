@@ -10,6 +10,113 @@
     Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.TicketViewModel
+
+<style>
+body {
+	font-family: sans-serif;
+	background-color: #111;
+}
+
+.button {
+	display: inline-block;
+	margin: 4px 2px;
+	background-color: #444;
+	font-size: 14px;
+	padding-left: 32px;
+	padding-right: 32px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	color: white;
+	text-decoration: none;
+	cursor: pointer;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+
+
+.search-container {
+	position: relative;
+	display: inline-block;
+	margin: 2px 2px 2px 2px;
+	height: 50px;
+	width: 50px;
+	vertical-align: bottom;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+.mglass {
+	display: inline-block;
+	pointer-events: none;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+}
+
+.searchbutton {
+	position: absolute;
+	font-size: 22px;
+	width: 50px;
+	margin: 0;
+	padding: 0;
+    border-radius: 15px; /* Make it a circle by setting border-radius to 50% */
+    overflow: hidden;
+}
+
+.search:focus + .searchbutton {
+	transition-duration: 0.4s;
+	-moz-transition-duration: 0.4s;
+	-webkit-transition-duration: 0.4s;
+	-o-transition-duration: 0.4s;
+	background-color: white;
+	color: black;
+}
+
+.search {
+	position: absolute;
+	left: 49px; /* Button width-1px (Not 50px/100% because that will sometimes show a 1px line between the search box and button) */
+	background-color: white;
+	outline: none;
+	border: none;
+	padding: 0;
+	width: 0;
+	height: 100%;
+	z-index: 10;
+    border-radius: 10px; /* Make it a circle by setting border-radius to 50% */
+    overflow: hidden;
+	transition-duration: 0.4s;
+	-moz-transition-duration: 0.4s;
+	-webkit-transition-duration: 0.4s;
+	-o-transition-duration: 0.4s;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+.search:focus {
+	width: 363px; /* Bar width+1px */
+	padding: 0 16px 0 0;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+.expandright {
+	left: auto;
+    @* border: 2px solid rgb(0, 0, 0);
+	right: 0px; /* Button width-1px */ *@
+      border: 0; /* Set to 0 initially to hide the border */
+    right: 0;
+}
+
+
+.expandright:focus {
+	padding: 0 0 0 16px;
+}
+</style>
  <!-- CONTAINER -->
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">             
 
@@ -119,93 +226,31 @@
                         </div>
                       </div>
 
-                      <div class="col-md-2 col-sm-12"> </div>
-                      
-                      @* <div class="col-md-4 col-sm-12">
-                        <div class="row filters-bar">
-
-                          <div class="col-md-2 col-sm-2">
-                            <button class="btn btn-secondary search-btn" type="button" onclick="searchButtonOnClick()"><i class="fa fa-search"></i></button>
+                       <div class="col-md-6 col-sm-12">
+                          <div class="row filters-bar" style="display: flex; ">
+                              <div class="col-md-2 col-sm-4 search-container">
+                                  <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
+                                  <label class="button searchbutton" for="searchright" style="width:40px;height:40px;  justify-content: center;"><span class="mglass" style="width:40px;height:40px;  justify-content: center;">⚲</span></label>
+                              </div>
+                              <div class="col-md-6 col-sm-8">
+                                  <button class="btn btn-primary filtering" style="height: 40px!important; width: 80px;" id="searchSelectBox" onclick="filtermodal()">Filters</button>
+                                  <button class="btn" style="height: 40px!important; width: 80px; background-color: gray; color: white !important" id="clearButton">Clear</button>
+                                  @* <button class="btn btn-primary filtering" id="searchSelectBox" onclick="filtermodal()">Filters</button>
+                                    <button class="btn" style="background-color:gray; color:white !important  " id="clearButton">Clear</button> *@
+                                  @* <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket">
+                                  <i class="fe fe-file-text"></i> Create Ticket </button> *@
+                                  @* <button class="btn btn-success ticket text-center" style="height: 50px !important; width: 50%; color: white !important;" onclick="addReceiptsForTicket()">Create a ticket</button> *@
+                              </div>
                           </div>
-                          <div class="col-md-8 col-sm-8">
-                            <select class="form-select w-100" id="searchSelectBox" onchange="searchSelectOnChange()">
-                              <option value="">Filter by:</option>
-                              <option value="instrumentType">Instrument Type</option>
-                              <option value="issueType">Issue Type</option>
-                              <option value="createdOn">Created On</option>
-                            </select>
-                          </div>
-                          <div class="col-md-2 col-sm-2">
-                            <div class="btn-export" id="exportButtonsDiv"></div>
-                          </div>
-
-                        </div>
-                      </div> *@
-                      <div class="col-md-4 col-sm-12">
-                        <div class="row filters-bar">
-
-                          @* <div class="col-md-2 col-sm-2">
-                            <button class="btn btn-secondary search-btn" type="button" onclick="searchButtonOnClick()"><i class="fa fa-search"></i></button>
-                          </div> *@
-                          <div class="col-md-8 col-sm-8">
-                              <button class="btn btn-primary filtering" id="searchSelectBox" onclick="filtermodal()">Filters</button>
-                              <button class="btn" style="background-color:gray; color:white !important  " id="clearButton">Clear</button>
-
-                  @*<select class="form-select w-100" id="searchSelectBox" onchange="searchSelectOnChange()">
-                                  <option value="">Filter by:</option>
-                                  <option value="instrumentType">Instrument Type</option>
-                                  <option value="issueType">Issue Type</option>
-                                  <option value="createdOn">Created On</option>
-                              </select>*@
-                          </div>
-                          @* <div class="col-md-2 col-sm-2">
-                            <div class="btn-export" id="exportButtonsDiv"></div>
-                          </div> *@
-
-                        </div>
+                       </div>
+                              
+                          
                       </div>
 
-                    </div>
                 </div>
+            </div>
 
                 <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
-                  @* <div class="row mb-2">
-                    <div class="panel" id="issuePanel">
-                      <div class="row">
-                        <div class="col-md-9">
-
-                        </div>
-
-                        <div class="col-md-3">
-                          <input type="text" class="form-control" id="issueTypeSelection" onkeyup="issueTypeSelectionOnChange()" placeholder="Search Issue Type" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="panel" id="datePanel">
-                      <div class="row">
-                        <div class="col-md-6">
-
-                        </div>
-
-                        <div class="col-md-3">
-                          <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
-                        </div>
-                        <div class="col-md-3">
-                            <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="panel" id="instrumentPanel">
-                      <div class="row">
-                        <div class="col-md-9">
-
-                        </div>
-                        <div class="col-md-3">
-                          <input type="text" class="form-control" id="instrumentTypeSelection" onkeyup="instrumentTypeSelectionOnChange()" placeholder="Search Instrument Type" />
-                      </div>
-                      </div>
-                    </div>
-                  </div> *@
                     <div class="table-responsive">
                         <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
                             <thead>
@@ -225,22 +270,12 @@
                               @foreach(var item in Model.tickets)
                                 {
                                   <tr data-StatusAttribute="@item.Status" data-InstrumentTypeAttribute="@item.InstumentType" data-IssueTypeAttribute="@item.IssueType" data-CreatedDateAttribute="@item.TicketDate.Value.ToShortDateString()" data-day="@item.TicketDate.Value.Day" data-month="@item.TicketDate.Value.Month" data-year="@item.TicketDate.Value.Year">
-                                    <td  style="color: var(--primary-purple);
-text-align: left;
-font: normal normal 600 14px/12px Inter;
-letter-spacing: 0px;
-color: #3F058F;
-opacity: 1;">#@item.Id</td>
+                                    <td  style="color: var(--primary-purple); text-align: left; font: normal normal 600 14px/12px Inter; letter-spacing: 0px; color: #3F058F; opacity: 1;">#@item.Id</td>
                                     <td>@item.Account.AccountNumber</td>
                                     <td>@item.Account.AccountName</td>
                                     @* <td>@item.Account.Customer.Region</td> *@
 
-                                    <td style="color: var(--black);
-text-align: left;
-font: normal normal bold 14px/16px Inter;
-letter-spacing: 0px;
-color: #191616;
-opacity: 1;">@item.InstumentType</td>
+                                    <td style="color: var(--black); text-align: left; font: normal normal bold 14px/16px Inter; letter-spacing: 0px; color: #191616; opacity: 1;">@item.InstumentType</td>
                                     <td>@item.IssueType</td>
                                     @* <td>@item.Description</td> *@
                                     @*<td>@item.TicketDate.Value.Year-@item.TicketDate.Value.Month-@item.TicketDate.Value</td>*@
@@ -249,14 +284,7 @@ opacity: 1;">@item.InstumentType</td>
                                     <td>@item.TicketDate.Value.ToString("dd MMM, yyyy")</td>
                                     @if(item.Status == "Closed")
                                     {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="top: 713px;
-left: 1114px;
-width: 110px;
-height: 24px;
-/* UI Properties */
-background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box;
-border-radius: 6px;
-opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
+                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="top: 713px; left: 1114px; width: 110px; height: 24px; /* UI Properties */ background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
                                     }
                                     else if(item.Status == "Open")
                                     {
@@ -433,6 +461,9 @@ $(document).ready(function () {
         $('#clearButton').click(function () {
             $('#filterForm').find(':input').val('');
             applyDateFilter();
+        });
+         $('#searchright').on('keyup', function () {
+                table.search(this.value).draw();
         });
 });
 
