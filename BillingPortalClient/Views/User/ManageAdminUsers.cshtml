@@ -197,7 +197,7 @@
                                             @item.CreatedDate.Value.ToString("dd MMMM, yyyy")
                                         </td>*@
                                     <td style="text-align: center; display: flex; gap: 5px;">
-                                        <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
+                                        <button type="button" class="btn-pen" onclick="openeditUsersModal()"><i class="fe fe-edit-2"></i></button>
                                         @*<button type="button" class="btn-dots userPermissionsButton"><i class="fe fe-more-horizontal"></i></button>*@
                                         <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
 
@@ -241,6 +241,94 @@
 
 </div>
 <!-- CONTAINER CLOSED -->
+
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="container">
+                    <h1>Edit User</h1>
+                    <h5>Enter the details below to Update a user.</h5>
+                    <form asp-controller="User" asp-action="SaveAdmin" method="post">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Full Name<span style="color:red; margin-left:2px">*</span></label>
+                                    <input asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User First Name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Contact Number<span style="color:red; margin-left:2px">*</span></label>
+                                    <input asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Last Name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px;">*</span></label>
+                                    <input asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Password<span style="color:red; margin-left:2px;">*</span></label><br>
+                                    <input asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12" style="padding-top: 10px; padding-bottom: 10px;">
+                            <div class="col-md-12">
+                                <label style="font-weight:bold;color:black">Role<span style="color:red; margin-left:2px;">*</span></label>
+                                <select name="SelectedRegion" class="form-control">
+                                    <option value="super">Super Admin</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="regional">Regional User</option>
+                                    <option value="user">User</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                         <div class="col-md-12">
+
+                            <div class="row mb-6">
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Regions: </label>
+                                    <select asp-for="selectedRegions" required id="regionFormAddUser" multiple class="form-select">
+                                        @foreach(var item in Model.regions)
+                    {
+                                        <option value="@item.Id">@item.Region1</option>
+                    }
+                                    </select>
+
+                                </div>
+                            </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary" style="width:100% !important;">Submit</button>
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
@@ -301,99 +389,20 @@
 
 
                         <div class="row">
-        <div class="col-md-12">
+                         <div class="col-md-12">
 
-                        <div class="row mb-6">
-                      <div class="col-md-12">
-                          <label style="font-weight:bold;color:black">Regions: </label>
-                          <select asp-for="selectedRegions" required id="regionFormAddUser" multiple class="form-select">
-                              @foreach(var item in Model.regions)
-        {
-                              <option value="@item.Id">@item.Region1</option>
-        }
-                          </select>
+                            <div class="row mb-6">
+                                <div class="col-md-12">
+                                    <label style="font-weight:bold;color:black">Regions: </label>
+                                    <select asp-for="selectedRegions" required id="regionFormAddUser" multiple class="form-select">
+                                        @foreach(var item in Model.regions)
+                    {
+                                        <option value="@item.Id">@item.Region1</option>
+                    }
+                                    </select>
 
-                      </div>
-                  </div>
-
-                        @*<div class="row mb-6">
-            <div class="col-md-12">
-                <label style="font-weight:bold;color:black">Invoice: </label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="viewInvoiceCheckbox"><input asp-for="adminPermission.ViewInvoice" type="checkbox" />View</label>
-
-                    </div>
-                    <div class="col-md-6">
-                        <label for="updateInvoiceCheckbox"><input asp-for="adminPermission.UpdateInvoice" type="checkbox" />Update</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="row mb-6">
-            <div class="col-md-12">
-                <label style="font-weight:bold;color:black">Payment: </label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="viewPaymentCheckbox"><input asp-for="adminPermission.ViewPayment" type="checkbox" />View</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="updatePaymentCheckbox"><input asp-for="adminPermission.UpdatePayment" type="checkbox" />Update</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="row mb-6">
-            <div class="col-md-12">
-                <label style="font-weight:bold;color:black">Statement: </label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="viewStatementCheckbox"><input asp-for="adminPermission.ViewStatement" type="checkbox" />View</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="updateStatementCheckbox"><input asp-for="adminPermission.UpdateStatement" type="checkbox" />Update</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="row mb-6">
-            <div class="col-md-12">
-                <label style="font-weight:bold;color:black">Ticket: </label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="viewTicketCheckbox"><input asp-for="adminPermission.ViewTicket" type="checkbox" />View</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="updateTicketCheckbox"><input asp-for="adminPermission.UpdateTicket" type="checkbox" />Update</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="row mb-6">
-            <div class="col-md-12">
-                <label style="font-weight:bold;color:black">Customers: </label>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="viewCustomerCheckbox"><input asp-for="adminPermission.ViewCustomer" type="checkbox" />View</label>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="updateCustomerCheckbox"><input asp-for="adminPermission.UpdateCustomer" type="checkbox" />Update</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>*@
-
-                        @*</div>
-
-        </div>*@
-
-
-
+                                </div>
+                            </div>
                         <div class="row">
                             <div class="col-md-3">
                             </div>
@@ -412,170 +421,7 @@
 
 
 
-<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="container">
-                    <h1>Create User</h1>
-                    <h5>Enter the details below to create a user.</h5>
-                    <form asp-controller="User" asp-action="AddAdminUser" method="post">
-                        @*<input asp-for="customerUserDTO.accountName" hidden value="@Model.customerUserDTO.accountName" />
-                            <input asp-for="customerUserDTO.accountNumber" hidden value="@Model.customerUserDTO.accountNumber" />*@
-                        <input asp-for="adminUser.Id" hidden id="adminUserId" />
 
-                        @*<div class="row mb-3">
-                              <div class="col-md-12 d-flex">
-                                <label style="font-weight:bold;color:black">Active<span style="color:red; margin-left:2px"></span></label>
-                                <input id="userStatusCheckbox" asp-for="customerUserDTO.isActive" class="col-2" type="checkbox">
-                              </div>
-                            </div>*@
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label style="font-weight:bold;color:black">First Name<span style="color:red; margin-left:2px">*</span></label>
-                                        <input id="userFirstNameText" asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User First Name">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label style="font-weight:bold;color:black">Last Name<span style="color:red; margin-left:2px">*</span></label>
-                                        <input id="userLastNameText" asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Last Name">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px;">*</span></label>
-                                        <input id="userEmailText" asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
-                                    </div>
-                                </div>
-                                @*<div class="row mb-3">
-                                        <div class="col-md-12">
-                                            <label  style="font-weight:bold;color:black">Status<span style="color:red; margin-left:2px;">*</span></label>
-                                          <input id="userStatusText" asp-for="adminUser.Status" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Status">
-
-                                        </div>
-                                    </div>*@
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label style="font-weight:bold;color:black">Password<span style="color:red; margin-left:2px;">*</span></label><br>
-                                        <input id="userPasswordText" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <label style="font-weight:bold;color:black">Roles: </label>
-                                        <select asp-for="selectedRegions" required id="adminUserViewModalViewModel_regions" multiple class="form-select">
-                                            @foreach(var item in Model.regions)
-                      {
-                                            <option value="@item.Id">@item.Region1</option>
-                      }
-                                        </select>
-
-                                    </div>
-                                </div>
-
-                                <!-- <div class="row mb-3">
-                                  <div class="col-md-12">
-                                    <label style="font-weight:bold;color:black">Invoice: </label>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label for="viewInvoiceCheckbox"><input asp-for="adminPermission.ViewInvoice" id="viewInvoiceCheckbox" type="checkbox" />View</label>
-
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label for="updateInvoiceCheckbox" ><input asp-for="adminPermission.UpdateInvoice" id="updateInvoiceCheckbox" type="checkbox" />Update</label>
-                                      </div>
-                                    </div>
-
-                                  </div>
-                                </div>
-                                <div class="row mb-3">
-                                  <div class="col-md-12">
-                                    <label style="font-weight:bold;color:black">Payment: </label>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label for="viewPaymentCheckbox"><input asp-for="adminPermission.ViewPayment" id="viewPaymentCheckbox" type="checkbox" />View</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label for="updatePaymentCheckbox"><input asp-for="adminPermission.UpdatePayment" id="updatePaymentCheckbox" type="checkbox"/>Update</label>
-                                      </div>
-                                    </div>
-
-                                  </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                    <label style="font-weight:bold;color:black">Statement: </label>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label for="viewStatementCheckbox"><input asp-for="adminPermission.ViewStatement" id="viewStatementCheckbox" type="checkbox" />View</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label for="updateStatementCheckbox"><input asp-for="adminPermission.UpdateStatement" id="updateStatementCheckbox" type="checkbox" />Update</label>
-                                      </div>
-                                    </div>
-
-                                  </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                    <label style="font-weight:bold;color:black">Ticket: </label>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label for="viewTicketCheckbox"><input asp-for="adminPermission.ViewTicket" id="viewTicketCheckbox" type="checkbox" />View</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label for="updateTicketCheckbox"><input asp-for="adminPermission.UpdateTicket" id="updateTicketCheckbox" type="checkbox" />Update</label>
-                                      </div>
-                                    </div>
-
-                                  </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                    <label style="font-weight:bold;color:black">Customers: </label>
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <label for="viewCustomerCheckbox"><input asp-for="adminPermission.ViewCustomer" id="viewCustomerCheckbox" type="checkbox" />View</label>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label for="updateCustomerCheckbox"><input asp-for="adminPermission.UpdateCustomer" id="updateCustomerCheckbox" type="checkbox" />Update</label>
-                                      </div>
-                                    </div>
-
-                                  </div>
-                                </div> -->
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="row">
-                            <div class="col-md-3">
-                            </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary" style="width:100% !important;">Update</button>
-                            </div>
-                            <div class="col-md-3">
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <script>
@@ -597,6 +443,13 @@
     $("#testModalCenter1").modal('show');
 
   }
+
+
+    function openeditUsersModal()
+    {
+        $("#testModalCenter2").modal('show');
+
+    }
 
   $(document).ready(function () {
 
