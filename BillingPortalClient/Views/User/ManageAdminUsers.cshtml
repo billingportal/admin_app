@@ -11,51 +11,7 @@
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
 
 
-    <!-- ROW-1 -->
-    @*<div class="row widget-row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
-                <div class="row">
-                    <div class="card-widget">
-                        <div class="card overflow-hidden">
-                            <div class="card-body c1">
-                              <a href="@Url.Action("ManageAdminUsers","User")" style="color:white">
-                                <div class="d-flex">
-                                    <div class="">
-                                  <img src="../assets/images/dashboard/coins-icon-purple.png" />
-                                        <h6 class="text title">Manage <br />Users</h6>
-                                    </div>
-
-                                </div>
-                                <span class="text-muted fs-12">
-                                    Manage User
-                                  </span>
-                              </a>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-widget">
-                        <div class="card overflow-hidden">
-                            <div class="card-body c2">
-                                <a href="@Url.Action("Index","Customer")" style="color:white">
-
-                                <div class="d-flex">
-                                    <div class="">
-                                    <img src="../assets/images/dashboard/clock-icon-blue.png" />
-                                        <h6 class="text title">Manage <br />Customers</h6>
-                                    </div>
-
-                                </div>
-                                <span class="text-muted fs-12">
-                                  Manage Customer
-                                    </span>
-                              </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+   
     <!-- ROW-1 END -->
     <!-- ROW-1 -->
     <div class="row widget-row">
@@ -240,17 +196,18 @@
 
 
 </div>
-<!-- CONTAINER CLOSED -->
 
-<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+<!-- CONTAINER CLOSED -->
+<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <h1>Edit User</h1>
-                    <h5>Enter the details below to Update a user.</h5>
-                    <form asp-controller="User" asp-action="SaveAdmin" method="post">
-
+                    <h2 class="text-center" style="color:black;">Create User</h2>
+                    <p class="text-center" style="color:black">Enter the details below to create a user.</p>
+                    <form asp-controller="User" asp-action="AddAdminUser" method="post">
+                        @*<input hidden />
+        <input hidden  />*@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-12">
@@ -329,17 +286,15 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+<div class="modal fade" id="testModalCenter2" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle2" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <h2 class="text-center" style="color:black;">Create User</h2>
-                    <p class="text-center" style="color:black">Enter the details below to create a user.</p>
-                    <form asp-controller="User" asp-action="AddAdminUser" method="post">
-                        @*<input hidden />
-        <input hidden  />*@
+                    <h1>Edit User</h1>
+                    <h5>Enter the details below to Update a user.</h5>
+                    <form asp-controller="User" asp-action="SaveAdmin" method="post">
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-12">
@@ -441,15 +396,17 @@
   function openUsersModal()
   {
     $("#testModalCenter1").modal('show');
+    $(this).css('z-index', 2000);
 
   }
 
 
-    function openeditUsersModal()
+    @* function openeditUsersModal()
     {
         $("#testModalCenter2").modal('show');
+         $(this).css('z-index', 1000);
 
-    }
+    } *@
 
   $(document).ready(function () {
 
