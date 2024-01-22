@@ -8214,6 +8214,8 @@ namespace BillingSystem.Service
 
     [System.Text.Json.Serialization.JsonPropertyName( "email" )]
     public string Email { get; set; }
+     [System.Text.Json.Serialization.JsonPropertyName( "role" )]
+    public string Role { get; set; }
 
     [System.Text.Json.Serialization.JsonPropertyName( "status" )]
     public string Status { get; set; }

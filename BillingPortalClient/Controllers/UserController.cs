@@ -120,24 +120,11 @@ namespace BillingPortalClient.Controllers
       adminUserDTO.LastName = adminUserViewModel.adminUser.LastName;
       adminUserDTO.Email = adminUserViewModel.adminUser.Email;
       adminUserDTO.Password = adminUserViewModel.adminUser.Password;
+      adminUserDTO.Role = adminUserViewModel.adminUser.Role;
       adminUserDTO.Status = adminUserViewModel.adminUser.Status != null ? adminUserViewModel.adminUser.Status : "";
-            //////////////////
-     //adminUserDTO.SelectedRegion = adminUserViewModel.SelectedRegion;
-            //////////////////
-            adminUserDTO.AdminId = adminUserDTO.Id;
-            //adminUserDTO.ViewCustomer = adminUserViewModel.adminPermission.ViewCustomer;
-            //adminUserDTO.ViewInvoice = adminUserViewModel.adminPermission.ViewInvoice;
-            //adminUserDTO.ViewPayment = adminUserViewModel.adminPermission.ViewPayment;
-            //adminUserDTO.ViewStatement = adminUserViewModel.adminPermission.ViewStatement;
-            //adminUserDTO.ViewTicket = adminUserViewModel.adminPermission.ViewTicket;
-            //adminUserDTO.UpdateInvoice = adminUserViewModel.adminPermission.UpdateInvoice;
-            //adminUserDTO.UpdatePayment = adminUserViewModel.adminPermission.UpdatePayment;
-            //adminUserDTO.UpdateStatement = adminUserViewModel.adminPermission.UpdateStatement;
-            //adminUserDTO.UpdateCustomer = adminUserViewModel.adminPermission.UpdateCustomer;
 
-           // adminUserDTO.SelectedRegions = adminUserViewModel.selectedRegions;
-            ////////////////////////
-            ///////////////////////////
+            adminUserDTO.AdminId = adminUserDTO.Id;
+
             adminUserDTO.ViewCustomer = true; // Set default value
             adminUserDTO.ViewInvoice = true; // Set default value
             adminUserDTO.ViewPayment = true; // Set default value
