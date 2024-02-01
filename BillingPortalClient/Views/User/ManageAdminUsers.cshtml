@@ -64,15 +64,28 @@
                         <h5 class="card-title">Manage Users</h5>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="row">
-                        </div>
-                    </div>
 
-                    <div class="col-md-2" style="text-align:end;">
-                        <button type="button" onclick="openUsersModal()" class="btn btn-success ticket">
+                    <div class="col-md-6 col-sm-12">
+                        <div class="row">
+                            <div class="col-md-5 search-container right">
+                                
+                            </div>
+                            <div class="col-md-1 search-container right">
+                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
+                                <label class="button searchbutton" for="searchright" style="position:relative!important; width:40px;height:40px; justify-content: center; background-color: #f6f5fa; color: #212529; border: 1px solid #e9edf4;"><span class="mglass" style="height:40px;  justify-content: center;"><i class="fa fa-search"></i></span></label>
+                                
+                            </div>
+                            <div class="col-md-5 right" style="text-align:right;">
+                                <button class="btn btn-primary filtering" style="height: 40px!important;background-color: #f6f5fa !important; color: #212529 !important; border: 1px solid #e9edf4;" id="searchSelectBox" onclick="filtermodal()">Filters</button>
+                                 <button type="button" onclick="openUsersModal()" class="btn btn-success ticket">
                             <i class="fe fe-file-text"></i> Add New User
                         </button>
+                                @* <button class="btn btn-success ticket text-center" style="height: 50px !important; width: 50%; color: white !important;" onclick="addReceiptsForTicket()">Create a ticket</button> *@
+                            </div>
+                        </div>
+                    </div>
+                 
+                       
 
                     </div>
                 </div>
@@ -316,6 +329,12 @@
 
   }
 
+  function searchButtonOnClick()
+{
+  var table = $('#file-datatable').DataTable();
+  table.draw();
+}
+
   function openUsersModal2(adminId, firstName, email, phone, password, mystatus, role) {
 
     console.log("Values I am getting:", adminId, firstName, email, phone, password, mystatus, role);
@@ -427,25 +446,65 @@
 
     $("#adminUserViewModalViewModel_regions").select2({
       width: '100%',
-      //pointer-events:none,
-      //tags: tags1,
-      //templateResult:null,
       tags:true,
-      //tokenSeparators: [',', ' '],
-      //disabled: true
-      //readonly: true
     })
 
     $("#regionFormAddUser").select2({
       width: '100%',
-      //pointer-events:none,
-      //tags: tags1,
-      //templateResult:null,
       tags:true,
-      //tokenSeparators: [',', ' '],
-      //disabled: true
-      //readonly: true
     })
+
+
+
+
+
+var table = $("#file-datatable").DataTable();
+    function applyDateFilter() {
+
+            var statusType = $("#statustype").val();
+            var userType = $("#usertype").val();
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                var data = this.data();
+                console.log(data);
+                var DatastatusType = data[3];
+                var DatauserType = data[4];
+
+                if ((statusType !== "" && DatastatusType !== statusType) ||
+                    (userType !== "" && DatauserType !== userType)) 
+                    {
+                    $(this.node()).hide();
+                } else {
+                    $(this.node()).show();
+                }
+            });
+        }
+
+        table.on('draw', function () {
+            console.log("DataTable Draw Callback");
+            applyDateFilter();
+        });
+
+        $('#filterForm').submit(function (e) {
+            e.preventDefault();
+            console.log("Form Submitted");
+            $('#testModalCenter2').modal('hide');
+            applyDateFilter();
+        });
+
+        $('.filtering').click(function () {
+            console.log("Filter Modal Function");
+            $("#testModalCenter2").modal('show');
+        });
+
+        $('#clearButton').click(function () {
+            $('#filterForm').find(':input').val('');
+            applyDateFilter();
+        });
+        $('#searchright').on('keyup', function () {
+                table.search(this.value).draw();
+        });
+
 
     
   });
@@ -472,7 +531,16 @@
     $("#adminPermissionsModal").modal('show');
   }
 
-
-
-
+    function toggleSearch() {
+        var searchContainer = document.querySelector('.search-container');
+        var searchInput = document.querySelector('.search');
+        
+        // Toggle the 'expanded' class
+        searchContainer.classList.toggle('expanded');
+        
+        // If expanded, focus on the search input
+        if (searchContainer.classList.contains('expanded')) {
+            searchInput.focus();
+        }
+    }
 </script>

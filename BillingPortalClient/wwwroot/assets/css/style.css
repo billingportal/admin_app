@@ -218,6 +218,78 @@ html {
 @-ms-viewport {
     width: device-width;
 }
+.search-container {
+	position: relative;
+	display: inline-block;
+	margin: 2px 2px 2px 2px;
+	height: 50px;
+	width: 50px;
+	vertical-align: bottom;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+.searchbutton {
+	position: absolute;
+	font-size: 22px;
+	width: 50px;
+	margin: 0;
+	padding: 0;
+    border-radius: 15px; /* Make it a circle by setting border-radius to 50% */
+    overflow: hidden;
+}
+
+.search:focus + .searchbutton {
+	transition-duration: 0.4s;
+	-moz-transition-duration: 0.4s;
+	-webkit-transition-duration: 0.4s;
+	-o-transition-duration: 0.4s;
+	background-color: white;
+	color: black;
+}
+
+.search {
+	position: absolute;
+	left: 49px; /* Button width-1px (Not 50px/100% because that will sometimes show a 1px line between the search box and button) */
+	background-color: white;
+	outline: none;
+	border: none;
+	padding: 0;
+	width: 0;
+	height: 100%;
+	z-index: 10;
+    border-radius: 10px; /* Make it a circle by setting border-radius to 50% */
+    overflow: hidden;
+	transition-duration: 0.4s;
+	-moz-transition-duration: 0.4s;
+	-webkit-transition-duration: 0.4s;
+	-o-transition-duration: 0.4s;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+.search:focus {
+	width: 200px; /* Bar width+1px */
+	padding: 0 16px 0 0;
+    border: 2px solid rgb(0, 0, 0);
+}
+
+.expandright {
+	left: auto;
+    @* border: 2px solid rgb(0, 0, 0);
+	right: 0px; /* Button width-1px */ *@
+      border: 0; /* Set to 0 initially to hide the border */
+    right: 10px;
+}
+
+
+.expandright:focus {
+	padding: 0 0 0 16px;
+}
+
+.mglass .fa-search:before {
+    font-size: 16px;
+    padding: 10px;
+}
 
 .horizontal-logo {
     display: none;
