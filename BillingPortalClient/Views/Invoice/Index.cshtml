@@ -379,9 +379,8 @@
         displaySelectedFilters();
         event.preventDefault();
         if (table) {
-          table.ajax.reload(null, false);
-           // table.rows().invalidate().draw();
-           // table.page('first').draw('page');
+           table.rows().invalidate().draw();
+           table.page('first').draw('page');
         } else {
             console.log("Table is not defined");
         }
