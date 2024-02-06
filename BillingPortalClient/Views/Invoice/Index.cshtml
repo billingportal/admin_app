@@ -129,28 +129,26 @@
                     </div>
 
                   </div>
+
+                  <div class="row" style="width:100%">
+                    <div class="row" style="width:100%">
+                        <div id="filters-div" class="d-flex justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            
+                                    <div id="filterSelections"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                  </div>
+
                 </div>
 
                 <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
                   
-                  <div class="row mb-2">
-
-                    <div class="panel" id="datePanel">
-                      <div class="row">
-                        <div class="col-md-6">
-
-                        </div>
-
-                        <div class="col-md-3">
-                          <input class="form-control" type="date" id="minDateSelection" />
-                        </div>
-                        <div class="col-md-3">
-                            <input class="form-control" type="date" id="maxDateSelection" />
-                        </div>
-                      </div>
-                    </div>
-                    
-                  </div>
 
                     <div class="table-responsive">
 
@@ -306,7 +304,13 @@
 </div>
 
 <script>
-  let selectedRows = [];
+ // let selectedRows = [];
+  let selectedFilters = [];
+
+  var filterData = {
+    name: getFilterName(),
+    value: getFilterValue()
+};
 
   var model = @Html.Raw(JsonSerializer.Serialize(Model));
   console.log({model})
@@ -316,76 +320,256 @@
   $("#minDueDateSelection").val("");
   $("#maxDueDateSelection").val("");
 
+
   var statusCriteria = "all";
   var isDisputedInvoices = false;
 
   $(document).ready(function(){
     console.log('*******************************************');
-
+  
   });
 
-   var table = $("#file-datatable").DataTable({
+   if (!$.fn.DataTable.isDataTable('#file-datatable')) {
+        table = $("#file-datatable").DataTable({
       // ... (your existing DataTable configuration)
-      drawCallback: function () {
-        var minInvoiceDate = new Date($("#minDateSelection").val());
-        var maxInvoiceDate = new Date($("#maxDateSelection").val());
-        var minDueDate = new Date($("#minDueDateSelection").val());
-        var maxDueDate = new Date($("#maxDueDateSelection").val());
-        var invoiceNumberFilter = $("#invoiceNumberSelection").val().toLowerCase();
-        var isDisputedInvoices = $("#isDisputedInvoicesCheckbox").prop("checked");
+        drawCallback: function () {
+          var minInvoiceDate = new Date($("#minDateSelection").val());
+          var maxInvoiceDate = new Date($("#maxDateSelection").val());
+          var minDueDate = new Date($("#minDueDateSelection").val());
+          var maxDueDate = new Date($("#maxDueDateSelection").val());
+          var invoiceNumberFilter = $("#invoiceNumberSelection").val().toLowerCase();
+          var isDisputedInvoices = $("#isDisputedInvoicesCheckbox").prop("checked");
 
-        this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
-          var data = this.data();
-          var invoiceNumber = data[1].toLowerCase(); // Assuming the "Invoice No." column is the second column (index 1)
-          var invoiceDate = new Date(data[2]); // Assuming the "Invoice Date" column is the third column (index 2)
-          var dueDate = new Date(data[3]); // Assuming the "Due Date" column is the fourth column (index 3)
-          var inv = model.disputedInvoices.find((x) => x.Id === Number($(this.node()).data("invoiceidattribute")));
+            this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
+              var data = this.data();
+              var invoiceNumber = data[1].toLowerCase(); // Assuming the "Invoice No." column is the second column (index 1)
+              var invoiceDate = new Date(data[2]); // Assuming the "Invoice Date" column is the third column (index 2)
+              var dueDate = new Date(data[3]); // Assuming the "Due Date" column is the fourth column (index 3)
+              var inv = model.disputedInvoices.find((x) => x.Id === Number($(this.node()).data("invoiceidattribute")));
 
-          if (
-            (!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
-            (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
-            (!isNaN(minDueDate) && dueDate < minDueDate) ||
-            (!isNaN(maxDueDate) && dueDate > maxDueDate) ||
-            (invoiceNumber !== '' && !invoiceNumber.includes(invoiceNumberFilter)) ||
-            (isDisputedInvoices && inv === undefined)
-          ) {
-             $(this.node()).css("display", "none");
-            } else {
-             $(this.node()).css("display", "");
-            }
+              if (
+                (!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
+                (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
+                (!isNaN(minDueDate) && dueDate < minDueDate) ||
+                (!isNaN(maxDueDate) && dueDate > maxDueDate) ||
+                (invoiceNumber !== '' && !invoiceNumber.includes(invoiceNumberFilter)) ||
+                (isDisputedInvoices && inv === undefined)
+              ) {
+                  $(this.node()).css("display", "none");
+                } else {
+                  $(this.node()).css("display", "");
+                }
+              });
+            },
         });
-      },
-    });
+    }
+
 
   $("#minDateSelection, #maxDateSelection, #minDueDateSelection, #maxDueDateSelection").on("change", function () {
-      console.log("date change",  $("#minDateSelection").val);
-      table.rows().invalidate().draw();// Redraw the DataTable on date range change
-    });
-
-    // Event listener for the "Apply Filter" button in the modal
-  $("#filterForm").on("submit", function (event) {
-      console.log("submit click");
-      event.preventDefault(); 
-      table.rows().invalidate().draw();// Redraw the DataTable when the filter is applied
-      $("#testModalCenter2").modal("hide"); // Hide the modal after applying the filter
-    });
-
-    // Event listener for the "Invoice Number" input
-  $("#invoiceNumberSelection").on("keyup", function () {
-      console.log("invoice number change");
-      table.rows().invalidate().draw();// Redraw the DataTable on invoice number change
+        if (table) {
+            table.rows().invalidate().draw();
+            table.page('first').draw('page');
+        } else {
+            console.log("Table is not defined");
+        }
   });
 
-function filtermodal(){
+  $("#filterForm").on("submit", function (event) {
+        $("#filters-div").show();
+        displaySelectedFilters();
+        event.preventDefault();
+        if (table) {
+          table.ajax.reload(null, false);
+           // table.rows().invalidate().draw();
+           // table.page('first').draw('page');
+        } else {
+            console.log("Table is not defined");
+        }
+        $("#testModalCenter2").modal("hide");
+  });
+
+  $("#invoiceNumberSelection").on("keyup", function () {
+        if (table) {
+            table.rows().invalidate().draw();
+            table.page('first').draw('page');
+        } else {
+            console.log("Table is not defined");
+        }
+  });
+
+$("#clearAllFilters").on("click", function (e) {
+    // Clear the form first
+    $("#testModalCenter2 #filterForm")[0].reset();
+    // Then clear selectedFilters
+    selectedFilters = [];
+    // Finally, display selected filters and redraw the DataTable
+    displaySelectedFilters();
+    
+        table.draw(); // Clear DataTable
+ table.page('first').draw('page');
+    e.preventDefault();
+});
+
+ function filtermodal() {
+    // Show the filter modal (replace with your actual modal code)
     $("#testModalCenter2").modal('show');
+    
+  }  
+
+  // Function to determine the label based on the selected filters
+function getFilterName() {
+    // Check the selected filter criteria and set the label accordingly
+    if ($("#minDateSelection").val() || $("#maxDateSelection").val()) {
+        return "Invoice Date";
+    } else if ($("#minDueDateSelection").val() || $("#maxDueDateSelection").val()) {
+        return "Invoice Due Date";
+    } else if ($("#invoiceNumberSelection").val()) {
+        return "Invoice Number";
+    }
+    // Return an empty string if no specific filter is applied
+    return "";
 }
-<<<<<<< HEAD
-if (table!=undefined && table!=null)
-{
+
+function getFilterValue(filterName) {
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var minDueDate = $("#minDueDateSelection").val();
+    var maxDueDate = $("#maxDueDateSelection").val();
+    var invoiceNumber = $("#invoiceNumberSelection").val();
+
+    // Construct the filter value based on the selected filter name
+    switch (filterName) {
+        case "Invoice Date":
+            return minDate && maxDate ? `Min Date: ${minDate} - Max Date: ${maxDate}` : null;
+        case "Invoice Due Date":
+            return minDueDate && maxDueDate ? `Min Due Date: ${minDueDate} - Max Due Date: ${maxDueDate}` : null;
+        case "Invoice Number":
+            return invoiceNumber ? invoiceNumber : null;
+        default:
+            return null;
+    }
+}
+
+function displaySelectedFilters() {
+    var filterSelections = $("#filterSelections");
+    var filterLabel = $("#filterLabel");
+
+    // Clear previous filter selections
+    filterSelections.empty();
+
+    // Get values from the modal input fields
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var minDueDate = $("#minDueDateSelection").val();
+    var maxDueDate = $("#maxDueDateSelection").val();
+    var invoiceNumber = $("#invoiceNumberSelection").val();
+
+    // Check if at least one filter value is provided
+    if (minDate || maxDate || minDueDate || maxDueDate || invoiceNumber) {
+        filterLabel.show();
+
+        // Create a div for each selected filter
+        var filterNames = ["Invoice Date", "Invoice Due Date", "Invoice Number"];
+
+        filterNames.forEach(function (filterName) {
+            var filterValue = getFilterValue(filterName);
+
+            if (filterValue) {
+                var filterDiv = $("<div>", {
+                    class: "filter-selection",
+                });
+
+                // Create a label for filter name only if filter value is not null or empty
+                var filterNameLabel = $("<label>", {
+                    class: "filter-label",
+                    text: filterName + ": ",
+                });
+
+                // Create a span for filter value
+                var filterValueSpan = $("<span>", {
+                    class: "filter-value",
+                    text: filterValue,
+                });
+
+               // Create a cross icon to remove the filter
+               // Create a cross icon to remove the filter
+                var crossIcon = $("<i>", {
+                    class: "fa fa-times cross-icon",
+                }).on("click", function () {
+                   console.log("Clicked on cross icon");
+                    // Remove the filter div
+                    filterDiv.remove();
+                   
+
+                   // Get the filter name from the parent filter selection
+                   //var clickedFilterName = $(this).prev('.filter-value').prev('.filter-label').text().trim();
+                   var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                   console.log("Clicked on cross icon for filter:", clickedFilterName);
+
+                   // Remove the filter div
+                   let currentbox = $(this).closest('.filter-selection');
+                    console.log("Clicked on cross icon for cfilter name:", currentbox);
+                   currentbox.remove();
+
+                  
+
+                   console.log("Clicked on cross icon for cfilter name:", filterName);
+
+                  // Clear the corresponding modal input fields based on the filter type
+                  switch (filterName) {
+                      case "Invoice Date":
+                          $("#minDateSelection, #maxDateSelection").val("");
+                          break;
+                      case "Invoice Due Date":
+                          $("#minDueDateSelection, #maxDueDateSelection").val("");
+                          break;
+                      case "Invoice Number":
+                          $("#invoiceNumberSelection").val("");
+                          break;
+                      default:
+                          break;
+                  }
+                 
+                  
+                   // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+                  
+                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
+                    console.log("Updated selectedFilters after removal: ", selectedFilters);
+
+                    // Check if displaySelectedFilters is being called
+                    displaySelectedFilters();
+
+                    if (table) {
+                        table.rows().invalidate().draw();
+                        table.page('first').draw('page');
+                    } else {
+                        console.log("Table is not defined");
+                    }
+                });
+
+
+                // Append elements to the filterDiv
+                filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+
+                // Append the filterDiv to filterSelections
+                filterSelections.append(filterDiv);
+            }
+        });
+        // Show the filterSelections container
+        filterSelections.show();
+    } else {
+        // If no filters are selected, hide the filter selections container
+        filterLabel.hide();
+        filterSelections.hide();
+    }
+}
+
+if (table != undefined && table != null) {
     table.destroy();
 }
-=======
->>>>>>> 9f9c2d3ad4ccc52c8bd15aafada60e0497e55b1c
+
+var selectedRows = [];
 
 $(document).on("click",".invoiceTableCheckbox",function(e){
 // your code goes here
@@ -433,6 +617,12 @@ function issueTypeSelectionOnChange()
 
 }
 
+function mDateOnChange()
+{
+ // var table = $('#file-datatable').DataTable();
+ // table.draw();
+}
+
 
   function disputedInvoicesOnClick()
   {
@@ -441,11 +631,6 @@ function issueTypeSelectionOnChange()
     var table = $('#file-datatable').DataTable();
     table.draw();
   }
-
-
-
-
-
 
 function validateForm() {
   // This function deals with validation of the form fields

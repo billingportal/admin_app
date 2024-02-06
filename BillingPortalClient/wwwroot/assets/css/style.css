@@ -470,6 +470,66 @@ html {
 .filters-bar .col-md-8 {
     width: 60%;
 }
+div#filters-div {
+
+    display:none;
+    float: left;
+}
+.clear-allfilters {
+    display: block;
+    color: #388440;
+    background: #F6F5FA 0% 0% no-repeat padding-box !important;
+    padding-right:10px;
+}  
+/* Style for the filter name */
+.filter-label {
+    font-size:11px;
+    color: #212529;
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+/* Style for the filter value */
+.filter-value {
+    font-size: 18px;
+    color: #212529;
+}
+
+/* Style for the filter selection container */
+.filter-selection {
+    display: inline-block;
+    margin: 5px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    position: relative;
+}
+/* Style for the arrow in the top right corner */
+.filter-selection:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Round background for cross icon */
+.filter-selection .cross-icon {
+    background-color: gray;
+    border-radius: 50%;   
+    padding: 3px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #fff;
+    font-size: 8px;
+
+}
+
+/* Pointer on hover */
+.filter-selection .cross-icon:hover{
+    cursor: pointer;
+}
 .card-body.c1 {
     height: 142px;
     /* UI Properties */
