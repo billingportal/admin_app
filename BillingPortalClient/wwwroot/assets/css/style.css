@@ -479,8 +479,19 @@ div#filters-div {
     display: block;
     color: #388440;
     background: #F6F5FA 0% 0% no-repeat padding-box !important;
-    padding-right:10px;
-}  
+    padding: 10px;
+    float: left;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.clear-allfilters label {
+    width: 100%;
+    margin-bottom: 0px;
+    font-size: 11px;
+    color: #212529;
+}
+
 /* Style for the filter name */
 .filter-label {
     font-size:11px;
