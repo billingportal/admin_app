@@ -406,6 +406,7 @@ $("#clearAllFilters").on("click", function (e) {
     
         table.draw(); // Clear DataTable
  table.page('first').draw('page');
+  $("#filters-div").hide();
     e.preventDefault();
 });
 
