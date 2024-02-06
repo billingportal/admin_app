@@ -366,12 +366,12 @@
 
 
   $("#minDateSelection, #maxDateSelection, #minDueDateSelection, #maxDueDateSelection").on("change", function () {
-        if (table) {
-            table.rows().invalidate().draw();
-            table.page('first').draw('page');
-        } else {
-            console.log("Table is not defined");
-        }
+        // if (table) {
+        //     table.rows().invalidate().draw();
+        //     table.page('first').draw('page');
+        // } else {
+        //     console.log("Table is not defined");
+        // }
   });
 
   $("#filterForm").on("submit", function (event) {
@@ -388,12 +388,12 @@
   });
 
   $("#invoiceNumberSelection").on("keyup", function () {
-        if (table) {
-            table.rows().invalidate().draw();
-            table.page('first').draw('page');
-        } else {
-            console.log("Table is not defined");
-        }
+        // if (table) {
+        //     table.rows().invalidate().draw();
+        //     table.page('first').draw('page');
+        // } else {
+        //     console.log("Table is not defined");
+        // }
   });
 
 $("#clearAllFilters").on("click", function (e) {
@@ -492,7 +492,6 @@ function displaySelectedFilters() {
                 });
 
                // Create a cross icon to remove the filter
-               // Create a cross icon to remove the filter
                 var crossIcon = $("<i>", {
                     class: "fa fa-times cross-icon",
                 }).on("click", function () {
@@ -506,7 +505,7 @@ function displaySelectedFilters() {
                    var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
                    console.log("Clicked on cross icon for filter:", clickedFilterName);
 
-                   // Remove the filter div
+                   
                    let currentbox = $(this).closest('.filter-selection');
                     console.log("Clicked on cross icon for cfilter name:", currentbox);
                    currentbox.remove();
@@ -536,10 +535,11 @@ function displaySelectedFilters() {
                   
                     // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
                     console.log("Updated selectedFilters after removal: ", selectedFilters);
-
+                    
                     // Check if displaySelectedFilters is being called
                     displaySelectedFilters();
 
+                  
                     if (table) {
                         table.rows().invalidate().draw();
                         table.page('first').draw('page');
@@ -562,6 +562,9 @@ function displaySelectedFilters() {
         // If no filters are selected, hide the filter selections container
         filterLabel.hide();
         filterSelections.hide();
+         // Hide Filter Div
+        $("#filters-div").hide();
+
     }
 }
 
