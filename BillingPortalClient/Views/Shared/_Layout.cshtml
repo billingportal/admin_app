@@ -79,8 +79,6 @@
     <!--/JQUERY JS -->
     <script src="../assets/js/jquery.min.js"></script>
 
-    <script src="~/js/customerSel.js"></script>
-
     <!--/BOOTSTRAP JS -->
     <script src="../assets/plugins/bootstrap/js/popper.min.js"></script>
     <script src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>
@@ -171,76 +169,7 @@
     <script src="../CustomJsFile.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js" ></script>
-    <script>
-        // Place this script in the head to ensure it runs after jQuery is loaded
-        $(document).ready(function () {
-            // Populate the region dropdown
-            populateRegionDropdown();
 
-            var emailInput = $('#email');
-
-            emailInput.typeahead({
-                source: function (query, process) {
-                    $.ajax({
-                        url: '/CustomerSel/GetEmails', // Update the URL based on your API endpoint
-                        type: 'GET',
-                        data: { query: query },
-                        dataType: 'json',
-                        success: function (data) {
-                            process(data);
-                        }
-                    });
-                },
-                afterSelect: function (item) {
-                    // Trigger the population of accounts after selecting an email
-                    populateAccounts(item.id); // Assuming 'id' is the property containing emailId
-                }
-            });
-
-        });
-
-        function populateRegionDropdown() {
-            // Call API to get regions
-            $.ajax({
-                url: '/Customer/GetAllCustomerAsync', //Get Locations of all customers
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    // Assuming data is an array of regions
-                    var regionDropdown = $('#Location');
-                    regionDropdown.empty(); // Clear existing options
-
-                    // Populate options
-                    $.each(data, function (index, region) {
-                        regionDropdown.append($('<option>', {
-                            value: Region,
-                            text: Region
-                        }));
-                    });
-                },
-                error: function (error) {
-                    console.error('Error fetching regions:', error);
-                }
-            });
-        }
-
-        function populateAccounts(emailId) {
-            $.ajax({
-                url: '/CustomerSel/GetAccounts', // Get Accounts based on emails
-                type: 'GET',
-                data: { emailId: emailId },
-                dataType: 'json',
-                success: function (data) {
-                    // Assuming there's a function to update the accounts dropdown
-                    updateAccountsDropdown(data);
-                }
-            });
-        }
-
-        function updateAccountsDropdown(accounts) {
-                console.log(accounts); // Log the data for debugging
-        }
-    </script>
 </head>
 
 <body class="app sidebar-mini light-mode">
@@ -270,7 +199,10 @@
                     </div>
 
                     <div class="main-header-center  d-none d-lg-block header-link">
-
+                         <form>
+                               <select class="form-select" aria-label="Default select example" id="Location"></select>
+                               <select class="form-select" aria-label="Default select example" id="CustomerEmail"></select>
+                         </form>
                         <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4"
                                 aria-controls="navbarSupportedContent-4" aria-expanded="false"
@@ -432,7 +364,8 @@
 
 </html>
 
-<script>document.addEventListener("DOMContentLoaded", function () {
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
         // Get the current page URL
         var currentUrl = window.location.pathname;
 
@@ -448,4 +381,5 @@
                 link.classList.add('active-link');
             }
         });
-    });</script>
+    });
+</script>

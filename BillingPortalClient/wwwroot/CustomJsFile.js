@@ -1,10 +1,8 @@
-﻿
+﻿  // Place this script in the head to ensure it runs after jQuery is loaded
+  $(document).ready(function () {
 
-$(document).ready(function () {
-
-
-    //alert('document is ready')
-    $.ajax({
+     //alert('document is ready')
+     $.ajax({
         url: "/Authentication/GetCurrentCustomer",
         type: 'GET',
         dataType: 'json', // added data type
@@ -12,13 +10,6 @@ $(document).ready(function () {
             console.log(res);
 
             var optionsAsString = "";
-            //for (var i = 0; i < res.length; i++) {
-            //    string selected = "";
-            //    if (res[i].isSelected == true) {
-            //        selected = "selected";
-            //    }
-            //    optionsAsString += "<option value='" + res[i].id + "' "+selected+">" + res[i].accountName + "</option>";
-            //}
 
             let accounts = [];
 
@@ -59,21 +50,113 @@ $(document).ready(function () {
             $("#customerDesignationText").text(res.designation);
             $("#customerEmailText").text(res.email)
 
-            //var optionsAsString = "";
 
+        }
+    });
 
-            //for (var i = 0; i < res.length; i++) {
-            //    $option = $('<option value="' + res[i].id + '">' + res[i].accountName + '</option>');
-            //    if (res[i].isSelected == true) {
-            //        $option.attr('selected', 'selected');
-            //    }
-            //    $('#changeAccountDropDown').append($option);
-            //}
+   // Add an event listener for region dropdown change
+$('#Location').on('change', function () {
+    var selectedRegion = $(this).val();
 
+    // Call API to get customers by location
+    $.ajax({
+        url: '/CustomerSel/GetCustomersByLocation',
+        type: 'POST',
+        dataType: 'json',
+        data: { location: selectedRegion }, // Pass the selected region as data
+        success: function (customers) {
+            // Assuming customers is an array of CustomerList objects
+            console.log(customers);
+
+            // Populate the customers dropdown
+            var customersDropdown = $('#CustomerEmail');
+            customersDropdown.empty(); // Clear existing options
+
+            // Populate options
+            $.each(customers, function (index, customer) {
+                customersDropdown.append($('<option>', {
+                    value: customer.email,
+                    text: customer.email
+                }));
+            });
+        },
+        error: function (error) {
+            console.error('Error fetching customers by location:', error);
         }
     });
 });
 
+// Initial population of the region dropdown
+function populateRegionDropdown() {
+    // Call API to get regions
+    $.ajax({
+        url: '/CustomerSel/GetAllCustomersRegion',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            // Assuming data is an array of regions
+            console.log(data);
+            var regionDropdown = $('#Location');
+            regionDropdown.empty(); // Clear existing options
+
+            // Populate options
+            $.each(data, function (index, region) {
+                regionDropdown.append($('<option>', {
+                    value: region,
+                    text: region
+                }));
+            });
+        },
+        error: function (error) {
+            console.error('Error fetching regions:', error);
+        }
+    });
+}
+
+// Populate the region dropdown
+populateRegionDropdown();
+
+
+
+    var emailInput = $('#email');
+
+    emailInput.typeahead({
+        source: function (query, process) {
+            $.ajax({
+                url: '/CustomerSel/GetEmailsByCustomer/', // Update the URL based on your API endpoint
+                type: 'GET',
+                data: { query: query },
+                dataType: 'json',
+                success: function (data) {
+                    process(data);
+                }
+            });
+        },
+        afterSelect: function (item) {
+            // Trigger the population of accounts after selecting an email
+            populateAccounts(item.id); // Assuming 'id' is the property containing emailId
+        }
+    });
+
+});
+
+
+function populateAccounts(emailId) {
+    $.ajax({
+        url: '/CustomerSel/GetAccounts', // Get Accounts based on emails
+        type: 'GET',
+        data: { emailId: emailId },
+        dataType: 'json',
+        success: function (data) {
+            // Assuming there's a function to update the accounts dropdown
+            updateAccountsDropdown(data);
+        }
+    });
+}
+
+function updateAccountsDropdown(accounts) {
+        console.log(accounts); // Log the data for debugging
+}
 
 function changeCustomerAccount(e) {
     //alert(window.location)
