@@ -1,8 +1,29 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
+<style>
+    .text{
+        top: 540px;
+        left: 598px;
+        width: 373px;
+        height: 40px;
+        color: var(--grey);
+        text-align: center;
+        font: normal normal medium 16px/20px Inter !important;
+        letter-spacing: 0px;
+        color: #9398A5;
+        opacity: 1;
+    }
+</style>
+@* <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <div class="">
+        <img width="250" height="250" src="./assets/images/base.png" />
+        @* <h6 class="text title">Manage <br />Customers</h6> *@
+    </div>
+    <p class="text">Search an account by Customer name, Email ID and Account No. to view the customer details</p>
 </div>
