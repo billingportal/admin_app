@@ -169,7 +169,18 @@
     <script src="../CustomJsFile.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js" ></script>
-
+    <style>
+        .selection {
+            top: 28px;
+            left: 136px;
+            width: 330px;
+            height: 42px;
+            /* UI Properties */
+            background: #041527 0% 0% no-repeat padding-box;
+            border-radius: 8px;
+            opacity: 1;
+            }
+    </style>
 </head>
 
 <body class="app sidebar-mini light-mode">
@@ -200,8 +211,12 @@
 
                     <div class="main-header-center  d-none d-lg-block header-link">
                          <form>
-                               <select class="form-select" aria-label="Default select example" id="Location"></select>
-                               <select class="form-select" aria-label="Default select example" id="CustomerEmail"></select>
+                               @* <select class="form-select" aria-label="Default select example" id="Location"></select>
+                               <select class="form-select" aria-label="Default select example" id="CustomerEmail"></select> *@
+                               <select class="selection" aria-label="Default select example" id="Location" style="color: #A8ACB7;"></select>
+                               <select class="selection" aria-label="Default select example" id="CustomerEmail" style="color: #A8ACB7;"></select>
+                               <select class="selection" aria-label="Default select example" id="CustomerAccount" style="color: #A8ACB7;"></select>
+
                          </form>
                         <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4"

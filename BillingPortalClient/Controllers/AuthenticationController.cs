@@ -190,7 +190,7 @@ namespace BillingPortalClient.Controllers
           new ClaimsPrincipal(claimsIdentity), properties);
 
        
-        return RedirectToAction( "index", "Invoice" );
+        return RedirectToAction( "index", "Home" );
       }
       else
       {
