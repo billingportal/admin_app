@@ -456,91 +456,7 @@ html {
     display: block;
     padding-top: 6px;
 }
-.row.filters-bar {
-    display: block;
-    width: 100%;
-}
-.filters-bar .col-md-2, .filters-bar .col-md-8 {
-    float: left;
-    text-align:center;
-}
-.filters-bar .col-md-2 {
-    width: 20%;
-}
-.filters-bar .col-md-8 {
-    width: 60%;
-}
-div#filters-div {
 
-    display:none;
-    float: left;
-}
-.clear-allfilters {
-    display: block;
-    color: #388440;
-    background: #F6F5FA 0% 0% no-repeat padding-box !important;
-    padding: 10px;
-    float: left;
-    border-radius: 10px;
-    margin-top: 5px;
-}
-
-.clear-allfilters label {
-    width: 100%;
-    margin-bottom: 0px;
-    font-size: 11px;
-    color: #212529;
-}
-
-/* Style for the filter name */
-.filter-label {
-    font-size:11px;
-    color: #212529;
-    width: 100%;
-    margin-bottom: 0px;
-}
-
-/* Style for the filter value */
-.filter-value {
-    font-size: 18px;
-    color: #212529;
-}
-
-/* Style for the filter selection container */
-.filter-selection {
-    display: inline-block;
-    margin: 5px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    position: relative;
-}
-/* Style for the arrow in the top right corner */
-.filter-selection:before {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-}
-
-/* Round background for cross icon */
-.filter-selection .cross-icon {
-    background-color: gray;
-    border-radius: 50%;   
-    padding: 3px;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: #fff;
-    font-size: 8px;
-
-}
-
-/* Pointer on hover */
-.filter-selection .cross-icon:hover{
-    cursor: pointer;
-}
 .card-body.c1 {
     height: 142px;
     /* UI Properties */
@@ -1160,7 +1076,7 @@ select#searchSelectBox:after {
     content: "\e92d";
     color: #ffffff;
     font-size: 12px;
-    font-family: feather!important;
+    font-family: feather !important;
     font-weight: 400;
     font-variant: normal;
     text-transform: none;
@@ -1203,11 +1119,14 @@ select#searchSelectBox:after {
 
 .modal-body h1 {
     text-align: center;
-    font: normal normal medium 24px/135px Inter !important;
     letter-spacing: 0px;
     color: #191616;
     text-transform: capitalize;
     margin-bottom: 5px;
+    font-size: 24px;
+    font-family: 'Inter';
+    font-weight: normal;
+    line-height: 36px;
 }
 
 .modal-body h5 {
@@ -1215,6 +1134,324 @@ select#searchSelectBox:after {
     font: normal normal normal 14px/19px Inter !important;
     letter-spacing: 0px;
     color: #9398A5;
+}
+
+.row.filters-bar {
+    display: block;
+    width: 100%;
+}
+
+.filtering {
+    height: 42px;
+    background: #F5F5FA 0% 0% no-repeat padding-box;
+    border: 1px solid #E4E3F1;
+    border-radius: 8px 8px 8px 0px;
+}
+
+button.btn.filtering:hover {
+    color: black;
+    background: #F5F5FA 0% 0% no-repeat padding-box;
+    border: 1px solid #E4E3F1;
+    border-radius: 8px 8px 8px 0px;
+}
+
+.filters-bar .col-md-2,
+.filters-bar .col-md-8 {
+    float: left;
+    text-align: center;
+}
+
+.filters-bar .col-md-2 {
+    width: 20%;
+}
+
+.filters-bar .col-md-8 {
+    width: 60%;
+}
+
+div#filters-div {
+    display: none;
+    float: left;
+}
+
+.clear-allfilters {
+    display: block;
+    border-right: 1px solid #E6E6F5;
+    height: 46px;
+    padding: 0px 7px;
+    float: left;
+    width: 110px;
+}
+
+.clear-allfilters label {
+    width: 100%;
+    margin-bottom: 0px;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: normal;
+    font-family: Inter;
+    letter-spacing: 0px;
+    color: #9398A5;
+}
+
+/* Style for the filter name */
+.filter-label {
+    font-size: 10px;
+    line-height: 14px;
+    font-family: Inter;
+    font-weight: normal;
+    color: #212529;
+    width: 100%;
+    letter-spacing: 1.5px;
+    color: #9398A5;
+    text-transform: uppercase;
+    margin-bottom: 0px;
+}
+
+/* Style for the filter value */
+.filter-value {
+    font-size: 12px;
+    line-height: 14px;
+    font-family: Inter;
+    font-weight: normal;
+    letter-spacing: 0px;
+    color: #3B444D;
+}
+
+/* Style for the filter selection container */
+.filter-selection {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 0px 7px;
+    background: #F5F5FA 0% 0% no-repeat padding-box;
+    border: 1px solid #E4E3F1;
+    border-radius: 6px;
+    height: 46px;
+    position: relative;
+}
+
+/* Style for the arrow in the top right corner */
+.filter-selection:before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Round background for cross icon */
+.filter-selection .cross-icon {
+    padding: 5px;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    color: #615376;
+    font-size: 8px;
+    width: 19px;
+    height: 19px;
+    background: #E4E3F1 0% 0% no-repeat padding-box;
+    border: 1px solid #E4E3F1;
+    border-radius: 50px;
+}
+
+/* Pointer on hover */
+.filter-selection .cross-icon:hover {
+    cursor: pointer;
+}
+
+.searchbutton {
+    font-size: 22px;
+    width: 50px;
+    margin: 0;
+    padding: 0;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #f5f5fa;
+    color: #212529;
+}
+
+.search-container {
+    position: relative;
+    display: inline-block;
+    margin: 2px 2px 2px 2px;
+    height: 50px;
+    width: 50px;
+    vertical-align: bottom;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+
+.search {
+    position: absolute;
+    left: 49px;
+    /* Button width-1px (Not 50px/100% because that will sometimes show a 1px line between the search box and button) */
+    background-color: white;
+    outline: none;
+    border: none;
+    padding: 0;
+    width: 0;
+    height: 100%;
+    z-index: 10;
+    border-radius: 10px;
+    /* Make it a circle by setting border-radius to 50% */
+    overflow: hidden;
+    transition-duration: 0.4s;
+    -moz-transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s;
+    -o-transition-duration: 0.4s;
+    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
+    opacity: 1;
+}
+
+.search:focus {
+    width: 200px;
+    height: 42px;
+    padding: 0 16px 0 0;
+    border: 1px solid rgb(233 237 244);
+}
+
+.expandright {
+    left: auto;
+    border: 1px solid rgb(233 237 244);
+    right: 42px;
+    /* Button width-1px */
+    border: 0;
+}
+
+
+.expandright:focus {
+    padding: 0 0 0 16px;
+}
+
+.searchbutton .fa {
+    color: #212529;
+    font-size: 18px;
+}
+
+#testModalCenter .success-icon{
+    text-align:center;
+    width: 50px;
+    height: 50px;
+}
+#testModalCenter .failed-icon{
+    text-align:center;
+    width: 50px;
+    height: 50px;
+}
+#testModalCenter .transfer-success{
+    text-align: center;
+    font-weight: normal;
+    font-size:20px;
+    line-height: 22px;
+    font-family: Inter;
+    letter-spacing: 0px;
+    color: #34AD5E;
+}
+#testModalCenter .transfer-failed{
+    text-align: center;
+    font-weight: normal;
+    font-size:20px;
+    line-height: 22px;
+    font-family: Inter;
+    letter-spacing: 0px;
+    color: red;
+}
+#testModalCenter .payment-summary-title{
+    text-align:center;
+    width: 612px;
+    height: 60px;
+    color: #ffffff;
+    font-size:18px;
+    background: transparent linear-gradient(180deg, #6335A5 0%, #4C208B 100%) 0% 0% no-repeat padding-box;
+    border-radius: 10px 10px 0px 0px;
+}
+#testModalCenter h5, #testModalCenter .payment-summary h5{
+    text-align: left;
+    font-weight: normal;
+    font-size: 12px;
+    line-height:20px;
+    font-family: Inter;
+    letter-spacing: 1.8px;
+    color: #73798B;
+    text-transform: uppercase;
+    width:100%;
+}
+#testModalCenter .accordion h5{
+    color: #ffffff;
+}
+#testModalCenter .payment-summary p{
+    text-align: left;
+    font-weight: normal;
+    font-size: 14px;
+    line-height:17px;
+    font-family: Inter;
+    letter-spacing: 0px;
+    color: #27292C;
+}
+
+.payment-summary-title .text-left {
+    text-align: left;
+    position: relative;
+    padding: 20px;
+}
+
+#testModalCenter2 .modal-dialog {
+    width: 575px;
+    height: 500px;
+}
+
+#testModalCenter2 .modal-body {
+    padding: 50px;
+}
+
+#testModalCenter2 .modal-body label {
+    font: normal normal 600 12px/18px Inter;
+    letter-spacing: 0px;
+    color: #3B444D;
+    text-transform: capitalize;
+}
+
+#testModalCenter2 h5 {
+    text-align: left;
+    letter-spacing: 0px;
+    color: #818796;
+    font-size: 10px !important;
+    line-height: 10px !important;
+    font-weight: normal;
+    font-family: 'Inter';
+}
+
+#testModalCenter2 span {
+    display: inline-block;
+    width: 30%;
+    font: normal normal normal 12px/14px Inter;
+    letter-spacing: 0px;
+    color: #191616;
+}
+
+#testModalCenter2 #applyFilterButton {
+    width: 370px !important;
+    height: 50px !important;
+}
+
+.modal input[type="radio"] {
+    appearance: auto !important;
+    display:inline !important;
+}
+
+#testModalCenter2 .modal-body span label {
+    text-align: left;
+    letter-spacing: 0px;
+    color: #191616;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    line-height: 14px;
+    font-size: 12px;
+    font-weight: normal;
+    font-family: 'Inter';
+    position: relative;
+    top: -3px;
 }
 
 .modal-body #regForm {
@@ -1385,7 +1622,7 @@ background: #34AD5E 0% 0% no-repeat padding-box !important;
     letter-spacing: 0px;
 }
 
-modal button#proceedPaymentButton {
+.modal button#proceedPaymentButton {
   width: 370px;
   height: 50px;
   background: transparent linear-gradient(270deg, #66A4E4 0%, #575DD5 100%) 0% 0% no-repeat padding-box;
@@ -1827,15 +2064,16 @@ pre code {
 
 .app-header .form-select {
 
-    color: #fff;
-    width: 234px;
+    color: #A8ACB7;
+    width: 250px;
     height: 48px;
-    background: #541DA0 0% 0% no-repeat padding-box;
-    border: 1px solid #7333CC;
+    background: #051527 0% 0% no-repeat padding-box;
+    border: 1px solid #051527;
     border-radius: 10px 10px 10px 0px;
-    font:normal normal medium 14px/12px Inter !important;
     font-size: 14px;
-    font-weight: 300;
+    font-weight: normal;
+    line-height:11px;
+    font-family: Inter;
 }
 
 .app-header .country form:after{

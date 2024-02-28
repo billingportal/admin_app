@@ -1,418 +1,21 @@
-﻿
-@{
-    Layout = "_Layout";
-}
-
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    Layout = "_Layout";
+﻿@{
+  Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.TicketViewModel
-
-<style>
-body {
-	font-family: sans-serif;
-	background-color: #111;
-}
-
-.button {
-	display: inline-block;
-	margin: 4px 2px;
-	background-color: #444;
-	font-size: 14px;
-	padding-left: 32px;
-	padding-right: 32px;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
-	color: white;
-	text-decoration: none;
-	cursor: pointer;
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-
-
-.search-container {
-	position: relative;
-	display: inline-block;
-	margin: 2px 2px 2px 2px;
-	height: 50px;
-	width: 50px;
-	vertical-align: bottom;
-    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
-    opacity: 1;
-}
-
-.mglass {
-	display: inline-block;
-	pointer-events: none;
-	-webkit-transform: rotate(-45deg);
-	-moz-transform: rotate(-45deg);
-	-o-transform: rotate(-45deg);
-	-ms-transform: rotate(-45deg);
-}
-
-.searchbutton {
-	position: absolute;
-	font-size: 22px;
-	width: 50px;
-	margin: 0;
-	padding: 0;
-    border-radius: 15px; /* Make it a circle by setting border-radius to 50% */
-    overflow: hidden;
-}
-
-.search:focus + .searchbutton {
-	transition-duration: 0.4s;
-	-moz-transition-duration: 0.4s;
-	-webkit-transition-duration: 0.4s;
-	-o-transition-duration: 0.4s;
-	background-color: white;
-	color: black;
-}
-
-.search {
-	position: absolute;
-	left: 49px; /* Button width-1px (Not 50px/100% because that will sometimes show a 1px line between the search box and button) */
-	background-color: white;
-	outline: none;
-	border: none;
-	padding: 0;
-	width: 0;
-	height: 100%;
-	z-index: 10;
-    border-radius: 10px; /* Make it a circle by setting border-radius to 50% */
-    overflow: hidden;
-	transition-duration: 0.4s;
-	-moz-transition-duration: 0.4s;
-	-webkit-transition-duration: 0.4s;
-	-o-transition-duration: 0.4s;
-    background: transparent url('img/Group 465040.png') 0% 0% no-repeat padding-box;
-    opacity: 1;
-}
-
-.search:focus {
-	width: 363px; /* Bar width+1px */
-	padding: 0 16px 0 0;
-    border: 2px solid rgb(0, 0, 0);
-}
-
-.expandright {
-	left: auto;
-    @* border: 2px solid rgb(0, 0, 0);
-	right: 0px; /* Button width-1px */ *@
-      border: 0; /* Set to 0 initially to hide the border */
-    right: 0;
-}
-
-
-.expandright:focus {
-	padding: 0 0 0 16px;
-}
-</style>
- <!-- CONTAINER -->
-<div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">             
-
-    <!-- ROW-1 -->
-    <div class="row widget-row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
-            <div class="row">
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c1">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/coins-icon-purple.png" />
-                                    <h6 class="text title">All Ticket</h6>
-                                    <h2 class="mb-0 number-font text">@Model.allTicketsCount</h2>
-                                </div>
-                            </div>
-                            <span class="text-muted fs-12">
-                                <button onclick="headerWidgetButtonClick('allTickets')"  class="btn btn-primary mt-2"> View All </button>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c2">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/clock-icon-blue.png" />
-                                    <h6 class="text title">Invoice Tickets</h6>
-                                    <h2 class="mb-0 number-font text">@Model.invoiceTicketsCount</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <button onclick="headerWidgetButtonClick('invoice')" class="btn btn-primary mt-2"> View All </button>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c3">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/file-icon-orange.png" />
-                                    <h6 class="text title">Statement Tickets</h6>
-                                    <h2 class="mb-0 number-font text">@Model.statementTicketsCount</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <button onclick="headerWidgetButtonClick('statement')" class="btn btn-primary mt-2"> View All </button>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c4">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/clock-icon-green.png" />
-                                    <h6 class="text title">Receipt Tickets</h6>
-                                    <h2 class="mb-0 number-font text">@Model.receiptTicketsCount</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <button onclick="headerWidgetButtonClick('receipt')" class="btn btn-primary mt-2"> View All </button>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ROW-1 END -->
-
-
-
-    <!-- Row -->
-    <div class="row row-sm">
-        <div class="col-lg-12">
-            <div class="card">
-
-                <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
-                    <div class="row" style="width:100%;">
-
-                      <div class="col-md-6 col-sm-12">
-                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                          <input type="radio" class="btn-check" name="btnradio" id="btnradio1"  autocomplete="off" checked>
-                          <label class="btn statusCriteriaButton" for="btnradio1" id="allStatusRadio"
-                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px; color:black;">All(@Model.allTicketsCount)</label>
-
-                          <input type="radio" class="btn-check" name="btnradio" id="btnradio2"  autocomplete="off">
-                          <label class="btn statusCriteriaButton" for="btnradio2" id="openStatusRadio"
-                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">Open(@Model.openTicketsCount)</label>
-
-                          <input type="radio" class="btn-check" name="btnradio" id="btnradio3"  autocomplete="off">
-                          <label class="btn statusCriteriaButton" for="btnradio3" id="inprogressStatusRadio"
-                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">In Progress(@Model.inProgressTicketsCount)</label>
-
-                          <input type="radio" class="btn-check" name="btnradio" id="btnradio4"  autocomplete="off">
-                          <label class="btn statusCriteriaButton" for="btnradio4" id="closedStatusRadio"
-                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">Closed(@Model.closedTicketsCount)</label>
-                        </div>
-                      </div>
-
-                       <div class="col-md-6 col-sm-12">
-                          <div class="row filters-bar" style="display: flex; ">
-                              <div class="col-md-2 col-sm-4 search-container">
-                                  <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
-                                  <label class="button searchbutton" for="searchright" style="width:40px;height:40px;  justify-content: center;"><span class="mglass" style="width:40px;height:40px;  justify-content: center;">⚲</span></label>
-                              </div>
-                              <div class="col-md-6 col-sm-8">
-                                  <button class="btn btn-primary filtering" style="height: 40px!important; width: 80px;" id="searchSelectBox" onclick="filtermodal()">Filters</button>
-                                  <button class="btn" style="height: 40px!important; width: 80px; background-color: gray; color: white !important" id="clearButton">Clear</button>
-                                  @* <button class="btn btn-primary filtering" id="searchSelectBox" onclick="filtermodal()">Filters</button>
-                                    <button class="btn" style="background-color:gray; color:white !important  " id="clearButton">Clear</button> *@
-                                  @* <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket">
-                                  <i class="fe fe-file-text"></i> Create Ticket </button> *@
-                                  @* <button class="btn btn-success ticket text-center" style="height: 50px !important; width: 50%; color: white !important;" onclick="addReceiptsForTicket()">Create a ticket</button> *@
-                              </div>
-                          </div>
-                       </div>
-                              
-                          
-                      </div>
-
-                </div>
-            </div>
-
-                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
-                    <div class="table-responsive">
-                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
-                            <thead>
-                                <tr>
-                                    <th class="border-bottom-0">Ticket No.</th>
-                                    <th class="border-bottom-0">Account No.</th>
-                                    <th class="border-bottom-0">Account Name</th>
-                                    <th class="border-bottom-0">Instrument</th>
-                                    <th class="border-bottom-0">Issue Type</th>
-                                    @* <th class="border-bottom-0">Note</th> *@
-                                    <th class="border-bottom-0">Created On</th>
-                                    <th class="border-bottom-0">Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              @foreach(var item in Model.tickets)
-                                {
-                                  <tr data-StatusAttribute="@item.Status" data-InstrumentTypeAttribute="@item.InstumentType" data-IssueTypeAttribute="@item.IssueType" data-CreatedDateAttribute="@item.TicketDate.Value.ToShortDateString()" data-day="@item.TicketDate.Value.Day" data-month="@item.TicketDate.Value.Month" data-year="@item.TicketDate.Value.Year">
-                                    <td  style="color: var(--primary-purple); text-align: left; font: normal normal 600 14px/12px Inter; letter-spacing: 0px; color: #3F058F; opacity: 1;">#@item.Id</td>
-                                    <td>@item.Account.AccountNumber</td>
-                                    <td>@item.Account.AccountName</td>
-                                    @* <td>@item.Account.Customer.Region</td> *@
-
-                                    <td style="color: var(--black); text-align: left; font: normal normal bold 14px/16px Inter; letter-spacing: 0px; color: #191616; opacity: 1;">@item.InstumentType</td>
-                                    <td>@item.IssueType</td>
-                                    @* <td>@item.Description</td> *@
-                                    @*<td>@item.TicketDate.Value.Year-@item.TicketDate.Value.Month-@item.TicketDate.Value</td>*@
-                                    @*<td>@item.TicketDate.Value.ToString("yyyy-MM-dd")</td>*@
-                                    @*<td>2001/04/15</td>*@
-                                    <td>@item.TicketDate.Value.ToString("dd MMM, yyyy")</td>
-                                    @if(item.Status == "Closed")
-                                    {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="top: 713px; left: 1114px; width: 110px; height: 24px; /* UI Properties */ background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
-                                    }
-                                    else if(item.Status == "Open")
-                                    {
-                                        <td style="text-align:center"><span class="badge rounded-pill bg-danger" style=" top: 406px;
-left: 1114px;
-width: 110px;
-height: 24px;
-/* UI Properties */
-background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box;
-border-radius: 6px;
-opacity: 1;
- font-size:small; width:100px !important">@item.Status</span></td>
-
-                                    }
-                                    else
-                                    {
-                                        <td style="text-align:center"><span class="badge rounded-pill text-dark"  style="top: 470px;
-left: 1114px;
-width: 110px;
-height: 24px;
-/* UI Properties */
-background: transparent linear-gradient(90deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box;
-border-radius: 6px;
-opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
-                                                
-                                    }
-                                    @* <td>@Html.ActionLink("View Details",
-                                                            "TicketDetail",
-                                                            "Ticket",
-                                                            new { ticketId = @item.Id},
-                                                            new { @class = "text-primary ms-1" })</td>
-                                  </tr> *@
-                           <td style="color: var(--primary-purple);
-text-align: centre;
-font: normal normal bold 12px/44px Inter;
-letter-spacing: 0px;
-color: #3F058F;
-opacity: 1;">
-    @Html.ActionLink("View Details",
-        "TicketDetail",
-        "Ticket",
-        new { ticketId = @item.Id },
-        new { @class = "text-primary ms-1" })
-
-    <span>
-        <img src="../../assets/images/arrow-circle-right-solid.svg" alt="Arrow Icon">
-    </span>
-</td>
-</tr>
-
-
-
-                                    
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <!-- End Row -->
-
-                       
-</div>
-<!-- CONTAINER CLOSED -->
-
-<!--filter modal -->
-<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-        <div class="modal-content">
-
-            <div class="modal-body">
-              <div class="container">
-                  <div class="row">
-                      <h1>Filters</h1>
-                  </div>
-                  <form id="filterForm">
-                      <div class="row mb-3">
-                          <div class="panel" id="datePanel">
-                              <div class="row mb-3">
-                                  <div class="col-md-6">
-                                      <label class="form-label">Min Invoice Date</label>
-                                      <input class="form-control" type="date" id="minDateSelection" />
-                                  </div>
-                                  <div class="col-md-6">
-                                      <label class="form-label">Max Invoice Date</label>
-                                      <input class="form-control" type="date" id="maxDateSelection" />
-                                  </div>
-                              </div>
-                              <div class="row">
-                                  <div class="col-md-6">
-                                      <label class="form-label">Instrument Type</label>
-                                      <select class="form-select" id="instrumenttype">
-                                          <option value="">Instrument Type</option>
-                                          <option value="Invoice">Invoice</option>
-                                          <option value="Receipt">Receipt</option>
-                                          <option value="Statement">Statement</option>
-                                      </select>
-                                  </div>
-                                  <div class="col-md-6">
-                                      <label class="form-label">Issue Type</label>
-                                      <select class="form-select" id="issuetype">
-                                          <option value="">Issue Type</option>
-                                          <option value="Complain">Complain</option>
-                                          <option value="Dispute">Dispute</option>
-                                          <option value="Feedback">Feedback</option>
-                                      </select>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                      <div class="row">
-                          <div class="col-md-12 text-center">
-                              <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
-                          </div>
-                      </div>
-                  </form>
-              </div>
-          </div>
-
-
-        </div>
-    </div>
-</div>
-
 <script>
+
+var statusCriteria = "all";
+var instrumentTypeCriteria = "allTickets";
+
+function addReceiptsForTicket() {
+  $("#testModalCenter1").modal('show');     
+}
+
+function filtermodal(){
+  console.log("Inside filtermodal function.");
+  $("#testModalCenter2").modal('show');
+}
+
 $(document).ready(function () {
   
     var table = $("#file-datatable").DataTable();
@@ -448,28 +51,222 @@ $(document).ready(function () {
 
         $('#filterForm').submit(function (e) {
             e.preventDefault();
+            $("#filters-div").show();
             console.log("Form Submitted");
             $('#testModalCenter2').modal('hide');
             applyDateFilter();
+            displaySelectedFilters();
+        });
+        
+        $("#clearAllFilters").on("click", function (e) {
+          // Clear the form first
+          $("#testModalCenter2 #filterForm")[0].reset();
+          $('#filterForm').find(':input').val('');
+          // Then clear selectedFilters
+          selectedFilters = [];
+          // Finally, display selected filters and redraw the DataTable
+          displaySelectedFilters();
+          $("#filters-div").hide();
+          applyDateFilter();
+          e.preventDefault();
         });
 
-        $('.filtering').click(function () {
-            console.log("Filter Modal Function");
-            $("#testModalCenter2").modal('show');
+        $('#searchright').on('keyup', function () {
+              console.log("search keyup function");
+            table.search(this.value).draw();
         });
 
-        $('#clearButton').click(function () {
-            $('#filterForm').find(':input').val('');
-            applyDateFilter();
+let selectedRows = [];
+let selectedFilters = [];
+
+var filterData = {
+    name: getFilterName(),
+    value: getFilterValue()
+};
+
+  $("#minDateSelection").val("");
+  $("#maxDateSelection").val("");
+  $("#instrumenttype").val("");
+  $("#issuetype").val("");
+
+// Function to determine the label based on the selected filters
+function getFilterName() {
+    // Check the selected filter criteria and set the label accordingly
+    if ($("#minDateSelection").val() || $("#maxDateSelection").val()) {
+        return "Ticket Date";
+    } else if ($("#instrumenttype").val()) {
+        return "Instrument Type";
+    } else if ($("#issuetype").val()) {
+        return "Issue Type";
+    }
+    // Return an empty string if no specific filter is applied
+    return "";
+}
+
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    const formattedDate = `${day}${ordinalSuffix(day)} ${month} ${year}`;
+    return formattedDate;
+}
+
+function ordinalSuffix(day) {
+    if (day >= 11 && day <= 13) {
+        return 'th';
+    }
+    switch (day % 10) {
+        case 1:
+            return 'st';
+        case 2:
+            return 'nd';
+        case 3:
+            return 'rd';
+        default:
+            return 'th';
+    }
+}
+
+function getFilterValue(filterName) {
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var instrumentType = $("#instrumenttype").val();
+    var issueType = $("#issuetype").val();
+    console.log("issueType", issueType);
+
+    // Construct the filter value based on the selected filter name
+    switch (filterName) {
+        case "Ticket Date":
+           return minDate && maxDate ? `From: ${formatDate(minDate)} To ${formatDate(maxDate)}` : null;
+         case "Instrument Type":
+            return instrumentType ? `${instrumentType}` : null;
+           case "Issue Type":
+            return issueType ? `${issueType}` : null;
+        default:
+            return null;
+    }
+}
+
+
+function displaySelectedFilters() {
+    var filterSelections = $("#filterSelections");
+    var filterLabel = $("#filterLabel");
+
+    // Clear previous filter selections
+    filterSelections.empty();
+
+    // Get values from the modal input fields
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var instrumentType = $("#instrumenttype").val();
+    var issueType = $("#issuetype").val();
+    console.log("displayselectedfilters issueType", issueType);
+
+    // Check if at least one filter value is provided
+    if (minDate || maxDate || instrumenttype || issuetype) {
+        filterLabel.show();
+
+        // Create a div for each selected filter
+        var filterNames = ["Ticket Date", "Instrument Type", "Issue Type"];
+
+        filterNames.forEach(function (filterName) {
+            var filterValue = getFilterValue(filterName);
+
+            if (filterValue) {
+                var filterDiv = $("<div>", {
+                    class: "filter-selection",
+                });
+
+                // Create a label for filter name only if filter value is not null or empty
+                var filterNameLabel = $("<label>", {
+                    class: "filter-label",
+                    text: filterName + ": ",
+                });
+
+                // Create a span for filter value
+                var filterValueSpan = $("<span>", {
+                    class: "filter-value",
+                    text: filterValue,
+                });
+
+               // Create a cross icon to remove the filter
+                var crossIcon = $("<i>", {
+                    class: "fa fa-times cross-icon",
+                }).on("click", function () {
+                   console.log("Clicked on cross icon");
+                    // Remove the filter div
+                    filterDiv.remove();
+                   
+
+                   // Get the filter name from the parent filter selection
+                   var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                   console.log("Clicked on cross icon for filter:", clickedFilterName);
+
+                   // Remove the filter div
+                   let currentbox = $(this).closest('.filter-selection');
+                    console.log("Clicked on cross icon for currentbox:", currentbox);
+                   currentbox.remove();
+
+                   console.log("Clicked on cross icon for cfilter name:", filterName);
+
+                  // Clear the corresponding modal input fields based on the filter type
+                  switch (filterName) {
+                      case "Ticket Date":
+                          $("#minDateSelection, #maxDateSelection").val("");
+                          break;
+                       case "Instrument Type":
+                         $("#instrumenttype").val("");
+                          break;
+                       case "Issue Type":
+                          $("#issuetype").val("");
+                          break;
+                      default:
+                          break;
+                  }
+                 
+                  
+                   // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+                  
+                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
+                    console.log("Updated selectedFilters after removal: ", selectedFilters);
+
+                    if(selectedFilters.length > 0){
+                        // Check if displaySelectedFilters is being called
+                        displaySelectedFilters();
+                    }else{
+                        $("#filters-div").hide();
+                    }
+                    
+
+                    if (table) {
+                        applyDateFilter();
+                    } else {
+                        console.log("Table is not defined");
+                    }
+                });
+
+                // Append elements to the filterDiv
+                filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+
+                // Append the filterDiv to filterSelections
+                filterSelections.append(filterDiv);
+            }
         });
-         $('#searchright').on('keyup', function () {
-                table.search(this.value).draw();
-        });
+        // Show the filterSelections container
+        filterSelections.show();
+    } else {
+        // If no filters are selected, hide the filter selections container
+        filterLabel.hide();
+        filterSelections.hide();
+        // Hide Filter Div
+		$("#filters-div").hide();
+    }
+}
+
 });
-
-
-var statusCriteria = "all";
-var instrumentTypeCriteria = "allTickets";
 
 $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
   var trNode = settings.aoData[dataIndex].nTr;
@@ -584,48 +381,355 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
   return false;
 
 });
+</script>
 
 
-function disputedInvoicesOnClick()
+
+ <!-- CONTAINER -->
+<div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">             
+
+    <!-- ROW-1 -->
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/coins-icon-purple.png" />
+                                    <h6 class="text title">All Ticket</h6>
+                                    <h2 class="mb-0 number-font text">@Model.allTicketsCount</h2>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <button onclick="headerWidgetButtonClick('allTickets')"  class="btn btn-primary mt-2"> View All </button>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/clock-icon-blue.png" />
+                                    <h6 class="text title">Invoice Tickets</h6>
+                                    <h2 class="mb-0 number-font text">@Model.invoiceTicketsCount</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <button onclick="headerWidgetButtonClick('invoice')" class="btn btn-primary mt-2"> View All </button>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c3">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/file-icon-orange.png" />
+                                    <h6 class="text title">Statement Tickets</h6>
+                                    <h2 class="mb-0 number-font text">@Model.statementTicketsCount</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <button onclick="headerWidgetButtonClick('statement')" class="btn btn-primary mt-2"> View All </button>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c4">
+                            <div class="d-flex">
+                                <div class="">
+                                <img src="../assets/images/dashboard/clock-icon-green.png" />
+                                    <h6 class="text title">Receipt Tickets</h6>
+                                    <h2 class="mb-0 number-font text">@Model.receiptTicketsCount</h2>
+                                </div>
+                               
+                            </div>
+                            <span class="text-muted fs-12">
+                                <button onclick="headerWidgetButtonClick('receipt')" class="btn btn-primary mt-2"> View All </button>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ROW-1 END -->
+
+     <!-- Row -->
+<div class="row row-sm">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header" style="padding: 0px; border-bottom: none; display: block;">
+                <div class="row" style="width:100%;">
+                    <div class="col-md-7 col-sm-12">
+                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+     
+                          <input type="radio" class="btn-check" name="btnradio" id="btnradio1"  autocomplete="off" checked>
+                          <label class="btn statusCriteriaButton" for="btnradio1" id="allStatusRadio"
+                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px; color:black;">All(@Model.allTicketsCount)</label>
+
+                          <input type="radio" class="btn-check" name="btnradio" id="btnradio2"  autocomplete="off">
+                          <label class="btn statusCriteriaButton" for="btnradio2" id="openStatusRadio"
+                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">Open(@Model.openTicketsCount)</label>
+
+                          <input type="radio" class="btn-check" name="btnradio" id="btnradio3"  autocomplete="off">
+                          <label class="btn statusCriteriaButton" for="btnradio3" id="inprogressStatusRadio"
+                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">In Progress(@Model.inProgressTicketsCount)</label>
+
+                          <input type="radio" class="btn-check" name="btnradio" id="btnradio4"  autocomplete="off">
+                          <label class="btn statusCriteriaButton" for="btnradio4" id="closedStatusRadio"
+                            style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">Closed(@Model.closedTicketsCount)</label>
+                       </div>
+                    </div>
+
+                    <div class="col-md-2 search-container right" style="text-align:right; position relative; right: 40px;">
+                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
+                                <label class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></label>
+                    </div>
+
+                    <div class="col-md-2 col-sm-12">
+                        <div class="row filters-bar" style="display: flex; ">
+                            <div class="col-md-12 col-sm-8">
+                                <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="row" style="width:100%">
+                      <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            <div id="filterSelections"></div>
+                      </div>
+                </div>
+
+            </div>
+          </div>
+    </div>
+
+                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+                    <div class="table-responsive">
+                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
+                            <thead>
+                                <tr>
+                                    <th class="border-bottom-0">Ticket No.</th>
+                                    <th class="border-bottom-0">Account No.</th>
+                                    <th class="border-bottom-0">Account Name</th>
+                                    <th class="border-bottom-0">Instrument</th>
+                                    <th class="border-bottom-0">Issue Type</th>
+                                    <th class="border-bottom-0">Created On</th>
+                                    <th class="border-bottom-0">Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @foreach(var item in Model.tickets)
+                                {
+                                  <tr data-StatusAttribute="@item.Status" data-InstrumentTypeAttribute="@item.InstumentType" data-IssueTypeAttribute="@item.IssueType" data-CreatedDateAttribute="@item.TicketDate.Value.ToShortDateString()" data-day="@item.TicketDate.Value.Day" data-month="@item.TicketDate.Value.Month" data-year="@item.TicketDate.Value.Year">
+                                    <td  style="color: var(--primary-purple); text-align: left; font: normal normal 600 14px/12px Inter; letter-spacing: 0px; color: #3F058F; opacity: 1;">@item.Id</td>
+                                    <td>@item.Account.AccountNumber</td>
+                                    <td>@item.Account.AccountName</td>
+                                    <td style="color: var(--black); text-align: left; font: normal normal bold 14px/16px Inter; letter-spacing: 0px; color: #191616; opacity: 1;">@item.InstumentType</td>
+                                    <td>@item.IssueType</td>
+                                    <td>@item.TicketDate.Value.ToString("dd MMM, yyyy")</td>
+                                    @if(item.Status == "Closed")
+                                    {
+                                        <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="top: 713px; left: 1114px; width: 110px; height: 24px; /* UI Properties */ background: transparent linear-gradient(265deg, #3DA79C 0%, #3BC8B9 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>
+                                    }
+                                    else if(item.Status == "Open")
+                                    {
+                                        <td style="text-align:center"><span class="badge rounded-pill bg-danger" style=" top: 406px;
+                                        left: 1114px;
+                                        width: 110px;
+                                        height: 24px;
+                                        /* UI Properties */
+                                        background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box;
+                                        border-radius: 6px;
+                                        opacity: 1;
+                                        font-size:small; width:100px !important">@item.Status</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td style="text-align:center"><span class="badge rounded-pill text-dark"  style="top: 470px;
+                                        left: 1114px;
+                                        width: 110px;
+                                        height: 24px;
+                                        /* UI Properties */
+                                        background: transparent linear-gradient(90deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box;
+                                        border-radius: 6px;
+                                        opacity: 1; font-size:small; width:100px !important">@item.Status</span></td>    
+                                    }
+                                    <td style="color: var(--primary-purple);
+                                      text-align: centre;
+                                      font: normal normal bold 12px/44px Inter;
+                                      letter-spacing: 0px;
+                                      color: #3F058F;
+                                      opacity: 1;">
+                                    @Html.ActionLink("View Details", "TicketDetail", "Ticket", new { ticketId = @item.Id }, new { @class = "text-primary ms-1" })
+                                <span>
+                                    <img src="../../assets/images/arrow-circle-right-solid.svg" alt="Arrow Icon">
+                                </span>
+                            </td>
+                            </tr> 
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Row -->
+
+                       
+</div>
+<!-- CONTAINER CLOSED -->
+
+<!--filter modal -->
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+              <div class="container">
+                  <div class="row">
+                      <h1>Filters</h1>
+                  </div>
+                 <form id="filterForm">
+                      <div class="row mb-3">
+                          <div class="panel" id="datePanel">
+                              <div class="row mb-3">
+                                  <div class="col-md-6">
+                                      <label class="form-label">Min Invoice Date</label>
+                                      <input class="form-control" type="date" id="minDateSelection" />
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">Max Invoice Date</label>
+                                      <input class="form-control" type="date" id="maxDateSelection" />
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-6">
+                                      <label class="form-label">Instrument Type</label>
+                                      <select class="form-select" id="instrumenttype">
+                                          <option value="">Instrument Type</option>
+                                          <option value="Invoice">Invoice</option>
+                                          <option value="Receipt">Receipt</option>
+                                          <option value="Statement">Statement</option>
+                                      </select>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">Issue Type</label>
+                                      <select class="form-select" id="issuetype">
+                                          <option value="">Issue Type</option>
+                                          <option value="Complain">Complain</option>
+                                          <option value="Dispute">Dispute</option>
+                                          <option value="Feedback">Feedback</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12 text-center">
+                              <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+        .custom-file-input {
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            font-size: 16px;
+        }
+        .custom-file-input input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 30px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .custom-file-input button {
+            display: inline-block;
+            padding: 10px 20px;
+            width: 100%;
+            height: 100px;
+            cursor: pointer;
+            background-color: rgba(219, 219, 219, 0.349);
+            color: white;
+            border: 1px dashed rgb(129, 129, 129);
+            border-radius: 5px;
+        }
+        .upload-file1 {
+            color: var(--unnamed-color-3b444d);
+            text-align: left;
+            font: normal normal 600 14px/19px Inter;
+            letter-spacing: 0px;
+            color: #3B444D;
+            opacity: 1;
+        }
+        .upload-file2 {
+            color: var(--grey);
+            text-align: left;
+            font: italic normal normal 12px/16px Inter;
+            letter-spacing: 0px;
+            color: #9398A5;
+            opacity: 1;
+        }
+        .button {
+          display: inline-block;
+          margin: 4px 2px;
+          background-color: #444;
+          font-size: 14px;
+          padding-left: 32px;
+          padding-right: 32px;
+          height: 50px;
+          line-height: 50px;
+          text-align: center;
+          color: white;
+          text-decoration: none;
+          cursor: pointer;
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+</style>
+
+<script>
+
+function headerWidgetButtonClick(instrumentType)
 {
-  var table = $('#file-datatable').DataTable();
-
-  
-  
-  //table.draw();
-
-}
-
-  function headerWidgetButtonClick(instrumentType)
-  {
-    //alert(instrumentType)
-    instrumentTypeCriteria = instrumentType;
-    var table = $('#file-datatable').DataTable();
-    table.draw();
-  }
-
-  function instrumentTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-
-}
-
-function issueTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-
-}
-
-function mDateOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-}
-
-function searchButtonOnClick()
-{
+  instrumentTypeCriteria = instrumentType;
   var table = $('#file-datatable').DataTable();
   table.draw();
 }
@@ -641,74 +745,27 @@ $(document).on("click", ".statusCriteriaButton", function (event) {
   } else if (event.target.id == "closedStatusRadio") {
     statusCriteria = "Closed";
   }
-
   // Log statusCriteria to verify the selected status
   console.log("Selected Status Criteria:", statusCriteria);
 
-    var table = $('#file-datatable').DataTable();
-    console.log(table.rows().data().toArray());
-    table.draw();
+  var table = $('#file-datatable').DataTable();
+  console.log(table.rows().data().toArray());
+  table.draw();
+});
 
-
-  });
-
-  function searchSelectOnChange()
-  {
-    console.log($("#searchSelectBox").val())
-    if($("#searchSelectBox").val() == "issueType")
-    {
-      document.getElementById('instrumentPanel').style.maxHeight = null;
-      document.getElementById('datePanel').style.maxHeight = null;
-      $("#instrumentTypeSelection").val("");
-      $("#minDateSelection").val("");
-      $("#maxDateSelection").val("");
-
-      var panel = document.getElementById('issuePanel');
-      if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
-
-    }
-    else if($("#searchSelectBox").val() == "instrumentType")
-    {
-      document.getElementById('datePanel').style.maxHeight = null;
-      document.getElementById('issuePanel').style.maxHeight = null;
-      $("#issueTypeSelection").val("");
-      $("#minDateSelection").val("");
-      $("#maxDateSelection").val("");
-
-      var panel = document.getElementById('instrumentPanel');
-      if (panel.style.maxHeight) 
-      {
-        panel.style.maxHeight = null;
-      } 
-      else 
-      {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
-
-
-    }
-    else if($("#searchSelectBox").val() == "createdOn")
-    {
-      document.getElementById('instrumentPanel').style.maxHeight = null;
-      document.getElementById('issuePanel').style.maxHeight = null;
-      $("#issueTypeSelection").val("");
-      $("#instrumentTypeSelection").val("");
-
-      var panel = document.getElementById('datePanel');
-      if (panel.style.maxHeight) 
-      {
-        panel.style.maxHeight = null;
-      } 
-      else 
-      {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
-    }
-  }
   
+function toggleSearch() {
+  var searchContainer = document.querySelector('.search-container');
+  var searchInput = document.querySelector('.search');
+        
+  // Toggle the 'expanded' class
+  searchContainer.classList.toggle('expanded');
+      
+  // If expanded, focus on the search input
+  if (searchContainer.classList.contains('expanded')) {
+    searchInput.focus();
+  }
+}
 </script>
+
 
