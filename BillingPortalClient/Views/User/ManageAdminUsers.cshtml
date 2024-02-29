@@ -6,7 +6,272 @@
 }
 @model BillingPortalClient.ModelViews.AdminUserViewModel;
 
+<script>
 
+     $(document).ready(function(){
+        console.log('*******************************************');
+         // Adjust the delay as needed
+    });
+
+   var table = $("#file-datatable").DataTable();
+
+    function filtermodal(){
+        console.log("Inside filtermodal function.");
+        $("#testModalCenter2").modal('show');
+    }
+
+    function toggleSearch() {
+        var searchContainer = document.querySelector('.search-container');
+        var searchInput = document.querySelector('.search');
+        
+        // Toggle the 'expanded' class
+        searchContainer.classList.toggle('expanded');
+        
+        // If expanded, focus on the search input
+        if (searchContainer.classList.contains('expanded')) {
+            searchInput.focus();
+        }
+    }
+
+   
+        
+        function applyDateFilter() {
+                var statusTypeFilter = $('input[name="statusType"]:checked').attr('myid');  
+                 console.log("statusTypeFilter:", statusTypeFilter); 
+                var userTypeFilter =  $('input[name="userType"]:checked').attr('myid');  
+                var userNameFilter = $("#userNameSelection").val().toLowerCase(); 
+                        console.log("userNameFilter:", userNameFilter); 
+                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var data = this.data();
+                    var userName = data[0].toLowerCase();
+                     console.log("userName", userName);
+                    var userType = data[3];
+                    // Assuming data[4] contains the HTML string
+                    var statusTypeHTML = data[4];
+
+                    // Create a temporary element to parse the HTML
+                    var tempElement = $('<div>').html(statusTypeHTML);
+
+                    // Extract the text content
+                    var statusType = tempElement.text().toLowerCase();
+
+                    console.log("statusType", statusType);
+                    if (
+                        (userName !== '' && !userName.includes(userNameFilter)) ||
+                        (statusTypeFilter !== undefined && statusType !== statusTypeFilter) ||
+                        (userTypeFilter !== undefined && userType !== userTypeFilter)
+                    ) {
+                        $(this.node()).css("display", "none");
+                    } else {
+                        $(this.node()).css("display", "");
+                    }
+                });
+        }
+    table.on('draw', function () {
+        console.log("DataTable Draw Callback");
+        applyDateFilter();
+    });
+
+        $('#filterForm').submit(function (e) {
+            e.preventDefault();
+            $("#filters-div").show();
+            console.log("Form Submitted");
+            $('#testModalCenter2').modal('hide');
+            applyDateFilter();
+            displaySelectedFilters();
+        });
+        
+        $("#clearAllFilters").on("click", function (e) {
+          // Clear the form first
+          $("#testModalCenter2 #filterForm")[0].reset();
+          $('#filterForm').find(':input').val('');
+          // Then clear selectedFilters
+          selectedFilters = [];
+          // Finally, display selected filters and redraw the DataTable
+          displaySelectedFilters();
+          $("#filters-div").hide();
+          applyDateFilter();
+          e.preventDefault();
+        });
+
+        $('#searchright').on('keyup', function () {
+            console.log("search keyup function");
+            table.search(this.value).draw();
+        });
+
+    let selectedRows = [];
+    let selectedFilters = [];
+
+    var filterData = {
+        name: getFilterName(),
+        value: getFilterValue()
+    };
+
+    $('input[name="statusType"]:checked').prop('checked', false);
+    $('input[name="userType"]:checked').prop('checked', false);
+    $("#userNameSelection").val("");  \
+    
+// Function to determine the label based on the selected filters
+function getFilterName() {
+    // Check the selected filter criteria and set the label accordingly
+    var statusTypeChecked = $('input[name="statusType"]:checked');
+    var userTypeChecked = $('input[name="userType"]:checked');
+    if  (userTypeChecked.length > 0) {
+        return "Role";
+    } else if  (statusTypeChecked.length > 0) {
+        return "Status";
+    }
+    // Return an empty string if no specific filter is applied
+    return "";
+}
+
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    const formattedDate = `${day}${ordinalSuffix(day)} ${month} ${year}`;
+    return formattedDate;
+}
+
+function ordinalSuffix(day) {
+    if (day >= 11 && day <= 13) {
+        return 'th';
+    }
+    switch (day % 10) {
+        case 1:
+            return 'st';
+        case 2:
+            return 'nd';
+        case 3:
+            return 'rd';
+        default:
+            return 'th';
+    }
+}
+
+function getFilterValue(filterName) {
+
+    var statusType = $('input[name="statusType"]:checked').attr('myid'); 
+    var userType = $('input[name="userType"]:checked').attr('myid'); 
+
+    // Construct the filter value based on the selected filter name
+    switch (filterName) {
+        case "Role":
+            return userType ? `${userType}` : null;
+        case "Status":
+            return statusType ? `${statusType}` : null;
+        default:
+            return null;
+    }
+}
+
+
+function displaySelectedFilters() {
+    var filterSelections = $("#filterSelections");
+    var filterLabel = $("#filterLabel");
+
+    // Clear previous filter selections
+    filterSelections.empty();
+
+    // Get values from the modal input fields
+    var statusType = $('input[name="statusType"]:checked').attr('myid'); 
+    var userType = $('input[name="userType"]:checked').attr('myid'); 
+
+    // Check if at least one filter value is provided
+    if (statusType || userType ) {
+        filterLabel.show();
+
+        // Create a div for each selected filter
+        var filterNames = ["Role", "Status"];
+
+        filterNames.forEach(function (filterName) {
+            var filterValue = getFilterValue(filterName);
+
+            if (filterValue) {
+                var filterDiv = $("<div>", {
+                    class: "filter-selection",
+                });
+
+                // Create a label for filter name only if filter value is not null or empty
+                var filterNameLabel = $("<label>", {
+                    class: "filter-label",
+                    text: filterName + ": ",
+                });
+
+                // Create a span for filter value
+                var filterValueSpan = $("<span>", {
+                    class: "filter-value",
+                    text: filterValue,
+                });
+
+                // Create a cross icon to remove the filter
+                var crossIcon = $("<i>", {
+                    class: "fa fa-times cross-icon",
+                }).on("click", function () {
+                    console.log("Clicked on cross icon");
+                    // Remove the filter div
+                    filterDiv.remove();
+
+                    // Get the filter name from the parent filter selection
+                    var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                    console.log("Clicked on cross icon for filter:", clickedFilterName);
+
+                    // Remove the filter div
+                    let currentbox = $(this).closest('.filter-selection');
+                    console.log("Clicked on cross icon for currentbox:", currentbox);
+                    currentbox.remove();
+
+                    console.log("Clicked on cross icon for cfilter name:", filterName);
+
+                    // Clear the corresponding modal input fields based on the filter type
+                    switch (filterName) {
+                        case "Role":
+                             $('input[name="userType"]:checked').prop('checked', false);
+                            break;
+                        case "Status":
+                            $('input[name="userStatus"]:checked').prop('checked', false);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+
+                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
+                    console.log("Updated selectedFilters after removal: ", selectedFilters);
+
+                    // Check if displaySelectedFilters is being called
+                    displaySelectedFilters();
+
+                    if (table) {
+                        table.rows().invalidate().draw();
+                        table.page('first').draw('page');
+                    } else {
+                        console.log("Table is not defined");
+                    }
+                });
+
+                // Append elements to the filterDiv
+                filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+                // Append the filterDiv to filterSelections
+                filterSelections.append(filterDiv);
+            }
+        });
+        // Show the filterSelections container
+        filterSelections.show();
+    } else {
+        // If no filters are selected, hide the filter selections container
+        filterLabel.hide();
+        filterSelections.hide();
+        // Hide Filter Div
+        $("#filters-div").hide();
+    }
+}
+
+</script>
 <!-- CONTAINER -->
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
 
@@ -64,33 +329,40 @@
                         <h5 class="card-title">Manage Users</h5>
                     </div>
 
-
                     <div class="col-md-6 col-sm-12">
                         <div class="row">
-                            <div class="col-md-5 search-container right">
-                                
-                            </div>
                             <div class="col-md-1 search-container right">
-                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
-                                <label class="button searchbutton" for="searchright" style="position:relative!important; width:40px;height:40px; justify-content: center; background-color: #f6f5fa; color: #212529; border: 1px solid #e9edf4;"><span class="mglass" style="height:40px;  justify-content: center;"><i class="fa fa-search"></i></span></label>
-                                
+                                <input class="search expandright" id="userNameSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass.png" /></button>
                             </div>
-                            <div class="col-md-5 right" style="text-align:right;">
-                                <button class="btn btn-primary filtering" style="height: 40px!important;background-color: #f6f5fa !important; color: #212529 !important; border: 1px solid #e9edf4;" id="searchSelectBox" onclick="filtermodal()">Filters</button>
-                                 <button type="button" onclick="openUsersModal()" class="btn btn-success ticket">
-                            <i class="fe fe-file-text"></i> Add New User
-                        </button>
-                                @* <button class="btn btn-success ticket text-center" style="height: 50px !important; width: 50%; color: white !important;" onclick="addReceiptsForTicket()">Create a ticket</button> *@
+                             <div class="col-md-2 col-sm-12">
+                      
+                                <div class="row filters-bar">
+                                    <div class="col-md-12 col-sm-12" style="float: left; text-align: center;">
+                                            <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 right" style="text-align:right;">
+                                <button type="button" onclick="openUsersModal()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Add New User</button>
                             </div>
                         </div>
                     </div>
-                 
-                       
 
-                    </div>
+                    <div class="row" style="width:100%">
+                        <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            <div id="filterSelections"></div>
+                         </div>
+                    </div>  
+
                 </div>
-                <hr>
-                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+            </div>
+            <hr>
+            <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
 
                     <div class="table-responsive">
                         <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
@@ -109,13 +381,8 @@
                                 {
                                     foreach( var item in Model.adminUsers )
                                     {
-                                        
-                                    <tr>
-                                   
-                                    <td hidden name="id">@item.Id</td> 
-                                        <td hidden name="password">@item.Password</td>      
-                                                                            
-                                        <td><strong name="firstName">@item.FirstName</strong></td>
+                                    <tr>                         
+                                        <td name="firstName" class="font-weight:bold;">@item.FirstName</td>
                                         <td name="email">@item.Email</td>
                                         <td name="phone">@item.LastName</td>
                                         <td name="mystatus" hidden>@item.Status</td>  
@@ -128,27 +395,27 @@
                                             <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1;" name="status">@item.Status</span></td>
                                         }
                                         <td style="text-align: center; display: flex; gap: 5px;">
-                                        <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
-                                        <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
-                                       
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            @if(item.Status == "Active") {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
-                                                }
-                                            @if(item.Status == "Inactive")
-                                                {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
-                                                }
-                                            @if(item.Status == "Suspended")
-                                                {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
-                                                }
-                                        </ul>
-                                        
+                                            <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
+                                            <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                @if(item.Status == "Active") {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                                    }
+                                                @if(item.Status == "Inactive")
+                                                    {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                                    }
+                                                @if(item.Status == "Suspended")
+                                                    {
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                    }
+                                            </ul>
                                         </td>
+                                        <td hidden name="id">@item.Id</td> 
+                                        <td hidden name="password">@item.Password</td>            
                                     </tr>
                                     }
                                 }
@@ -309,138 +576,192 @@
     </div>
 </div>
 
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+
+        <div class="container">
+          <div class="row">
+            <h1>Filters</h1>
+          </div>
+              <form id="filterForm">
+              <div class="row mb-3">
+                
+
+                                             <div class="panel" id="rolePanel">
+                                              <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                  <label style="text-align:left; width:100%;">Role</label>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="admin" name="userType" >
+                                                      <label>Admin</label>
+                                                  </span>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="regional user" name="userType" >
+                                                      <label>Regional User</label>
+                                                  </span>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="user" name="userType" >
+                                                      <label>User</label>
+                                                  </span>
+                                                </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel" id="statusPanel">
+                                              <div class="row mb-5">
+                                                <div class="col-md-12">
+                                                  <label style="text-align:left; width:100%;">Status</label>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="active" name="statusType" >
+                                                      <label>Active</label>
+                                                  </span>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="inactive" name="statusType" >
+                                                      <label>Inactive</label>
+                                                  </span>
+                                                  <span>
+                                                      <input class="form-control" type="radio" myid="suspended" name="statusType" >
+                                                      <label>Suspended</label>
+                                                  </span>
+                                                </div>
+                                                </div>
+                                            </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  <button type="submit"id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                </div>
+              </div>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
-  var model = @Html.Raw(JsonSerializer.Serialize(Model));
-  console.log({model});
 
-  function submitPermissionButton()
-  {
-    $("#adminPermissionsForm").submit();
-  }
+     var model = @Html.Raw(JsonSerializer.Serialize(Model));
+    console.log({model})
 
-  function openUserPermissions()
-  {
-    $("#adminPermissionsModal").modal('show')
-  }
-
-  function openUsersModal()
-  {
-    $("#testModalCenter1").modal('show');
-
-  }
-
-  function searchButtonOnClick()
-{
-  var table = $('#file-datatable').DataTable();
-  table.draw();
-}
-
-  function openUsersModal2(adminId, firstName, email, phone, password, mystatus, role) {
-
-    console.log("Values I am getting:", adminId, firstName, email, phone, password, mystatus, role);
-     // Set values in the modal form
-    $('#adminUserId').val(adminId);
-    $('#modalFirstName').val(firstName);
-    $('#modalEmail').val(email);
-    $('#modalPhone').val(phone);
-    $('#modalPassword').val(password);
-    $('#modalStatus').val(mystatus);
-
-     role = role.toLowerCase();
-    $('#SelectedRole').val(role);
-
-    // Disable the email input field
-   
-
-    // Set permissions checkboxes
-   var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
-    $("#viewInvoiceCheckbox").prop("checked", adminPermissions.viewInvoice);
-    $("#updateInvoiceCheckbox").prop("checked", adminPermissions.updateInvoice);
-    $("#viewPaymentCheckbox").prop("checked", adminPermissions.viewPayment);
-    $("#updatePaymentCheckbox").prop("checked", adminPermissions.updatePayment);
-    $("#viewStatementCheckbox").prop("checked", adminPermissions.viewStatement);
-    $("#updateStatementCheckbox").prop("checked", adminPermissions.updateStatement);
-    $("#viewCustomerCheckbox").prop("checked", adminPermissions.viewCustomer);
-    $("#updateCustomerCheckbox").prop("checked", adminPermissions.updateCustomer);
-    $("#viewTicketCheckbox").prop("checked", adminPermissions.viewTicket);
-    $("#updateTicketCheckbox").prop("checked", adminPermissions.updateTicket);
-
-     
-    // Set selected regions in the multiselect dropdown
-    var adminRegions = model.adminUsers.find(x => x.id == adminId).adminRegions;
     
-    if (adminRegions.length > 0) {
-        var selectedRegionIds = [];
 
-        adminRegions.forEach(row => {
-            selectedRegionIds.push(row.regionId);
-        });
-
-        $('#regionFormAddUser').val(selectedRegionIds); // Set the selected values
-
-        // If you're using a library that enhances the select element (e.g., Select2),
-        // trigger an update (e.g., trigger 'change' event for Select2)
-        $('#regionFormAddUser').trigger('change');
+    function submitPermissionButton()
+    {
+        $("#adminPermissionsForm").submit();
     }
 
+    function openUserPermissions()
+    {
+        $("#adminPermissionsModal").modal('show')
+    }
+
+    function openUsersModal()
+    {
+        $("#testModalCenter1").modal('show');
+
+    }
+
+    $('.editAdminUserButton').on('click', function () {
+        // Retrieve user information from the table row
+        var adminId = $(this).closest("tr").find('[name=id]').text();
+        var firstName = $(this).closest("tr").find('[name=firstName]').text();
+        var email = $(this).closest("tr").find('[name=email]').text();
+        var phone = $(this).closest("tr").find('[name=phone]').text();
+        var password = $(this).closest("tr").find('[name=password]').text();
+        var mystatus = $(this).closest("tr").find('[name=mystatus]').text();
+        var role = $(this).closest("tr").find('[name=role]').text();  
     
-     $('#modalTitle').text('Edit User');
-     $('#adminRegionpart').css({
-        'position': 'absolute',
-        'left': '-9999px',
-        'opacity': '0'
-    });
+        console.log("Values I am passing:", adminId, firstName, email, phone, password, mystatus, role);
+        setTimeout(function () {
+            // Open the edit modal
+            openUsersModal2(adminId, firstName, email, phone, password, mystatus, role);
+        }, 100);
 
-    // Modal opening logic here
-    $("#testModalCenter1").modal('show');
-}
+    function openUsersModal2(adminId, firstName, email, phone, password, mystatus, role) {
 
-  $(document).ready(function () {
+        console.log("Values I am getting:", adminId, firstName, email, phone, password, mystatus, role);
+        // Set values in the modal form
+        $('#adminUserId').val(adminId);
+        $('#modalFirstName').val(firstName);
+        $('#modalEmail').val(email);
+        $('#modalPhone').val(phone);
+        $('#modalPassword').val(password);
+        $('#modalStatus').val(mystatus);
 
+        role = role.toLowerCase();
+        $('#SelectedRole').val(role);
+
+        // Set permissions checkboxes
+        var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+        $("#viewInvoiceCheckbox").prop("checked", adminPermissions.viewInvoice);
+        $("#updateInvoiceCheckbox").prop("checked", adminPermissions.updateInvoice);
+        $("#viewPaymentCheckbox").prop("checked", adminPermissions.viewPayment);
+        $("#updatePaymentCheckbox").prop("checked", adminPermissions.updatePayment);
+        $("#viewStatementCheckbox").prop("checked", adminPermissions.viewStatement);
+        $("#updateStatementCheckbox").prop("checked", adminPermissions.updateStatement);
+        $("#viewCustomerCheckbox").prop("checked", adminPermissions.viewCustomer);
+        $("#updateCustomerCheckbox").prop("checked", adminPermissions.updateCustomer);
+        $("#viewTicketCheckbox").prop("checked", adminPermissions.viewTicket);
+        $("#updateTicketCheckbox").prop("checked", adminPermissions.updateTicket);
+        
+        // Set selected regions in the multiselect dropdown
+        var adminRegions = model.adminUsers.find(x => x.id == adminId).adminRegions;
     
+        if (adminRegions.length > 0) {
+            var selectedRegionIds = [];
 
-   $('.editAdminUserButton').on('click', function () {
-    // Retrieve user information from the table row
-    var adminId = $(this).closest("tr").find('[name=id]').text();
-    var firstName = $(this).closest("tr").find('[name=firstName]').text();
-    var email = $(this).closest("tr").find('[name=email]').text();
-    var phone = $(this).closest("tr").find('[name=phone]').text();
-    var password = $(this).closest("tr").find('[name=password]').text();
-    var mystatus = $(this).closest("tr").find('[name=mystatus]').text();
-    var role = $(this).closest("tr").find('[name=role]').text();
+            adminRegions.forEach(row => {
+                selectedRegionIds.push(row.regionId);
+            });
 
-   
-   
+            $('#regionFormAddUser').val(selectedRegionIds); // Set the selected values
+
+            // If you're using a library that enhances the select element (e.g., Select2),
+            // trigger an update (e.g., trigger 'change' event for Select2)
+            $('#regionFormAddUser').trigger('change');
+        }
     
-    console.log("Values I am passing:", adminId, firstName, email, phone, password, mystatus, role);
-     setTimeout(function () {
-        // Open the edit modal
-      openUsersModal2(adminId, firstName, email, phone, password, mystatus, role);
-     }, 100); // Adjust the delay as needed
-});
+        $('#modalTitle').text('Edit User');
+        $('#adminRegionpart').css({
+            'position': 'absolute',
+            'left': '-9999px',
+            'opacity': '0'
+        });
 
+        // Modal opening logic here
+        $("#testModalCenter1").modal('show');
+    }
+
+ 
 
     $('.userPermissionsButton').on('click', function () {
-      console.log(model)
+        
+        console.log(model);
+        var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
+        $("#adminIdPermissions").val(adminId);
 
-      var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
-      $("#adminIdPermissions").val(adminId);
+        var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
 
-      var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+        document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+        document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+        document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
+        document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
+        document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
+        document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
+        document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
+        document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
+        document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
+        document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
+        document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
 
-      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
-      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
-      document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
-      document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
-      document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
-      document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
-      document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
-      document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
-      document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
-      document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
-      document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
-
-      $("#adminPermissionsModal").modal('show');
+        $("#adminPermissionsModal").modal('show');
 
     });
 
@@ -454,60 +775,6 @@
       tags:true,
     })
 
-
-
-
-
-var table = $("#file-datatable").DataTable();
-    function applyDateFilter() {
-
-            var statusType = $("#statustype").val();
-            var userType = $("#usertype").val();
-
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                var data = this.data();
-                console.log(data);
-                var DatastatusType = data[3];
-                var DatauserType = data[4];
-
-                if ((statusType !== "" && DatastatusType !== statusType) ||
-                    (userType !== "" && DatauserType !== userType)) 
-                    {
-                    $(this.node()).hide();
-                } else {
-                    $(this.node()).show();
-                }
-            });
-        }
-
-        table.on('draw', function () {
-            console.log("DataTable Draw Callback");
-            applyDateFilter();
-        });
-
-        $('#filterForm').submit(function (e) {
-            e.preventDefault();
-            console.log("Form Submitted");
-            $('#testModalCenter2').modal('hide');
-            applyDateFilter();
-        });
-
-        $('.filtering').click(function () {
-            console.log("Filter Modal Function");
-            $("#testModalCenter2").modal('show');
-        });
-
-        $('#clearButton').click(function () {
-            $('#filterForm').find(':input').val('');
-            applyDateFilter();
-        });
-        $('#searchright').on('keyup', function () {
-                table.search(this.value).draw();
-        });
-
-
-    
-  });
 
   function setPermissionCheckboxes()
   {
@@ -531,16 +798,5 @@ var table = $("#file-datatable").DataTable();
     $("#adminPermissionsModal").modal('show');
   }
 
-    function toggleSearch() {
-        var searchContainer = document.querySelector('.search-container');
-        var searchInput = document.querySelector('.search');
-        
-        // Toggle the 'expanded' class
-        searchContainer.classList.toggle('expanded');
-        
-        // If expanded, focus on the search input
-        if (searchContainer.classList.contains('expanded')) {
-            searchInput.focus();
-        }
-    }
+   
 </script>
