@@ -2,57 +2,57 @@
   $(document).ready(function () {
 
      //alert('document is ready')
-     $.ajax({
-        url: "/Authentication/GetCurrentCustomer",
-        type: 'GET',
-        dataType: 'json', // added data type
-        success: function (res) {
-            console.log(res);
+    //  $.ajax({
+    //     url: "/Authentication/GetCurrentCustomer",
+    //     type: 'GET',
+    //     dataType: 'json', // added data type
+    //     success: function (res) {
+    //         console.log(res);
 
-            var optionsAsString = "";
+    //         var optionsAsString = "";
 
-            let accounts = [];
+    //         let accounts = [];
 
-            if (res.isMain == false) {
-                accounts.push(res.customerUserCustomers[0].parentAccount);
-                for (var i = 0; i < accounts.length; i++) {
-                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
+    //         if (res.isMain == false) {
+    //             accounts.push(res.customerUserCustomers[0].parentAccount);
+    //             for (var i = 0; i < accounts.length; i++) {
+    //                 $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
                     
-                    $option.attr('selected', 'selected');
+    //                 $option.attr('selected', 'selected');
                     
-                    $('#changeAccountDropDown').append($option);
-                }
-            }
-            else {
-                accounts = res.accounts
-                for (var i = 0; i < accounts.length; i++) {
-                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
-                    if (accounts[i].isSelected == true) {
-                        $option.attr('selected', 'selected');
-                    }
-                    $('#changeAccountDropDown').append($option);
-                }
-            }
-            //$('#changeAccountDropDown').append(optionsAsString);
+    //                 $('#changeAccountDropDown').append($option);
+    //             }
+    //         }
+    //         else {
+    //             accounts = res.accounts
+    //             for (var i = 0; i < accounts.length; i++) {
+    //                 $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
+    //                 if (accounts[i].isSelected == true) {
+    //                     $option.attr('selected', 'selected');
+    //                 }
+    //                 $('#changeAccountDropDown').append($option);
+    //             }
+    //         }
+    //         //$('#changeAccountDropDown').append(optionsAsString);
 
-            //var changeDrop = document.getElementById("changeAccountDropDown");
-        }
-    });
+    //         //var changeDrop = document.getElementById("changeAccountDropDown");
+    //     }
+    // });
 
-    $.ajax({
-        url: "/Authentication/GetCurrentCustomer",
-        type: 'GET',
-        dataType: 'json', // added data type
-        success: function (res) {
-            console.log(res);
+    // $.ajax({
+    //     url: "/Authentication/GetCurrentCustomer",
+    //     type: 'GET',
+    //     dataType: 'json', // added data type
+    //     success: function (res) {
+    //         console.log(res);
 
-            $("#customerNameText").text(res.name);
-            $("#customerDesignationText").text(res.designation);
-            $("#customerEmailText").text(res.email)
+    //         $("#customerNameText").text(res.name);
+    //         $("#customerDesignationText").text(res.designation);
+    //         $("#customerEmailText").text(res.email)
 
 
-        }
-    });
+    //     }
+    // });
 
    // Add an event listener for region dropdown change
 $('#Location').on('change', function () {
@@ -87,34 +87,34 @@ $('#Location').on('change', function () {
 });
 
 // Initial population of the region dropdown
-function populateRegionDropdown() {
-    // Call API to get regions
-    $.ajax({
-        url: '/CustomerSel/GetAllCustomersRegion',
-        type: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            // Assuming data is an array of regions
-            console.log(data);
-            var regionDropdown = $('#Location');
-            regionDropdown.empty(); // Clear existing options
+// function populateRegionDropdown() {
+//     // Call API to get regions
+//     $.ajax({
+//         url: '/CustomerSel/GetAllCustomersRegion',
+//         type: 'GET',
+//         dataType: 'json',
+//         success: function (data) {
+//             // Assuming data is an array of regions
+//             console.log(data);
+//             var regionDropdown = $('#Location');
+//             regionDropdown.empty(); // Clear existing options
 
-            // Populate options
-            $.each(data, function (index, region) {
-                regionDropdown.append($('<option>', {
-                    value: region,
-                    text: region
-                }));
-            });
-        },
-        error: function (error) {
-            console.error('Error fetching regions:', error);
-        }
-    });
-}
+//             // Populate options
+//             $.each(data, function (index, region) {
+//                 regionDropdown.append($('<option>', {
+//                     value: region,
+//                     text: region
+//                 }));
+//             });
+//         },
+//         error: function (error) {
+//             console.error('Error fetching regions:', error);
+//         }
+//     });
+// }
 
-// Populate the region dropdown
-populateRegionDropdown();
+// // Populate the region dropdown
+// populateRegionDropdown();
 
 
 

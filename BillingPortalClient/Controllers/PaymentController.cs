@@ -101,14 +101,6 @@ namespace BillingPortalClient.Controllers
       string adminStatus = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "adminStatus").Value;
 
 
-      //List<Models.Payment> payments = new List<Models.Payment>();
-
-
-      //using( var response = await _httpClient.GetAsync( $"Payment/GetPaymentsByAccountNumber/{_accountNumber}" ) )
-      //{
-      //  string apiResponse = await response.Content.ReadAsStringAsync();
-      //  payments = JsonConvert.DeserializeObject<List<Models.Payment>>( apiResponse );
-      //}
       List<BillingSystem.Service.Payment> allPayments = new List<BillingSystem.Service.Payment>();
       {
         var client = new Client(baseUrl, _httpClient);

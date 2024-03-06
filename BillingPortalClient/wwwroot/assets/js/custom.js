@@ -179,7 +179,6 @@
     });
 
 
-
     // ______________ SWITCHER-toggle ______________//
 
     $('.layout-setting').on("click", function (e) {
@@ -284,7 +283,7 @@ $('.off-canvas').on('click', function () {
 });
 // FOOTER
 if (!document.querySelector('.login-img')) {
-    document.getElementById("year").innerHTML = new Date().getFullYear();
+    // document.getElementById("year").innerHTML = new Date().getFullYear();
 }
 
 

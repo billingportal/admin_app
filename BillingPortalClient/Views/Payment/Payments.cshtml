@@ -82,39 +82,40 @@
                 <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
                   <div class="row" style="width:100%;">
 
-                    <div class="col-md-6 col-sm-12">
-                      <h5 class="card-title text black">Showing details of @Model.accountName</h5>
-                      <h5 class="card-sub-title text"><span>Account No: </span><span class="orange">@Model.accountNumber</span></h5>
-                    </div>
+                    <div class="col-md-7 col-sm-12">
+              <h5 class="card-title text black">Showing details of @Model.accountName</h5>
+              <h5 class="card-sub-title text"><span>Account No: </span><span class="orange">@Model.accountNumber</span>
+              </h5>
+            </div>
+            <div class="col-md-2 col-sm-12 search-container right" style="text-align:right;">
+                                <input class="search expandright" id="receiptNumberSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass.png" /></button>
+            </div>
+            <div class="col-md-2 col-sm-12">
+              <div class="row filters-bar">
 
-                    <div class="col-md-4 col-sm-12">
-                      <div class="row filters-bar">
-
-                        <div class="col-md-2 col-sm-2">
-                          <button class="btn btn-secondary search-btn" type="button" onclick="searchButtonOnClick()">
-                            <i class="fa fa-search"></i>
-                          </button>
-                        </div>
-                        <div class="col-md-8 col-sm-8">
-                          <select class="form-select w-100" id="searchSelectBox" onchange="searchSelectOnChange()">
-                              <option value="">Filter by:</option>
-                              <option value="createdOn">Created On</option>
-                          </select>
-                        </div>
-                        <div class="col-md-2 col-sm-2">
-                          <div class="btn-export" id="exportButtonsDiv"></div>
-                        </div>
-
-                      </div>
-                    </div>
-
-                    @*<div class="col-md-2 col-sm-12">
-                      <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket">
-                       <i class="fe fe-file-text"></i> Raise Ticket </button>
-                    </div>*@
-
-                  </div>
+                <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
+                  <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
                 </div>
+
+                <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
+                  <div class="btn-export" id="exportButtonsDiv"></div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <div class="row" style="width:100%">
+                        <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            <div id="filterSelections"></div>
+                         </div>
+                    </div>
+        </div>
                 <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
 
                   <div class="row mb-2">
@@ -143,7 +144,6 @@
                                     <th class="border-bottom-0">Account Name</th>
                                     <th class="border-bottom-0">Account No.</th>
                                     <th class="border-bottom-0">Region</th>
-
                                     <th class="border-bottom-0">Receiver's Bank</th>
                                     <th class="border-bottom-0">Payment Mode</th>
                                     <th class="border-bottom-0">Date</th>
@@ -202,12 +202,6 @@
 <div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
-      @*<div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>*@
       <div class="modal-body">
         <div class="container">
           <h2 class="text-center">Create Ticket</h2>
@@ -217,17 +211,13 @@
               <div class="col-md-6">
       	        <label style="font-weight:bold">Instrument Type<span style="color:red; margin-left:2px">*</span></label>
                 <select asp-for="ticketViewModel.instrumentType" class="form-select" aria-label="Default select example">
-                  
-                  @*<option value="Invoice" disabled>Invoice</option>*@
                   <option value="Receipt" selected>Receipt</option>
-                  @*<option value="Statement" disabled>Statement</option>*@
                 </select>
               </div>
       
               <div class="col-md-6">
       	        <label style="font-weight:bold">Issue Type<span style="color:red; margin-left:2px">*</span></label>
                 <select asp-for="ticketViewModel.issueType" class="form-select" aria-label="Default select example">
-                  @*<option selected>Select your issue type</option>*@
                   <option value="Complain" selected>Complain</option>
                   <option value="Dispute">Dispute</option>
                   <option value="Feedback">Feedback</option>
@@ -239,12 +229,7 @@
             <div class="row mb-3">
     	        <div class="col-md-12">
         	        <label style="font-weight:bold">Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
-        	        @*<input type="text" class="form-control" placeholder="Enter Instrument number" name="email">*@
-                      <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers" multiple class="form-select" >
-                      
-                        @*<option value="a" selected>a</option>
-                        <option value="b" selected>b</option>
-                        <option value="c" selected>c</option>*@
+        	            <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers" multiple class="form-select" >
                       </select>
                 </div>
             </div>
@@ -284,239 +269,379 @@
   </div>
 </div>
 
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+
+        <div class="container">
+          <div class="row">
+            <h1>Filters</h1>
+          </div>
+
+          <form id="filterForm">
+            <div class="row mb-3">
+              <div class="panel" id="datePanel">
+                <div class="row mb-5">
+                  <div class="col-md-12">
+                    <label style="text-align:left; float:left;">Receipt Date</label>
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                  </div>
+                  <div class="col-md-6">
+                    <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                  </div>
+                </div>
+              </div>
+              <div class="panel" id="receiptNumberPanel">
+                <div class="row mb-5">
+                  <div class="col-md-12">
+                    <label style="text-align:left; width:100%;">Payment Mode</label>
+                                                  <span>
+                                                      <input  class="form-control" type="radio" name="paymentMode" myid="online" value="" checked>
+                                                      <label>Online</label>
+                                                  </span>
+                                                  <span>
+                                                      <input class="form-control" type="radio" name="paymentMode" myid="offline" value="">
+                                                      <label>Offline</label>
+                                                  </span>
+                  
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
 
-    let selectedRows = [];
+ // let selectedRows = [];
+  let selectedFilters = [];
+  var selectedPaymentMode="online";
+
+  var filterData = {
+    name: getFilterName(),
+    value: getFilterValue()
+};
 
   var model = @Html.Raw(JsonSerializer.Serialize(Model));
   console.log({model})
 
-$(document).on("click",".receiptsTableCheckbox",function(e){
-// your code goes here
-  console.log(event);
+  $("#minDateSelection").val("");
+  $("#maxDateSelection").val("");
+  $('input[name="paymentMode"]:checked').prop('checkedd', false);
 
-  var selectedRow = model.paymentRows.find(x => x.id == event.target.id)
+  var statusCriteria = "all";
 
-  //console.log('docNumer', selectedRow)
+    $(document).ready(function () {
+        console.log('*******************************************');
 
-  if(event.target.checked)
-    {
-      selectedRows.push(event.target.id);
+          $("#ticketViewModel_instrumentNumbers").select2({
+            width: '100%',
+            templateResult:null,
+            tags:true,
+          })
+    }); 
+
+     if (!$.fn.DataTable.isDataTable('#file-datatable')) {
+        table = $("#file-datatable").DataTable({
+            // ... (your existing DataTable configuration)
+            drawCallback: function () {
+                var minRecieptDate = new Date($("#minDateSelection").val());
+                var maxRecieptDate = new Date($("#maxDateSelection").val());
+                console.log("minRecieptDate:", minRecieptDate);
+                var recieptNumberFilter = $("#receiptNumberSelection").val().toLowerCase();
+                selectedPaymentMode= $('input[name="paymentMode"]:checked').attr('myid');
+                if (selectedPaymentMode === '' || selectedPaymentMode === undefined){
+                  selectedPaymentMode = "online"
+                }
+               
+                console.log("selectedPaymentMode",selectedPaymentMode);
+                this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var data = this.data();
+                    var recieptNumber = data[1].toLowerCase();
+                    var recieptDate = new Date(data[2]);
+                    console.log("recieptDate:",recieptDate);
+                    var paymentMode = data[5].toLowerCase();
+                    console.log("paymentMode",paymentMode);
+                 
+                    if (
+                        (!isNaN(minRecieptDate) && recieptDate < minRecieptDate) ||
+                        (!isNaN(maxRecieptDate) && recieptDate > maxRecieptDate) ||
+                        (recieptNumber !== '' && !recieptNumber.includes(recieptNumberFilter)) ||
+                        (selectedPaymentMode !== undefined && paymentMode !== selectedPaymentMode)
+                    ) {
+                        $(this.node()).css("display", "none");
+                    } else {
+                        $(this.node()).css("display", "");
+                    }
+                });
+            },
+        });
     }
-    else
-    {
-      selectedRows = selectedRows.filter(x => x != event.target.id);
-    }
 
-  //if(selectedRow.InvoiceStatuses.length > 0 && selectedRow.InvoiceStatuses[0].Status == 'Paid')
-  //{
-  //  event.target.checked = false;
-  //  alert('Selected invoice is already paid.')
-  //}
-  //else
-  //{
-  //  if(event.target.checked)
-  //  {
-  //    selectedRows.push(event.target.id);
-  //  }
-  //  else
-  //  {
-  //    selectedRows = selectedRows.filter(x => x != event.target.id);
-  //  }
-  //  //(... rest of your JS code)
-  //  console.log(selectedRows);
-  //  $("#selectedInvoicesCount").text(selectedRows.length);
-  //  console.log(model)
-
-  //}
-
-
-  
-});
-
-
-  $(document).ready(function(){
-    console.log('*******************************************')
-    //document.getElementById("fullPayment").checked = true;
-
-
-
-    $("#ticketViewModel_instrumentNumbers").select2({
-      width: '100%',
-      //pointer-events:none,
-      //tags: tags1,
-      templateResult:null,
-      tags:true,
-      //tokenSeparators: [',', ' '],
-      //disabled: true
-      //readonly: true
-    })
-
-    //$('#collapseOne').collapse({
-    //  toggle: false
-    //})
-  //let selectedRows = [];
-
-
-  //    $(".invoiceTableCheckbox").on('click', function(event){
-    
-  //        console.log(event);
-  //        if(event.target.checked)
-  //        {
-  //          selectedRows.push(event.target.id);
-  //        }
-  //        else
-  //        {
-  //          selectedRows = selectedRows.filter(x => x != event.target.id);
-  //        }
-  //        //(... rest of your JS code)
-  //        console.log(selectedRows);
-  //    });
-  
-
-
-
+  $("#minDateSelection, #maxDateSelection").on("change", function () {
+        // if (table) {
+        //     table.rows().invalidate().draw();
+        //     table.page('first').draw('page');
+        // } else {
+        //     console.log("Table is not defined");
+        // }
   });
 
+  $("#filterForm").on("submit", function (event) {
+        event.preventDefault();
+        $("#filters-div").show();
+        displaySelectedFilters();
+        if (table) {
+            table.rows().invalidate().draw();
+            // table.page('first').draw('page');
+            table.draw();
+        } else {
+            console.log("Table is not defined");
+        }
+        $("#testModalCenter2").modal("hide");
+  });
 
+  $("#receiptNumberSelection").on("keyup", function () {
+        if (table) {
+            table.rows().invalidate().draw();
+            //table.page('first').draw('page');
+            table.draw();
+        } else {
+            console.log("Table is not defined");
+        }
+  });
+
+    $("#clearAllFilters").on("click", function (e) {
+		// Clear the form first
+		$("#testModalCenter2 #filterForm")[0].reset();
+		// Then clear selectedFilters
+		selectedFilters = [];
+		// Finally, display selected filters and redraw the DataTable
+		displaySelectedFilters();
+		table.draw(); // Clear DataTable
+		table.page('first').draw('page');
+		$("#filters-div").hide();
+		e.preventDefault();
+	});
+ 
+ function filtermodal() {
+    // Show the filter modal (replace with your actual modal code)
+    $("#testModalCenter2").modal('show');
     
-var statusCriteria = "all";
+  }  
 
-$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-  var trNode = settings.aoData[dataIndex].nTr;
-
-  //var inv = model.disputedInvoices.find(x => x.Id == Number(trNode.getAttribute("data-InvoiceIdAttribute")))
-  //if(inv != null && inv != undefined)
-  //{
-  //  //alert('row found')
-  //  return true;
-  //}
-  //return false;
-  if(statusCriteria == "all")
-  {
-    if($("#searchSelectBox").val() == "")
-    {
-      return true;
+// Function to determine the label based on the selected filters
+function getFilterName() {
+    // Check the selected filter criteria and set the label accordingly
+     var paymentModeChecked = $('input[name="paymentMode"]:checked');
+    if ($("#minDateSelection").val() || $("#maxDateSelection").val()) {
+        return "Reciept Date";
+     } else if (paymentModeChecked.length > 0) {
+        return "Payment Mode";
     }
-    //else if($("#searchSelectBox").val() == "issueType")
-    //{
-    //  if(trNode.getAttribute("data-IssueTypeAttribute").toLowerCase().includes($("#issueTypeSelection").val().toLowerCase()))
-    //  {
-    //    return true;
-    //  }
-    //}
-    //else if($("#searchSelectBox").val() == "instrumentType")
-    //{
-    //  if(trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase().includes($("#instrumentTypeSelection").val().toLowerCase()))
-    //  {
-    //    return true;
-    //  }
-
-    //}
-    else if($("#searchSelectBox").val() == "createdOn")
-    {
-      var minDate = new Date( $("#minDateSelection").val());
-      var maxDate = new Date( $("#maxDateSelection").val());
-      //var ticketDate = trNode.getAttribute("data-CreatedDateAttribute");
-      var ticketDateDay = trNode.getAttribute("data-day");
-      var ticketDateMonth = trNode.getAttribute("data-month");
-      var ticketDateYear = trNode.getAttribute("data-year");
-      var ticketDate = new Date(ticketDateYear, Number(ticketDateMonth) - 1, ticketDateDay);
-
-      if(maxDate.toString() == "Invalid Date")
-      {
-        maxDate = new Date(9999,12,30);
-      }
-      if(minDate.toString() == "Invalid Date")
-      {
-        minDate = new Date(0000,00,00);
-      }
-
-      if(ticketDate >= minDate && ticketDate <= maxDate)
-      {
-        return true;
-      }
-
-    }
-  }
-  return false;
-
-});
-
-  function instrumentTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-
+    // Return an empty string if no specific filter is applied
+    return "";
 }
 
-function issueTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
 
+    const formattedDate = `${day}${ordinalSuffix(day)} ${month} ${year}`;
+    return formattedDate;
 }
+
+function ordinalSuffix(day) {
+    if (day >= 11 && day <= 13) {
+        return 'th';
+    }
+    switch (day % 10) {
+        case 1:
+            return 'st';
+        case 2:
+            return 'nd';
+        case 3:
+            return 'rd';
+        default:
+            return 'th';
+    }
+}
+
+function getFilterValue(filterName) {
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var paymentMode = $('input[name="paymentMode"]:checked').attr('myid');
+
+    // Construct the filter value based on the selected filter name
+    switch (filterName) {
+        case "Reciept Date":
+             return minDate && maxDate ? `From: ${formatDate(minDate)} To ${formatDate(maxDate)}` : null;
+         case "Payment Mode":
+            return paymentMode ? `${paymentMode}` : null;
+        default:
+            return null;
+    }
+}
+
+function displaySelectedFilters() {
+    var filterSelections = $("#filterSelections");
+    var filterLabel = $("#filterLabel");
+
+    // Clear previous filter selections
+    filterSelections.empty();
+
+    // Get values from the modal input fields
+    var minDate = $("#minDateSelection").val();
+    var maxDate = $("#maxDateSelection").val();
+    var recieptNumber = $("#receiptNumberSelection").val();
+    var paymentMode = $('input[name="paymentMode"]:checked').attr('myid');;
+
+
+    // Check if at least one filter value is provided
+    if (minDate || maxDate || paymentMode) {
+        filterLabel.show();
+
+        // Create a div for each selected filter
+        var filterNames = ["Reciept Date", "Payment Mode"];
+
+        filterNames.forEach(function (filterName) {
+            var filterValue = getFilterValue(filterName);
+
+            if (filterValue) {
+                var filterDiv = $("<div>", {
+                    class: "filter-selection",
+                });
+
+                // Create a label for filter name only if filter value is not null or empty
+                var filterNameLabel = $("<label>", {
+                    class: "filter-label",
+                    text: filterName + ": ",
+                });
+
+                // Create a span for filter value
+                var filterValueSpan = $("<span>", {
+                    class: "filter-value",
+                    text: filterValue,
+                });
+
+               // Create a cross icon to remove the filter
+                var crossIcon = $("<i>", {
+                    class: "fa fa-times cross-icon",
+                }).on("click", function () {
+                   console.log("Clicked on cross icon");
+                    // Remove the filter div
+                    filterDiv.remove();
+                   
+
+                   // Get the filter name from the parent filter selection
+                   var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                   console.log("Clicked on cross icon for filter:", clickedFilterName);
+
+                   // Remove the filter div
+                   let currentbox = $(this).closest('.filter-selection');
+                    console.log("Clicked on cross icon for currentbox:", currentbox);
+                   currentbox.remove();
+
+                   console.log("Clicked on cross icon for cfilter name:", filterName);
+
+                  // Clear the corresponding modal input fields based on the filter type
+                  switch (filterName) {
+                      case "Reciept Date":
+                          $("#minDateSelection, #maxDateSelection").val("");
+                          break;
+                      case "Payment Mode":
+                          $('input[name="paymentMode"]').prop('checked', false);
+                          break;
+                      default:
+                          break;
+                  }
+                 
+                  
+                   // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+                  
+                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
+                    console.log("Updated selectedFilters after removal: ", selectedFilters);
+
+                    // Check if displaySelectedFilters is being called
+                    displaySelectedFilters();
+
+                    if (table) {
+                        table.rows().invalidate().draw();
+                        table.page('first').draw('page');
+                    } else {
+                        console.log("Table is not defined");
+                    }
+                });
+
+
+                // Append elements to the filterDiv
+                filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+
+                // Append the filterDiv to filterSelections
+                filterSelections.append(filterDiv);
+            }
+        });
+        // Show the filterSelections container
+        filterSelections.show();
+    } else {
+        // If no filters are selected, hide the filter selections container
+        filterLabel.hide();
+        filterSelections.hide();
+        // Hide Filter Div
+			$("#filters-div").hide();
+    }
+}
+
+if (table != undefined && table != null) {
+    table.destroy();
+}
+
+var selectedRows = [];
 
 function mDateOnChange()
 {
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
+ // var table = $('#file-datatable').DataTable();
+ // table.draw();
 }
-
-function searchButtonOnClick()
-{
-  var table = $('#file-datatable').DataTable();
-  table.draw();
-}
-
-
-  function searchSelectOnChange()
-  {
-    console.log($("#searchSelectBox").val())
-    //if($("#searchSelectBox").val() == "issueType")
-    //{
-    //  document.getElementById('instrumentPanel').style.maxHeight = null;
-    //  document.getElementById('datePanel').style.maxHeight = null;
-    //  $("#instrumentTypeSelection").val("");
-    //  $("#minDateSelection").val("");
-    //  $("#maxDateSelection").val("");
-
-    //  var panel = document.getElementById('issuePanel');
-    //  if (panel.style.maxHeight) {
-    //  panel.style.maxHeight = null;
-    //  } else {
-    //    panel.style.maxHeight = panel.scrollHeight + "px";
-    //  } 
-
-    //}
-    if($("#searchSelectBox").val() == "")
-    {
-      document.getElementById('datePanel').style.maxHeight = null;
-      //document.getElementById('instrumentPanel').style.maxHeight = null;
-      //$("#issueTypeSelection").val("");
-      $("#minDateSelection").val("");
-      $("#maxDateSelection").val("");
-      //$("#instrumentTypeSelection").val("");
-
-    }
-    else if($("#searchSelectBox").val() == "createdOn")
-    {
-      //document.getElementById('instrumentPanel').style.maxHeight = null;
-      //document.getElementById('issuePanel').style.maxHeight = null;
-      //$("#issueTypeSelection").val("");
-      //$("#instrumentTypeSelection").val("");
-
-      var panel = document.getElementById('datePanel');
-      if (panel.style.maxHeight) 
-      {
-        panel.style.maxHeight = null;
-      } 
-      else 
-      {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      } 
+// Handle checkbox clicks
+$(document).on("change", ".receiptsTableCheckbox", function () {
+  var docNumber = $(this).closest("tr").attr("data-docNumber");
+    console.log(docNumber);
+  if ($(this).prop("checked")) {
+    // If checkbox is checked, add the document number to the array
+    selectedRows.push(docNumber);
+  } else {
+    // If checkbox is unchecked, remove the document number from the array
+    var index = selectedRows.indexOf(docNumber);
+    if (index !== -1) {
+      selectedRows.splice(index, 1);
     }
   }
+});
+
+
 
   function addReceiptsForTicket()
   {
@@ -562,6 +687,19 @@ function searchButtonOnClick()
     $("#testModalCenter1").modal('show');
   
   });
+
+  function toggleSearch() {
+        var searchContainer = document.querySelector('.search-container');
+        var searchInput = document.querySelector('.search');
+        
+        // Toggle the 'expanded' class
+        searchContainer.classList.toggle('expanded');
+        
+        // If expanded, focus on the search input
+        if (searchContainer.classList.contains('expanded')) {
+            searchInput.focus();
+        }
+    }
 
 
 </script>
