@@ -9,29 +9,29 @@ using static BillingPortalClient.ModelViews.CustomerSelModelViews;
 
 namespace BillingPortalClient.Services
 {
-  public class OracleApiServices
-  {
-    Uri oracleBaseAddress = new Uri( "http://88.85.242.29/api/" );
-    protected readonly HttpClient _httpClientOracle;
-    public OracleApiServices()
+    public class OracleApiServices
     {
-      _httpClientOracle = new HttpClient();
-      _httpClientOracle.BaseAddress = oracleBaseAddress;
-    }
-    public async Task<List<InvoiceDTO>> GetCustomerInvoicesFromOracle(string accountNumber)
-    {
-      List<InvoiceDTO> invoices = new List<InvoiceDTO>();
-      using( var response = await _httpClientOracle.GetAsync( $"Invoice/GetCustomerInvoices/{accountNumber}" ) )
-      {
-        string apiResponse = await response.Content.ReadAsStringAsync();
-        if( JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse ) != null )
+        Uri oracleBaseAddress = new Uri("http://88.85.242.29/api/");
+        protected readonly HttpClient _httpClientOracle;
+        public OracleApiServices()
         {
-          invoices = JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse );
+            _httpClientOracle = new HttpClient();
+            _httpClientOracle.BaseAddress = oracleBaseAddress;
         }
-      }
+        public async Task<List<InvoiceDTO>> GetCustomerInvoicesFromOracle(string accountNumber)
+        {
+            List<InvoiceDTO> invoices = new List<InvoiceDTO>();
+            using (var response = await _httpClientOracle.GetAsync($"Invoice/GetCustomerInvoices/{accountNumber}"))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                if (JsonConvert.DeserializeObject<List<InvoiceDTO>>(apiResponse) != null)
+                {
+                    invoices = JsonConvert.DeserializeObject<List<InvoiceDTO>>(apiResponse);
+                }
+            }
 
-      return invoices;
-    }
+            return invoices;
+        }
 
 
         public async Task<List<CustomerList>> GetAllCustomers()
@@ -96,16 +96,58 @@ namespace BillingPortalClient.Services
             throw new Exception($"Error fetching customers. Status code: {response.StatusCode}");
         }
 
-        public async Task<List<CustomerList>> GetCustomersByLocation(string location)
+        public async Task<List<CustomerList>> GetSuggestionsByKeyword(string keyword)
         {
-             try
+            // Modify this method to fetch and return suggestions based on the provided keyword
+            try
             {
-                Console.WriteLine("Request in Services for: {location}");
-            HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetCustomersByLocationFromOracle/{location}");
-
-            if (response.IsSuccessStatusCode)
+                HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetSuggestionsByKeywordFromOracle/{keyword}");
+                if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("Response from the API");
+                    var customers = await response.Content.ReadAsAsync<List<CustomerList>>();
+                    return customers;
+                }
+
+                // Handle specific HTTP error cases
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    // Handle 404 Not Found
+                    Console.WriteLine("API endpoint not found.");
+                }
+                else
+                {
+                    // Handle other HTTP error cases
+                    Console.WriteLine($"Error fetching customers. Status code: {response.StatusCode}");
+                }
+
+                // Handle other exceptions (e.g., HttpRequestException, JsonException) as needed
+                throw new Exception($"Error fetching customers. Status code: {response.StatusCode}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"HTTP request exception: {ex.Message}");
+                throw;
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"JSON parsing exception: {ex.Message}");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<CustomerList>> GetCustomersByCompany(string company)
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetCustomersByCompanyFromOracle/{company}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Response from Company API");
                     var customers = await response.Content.ReadAsAsync<List<CustomerList>>();
                     return customers;
                 }
@@ -145,7 +187,6 @@ namespace BillingPortalClient.Services
             }
         }
 
-
         public async Task<List<EmailList>> GetEmailsByCustomer(string accountNumber)
         {
             HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetEmailsByCustomer/{accountNumber}");
@@ -161,7 +202,7 @@ namespace BillingPortalClient.Services
 
         public async Task<List<AccountList>> GetAccountsByEmail(string email)
         {
-            HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetAccountsByEmail/{email}");
+            HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetAccountsByEmailOracle/{email}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -171,10 +212,6 @@ namespace BillingPortalClient.Services
             // Handle error cases
             throw new Exception($"Error fetching accounts. Status code: {response.StatusCode}");
         }
-
-        
-
-        // Add other methods as needed
 
         public void Dispose()
         {

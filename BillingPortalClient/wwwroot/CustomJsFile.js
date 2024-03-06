@@ -1,147 +1,155 @@
 ﻿  // Place this script in the head to ensure it runs after jQuery is loaded
   $(document).ready(function () {
 
-     //alert('document is ready')
-    //  $.ajax({
-    //     url: "/Authentication/GetCurrentCustomer",
-    //     type: 'GET',
-    //     dataType: 'json', // added data type
-    //     success: function (res) {
-    //         console.log(res);
-
-    //         var optionsAsString = "";
-
-    //         let accounts = [];
-
-    //         if (res.isMain == false) {
-    //             accounts.push(res.customerUserCustomers[0].parentAccount);
-    //             for (var i = 0; i < accounts.length; i++) {
-    //                 $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
-                    
-    //                 $option.attr('selected', 'selected');
-                    
-    //                 $('#changeAccountDropDown').append($option);
-    //             }
-    //         }
-    //         else {
-    //             accounts = res.accounts
-    //             for (var i = 0; i < accounts.length; i++) {
-    //                 $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
-    //                 if (accounts[i].isSelected == true) {
-    //                     $option.attr('selected', 'selected');
-    //                 }
-    //                 $('#changeAccountDropDown').append($option);
-    //             }
-    //         }
-    //         //$('#changeAccountDropDown').append(optionsAsString);
-
-    //         //var changeDrop = document.getElementById("changeAccountDropDown");
-    //     }
-    // });
-
-    // $.ajax({
-    //     url: "/Authentication/GetCurrentCustomer",
-    //     type: 'GET',
-    //     dataType: 'json', // added data type
-    //     success: function (res) {
-    //         console.log(res);
-
-    //         $("#customerNameText").text(res.name);
-    //         $("#customerDesignationText").text(res.designation);
-    //         $("#customerEmailText").text(res.email)
-
-
-    //     }
-    // });
-
-   // Add an event listener for region dropdown change
-$('#Location').on('change', function () {
-    var selectedRegion = $(this).val();
-
-    // Call API to get customers by location
-    $.ajax({
-        url: '/CustomerSel/GetCustomersByLocation',
-        type: 'POST',
-        dataType: 'json',
-        data: { location: selectedRegion }, // Pass the selected region as data
-        success: function (customers) {
-            // Assuming customers is an array of CustomerList objects
-            console.log(customers);
-
-            // Populate the customers dropdown
-            var customersDropdown = $('#CustomerEmail');
-            customersDropdown.empty(); // Clear existing options
-
-            // Populate options
-            $.each(customers, function (index, customer) {
-                customersDropdown.append($('<option>', {
-                    value: customer.email,
-                    text: customer.email
-                }));
-            });
-        },
-        error: function (error) {
-            console.error('Error fetching customers by location:', error);
+    $('#CustomerName').on('input', function () {
+        var inputValue = $(this).val();
+    
+        // Capitalize the input
+        var capitalizedInput = inputValue.toUpperCase();
+    
+        // Make sure there is some input before making the AJAX request
+        if (capitalizedInput.length >= 2) {
+            fetchSuggestions(capitalizedInput);
+        } else {
+            // Clear the suggestions if the input is less than 2 characters
+            $('#suggestions-container').empty();
         }
     });
-});
 
-// Initial population of the region dropdown
-// function populateRegionDropdown() {
-//     // Call API to get regions
-//     $.ajax({
-//         url: '/CustomerSel/GetAllCustomersRegion',
-//         type: 'GET',
-//         dataType: 'json',
-//         success: function (data) {
-//             // Assuming data is an array of regions
-//             console.log(data);
-//             var regionDropdown = $('#Location');
-//             regionDropdown.empty(); // Clear existing options
+    function fetchSuggestions(keyword) {
+        $.ajax({
+            url: '/CustomerSel/GetSuggestions',
+            type: 'POST',
+            dataType: 'json',
+            data: { keyword: keyword },
+            success: function (data) {
+                displaySuggestions(data);
+            },
+            error: function (error) {
+                console.error('Error fetching suggestions:', error);
+            }
+        });
+    }
 
-//             // Populate options
-//             $.each(data, function (index, region) {
-//                 regionDropdown.append($('<option>', {
-//                     value: region,
-//                     text: region
-//                 }));
-//             });
-//         },
-//         error: function (error) {
-//             console.error('Error fetching regions:', error);
-//         }
-//     });
-// }
+    // Define the suggestionsContainer outside the function scope
+    var suggestionsContainer = $('#suggestions-container');
 
-// // Populate the region dropdown
-// populateRegionDropdown();
+    function displaySuggestions(suggestions) {
+        // Clear existing suggestions
+        suggestionsContainer.empty();
 
+        // Display suggestions in the dropdown
+        $.each(suggestions, function (index, suggestion) {
+            // Assuming 'accountName' is the property to display
+            var suggestionText = suggestion.accountName;
 
+            // Append the suggestion to the container
+            suggestionsContainer.append('<div class="suggestion-item">' + suggestionText + '</div>');
+        });
 
-    var emailInput = $('#email');
+        // Handle click on a suggestion
+        $('.suggestion-item').on('click', function () {
+            var selectedSuggestion = $(this).text();
+            $('#CustomerName').val(selectedSuggestion);
+            suggestionsContainer.empty();
 
-    emailInput.typeahead({
-        source: function (query, process) {
+            // Call the API with the selected company
             $.ajax({
-                url: '/CustomerSel/GetEmailsByCustomer/', // Update the URL based on your API endpoint
-                type: 'GET',
-                data: { query: query },
+                url: '/CustomerSel/GetCustomersByCompany',
+                type: 'POST',
                 dataType: 'json',
-                success: function (data) {
-                    process(data);
+                data: { company: selectedSuggestion }, // Pass the selected company as data
+                success: function (customers) {
+                    // Assuming customers is an array of CustomerList objects
+                    // Populate the customers dropdown
+                    var customersDropdown = $('#CustomerEmail');
+                    customersDropdown.empty(); // Clear existing options
+
+                    // Populate options
+                    $.each(customers, function (index, customer) {
+                        customersDropdown.append($('<option>', {
+                            value: customer.email,
+                            text: customer.email
+                        }));
+                    });
+                    
+                },
+                error: function (error) {
+                    console.error('Error fetching customers by Company:', error);
                 }
             });
-        },
-        afterSelect: function (item) {
-            // Trigger the population of accounts after selecting an email
-            populateAccounts(item.id); // Assuming 'id' is the property containing emailId
+        });
+    }
+
+   
+
+
+     $.ajax({
+        url: "/Authentication/GetCurrentCustomer",
+        type: 'GET',
+        dataType: 'json', // added data type
+        success: function (res) {
+            console.log(res);
+
+            var optionsAsString = "";
+
+            let accounts = [];
+
+            if (res.isMain == false) {
+                accounts.push(res.customerUserCustomers[0].parentAccount);
+                for (var i = 0; i < accounts.length; i++) {
+                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
+                    
+                    $option.attr('selected', 'selected');
+                    
+                    $('#changeAccountDropDown').append($option);
+                }
+            }
+            else {
+                accounts = res.accounts
+                for (var i = 0; i < accounts.length; i++) {
+                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
+                    if (accounts[i].isSelected == true) {
+                        $option.attr('selected', 'selected');
+                    }
+                    $('#changeAccountDropDown').append($option);
+                }
+            }
+            //$('#changeAccountDropDown').append(optionsAsString);
+
+            //var changeDrop = document.getElementById("changeAccountDropDown");
         }
     });
 
+    $.ajax({
+        url: "/Authentication/GetCurrentCustomer",
+        type: 'GET',
+        dataType: 'json', // added data type
+        success: function (res) {
+            console.log(res);
+
+            $("#customerNameText").text(res.name);
+            $("#customerDesignationText").text(res.designation);
+            $("#customerEmailText").text(res.email)
+
+
+        }
+    });
+
+    
+
 });
 
+$('#CustomerEmail').on('change', function () {
+    // Get the selected email
+    var selectedEmail = $(this).val();
+    console.log("Inside email click");
+    // Call the function to populate accounts based on the selected email
+    populateAccounts(selectedEmail);
+});
 
 function populateAccounts(emailId) {
+    console.log("Populate account calling");
     $.ajax({
         url: '/CustomerSel/GetAccounts', // Get Accounts based on emails
         type: 'GET',
@@ -149,6 +157,7 @@ function populateAccounts(emailId) {
         dataType: 'json',
         success: function (data) {
             // Assuming there's a function to update the accounts dropdown
+            console.log("accounts", data);
             updateAccountsDropdown(data);
         }
     });

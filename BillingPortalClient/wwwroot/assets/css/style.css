@@ -2074,6 +2074,17 @@ pre code {
     font-weight: normal;
     line-height:11px;
     font-family: Inter;
+    margin-right:5px;
+}
+
+.app-header #suggestions-container {
+    position: absolute;
+    top: 62px;
+}
+
+.app-header .suggestion-item {
+    background: #051527 0% 0% no-repeat padding-box;
+    cursor: pointer;
 }
 
 .app-header .country form:after{

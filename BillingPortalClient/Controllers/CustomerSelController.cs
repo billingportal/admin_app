@@ -25,71 +25,24 @@ namespace BillingPortalClient.Controllers
             return View(new CustomerSelModelViews());
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetAllCustomersRegion()
+        [HttpPost]
+        public async Task<IActionResult> GetSuggestions(string keyword)
         {
-            try
-            {
-                int adminId = Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(x => x.Type == "adminId").Value);
-                string adminRole = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "adminRole").Value;
-
-                Console.WriteLine($"Get All Customers Oracle");
-
-                List<string> allRegions = new List<string>();
-
-                if (adminRole == "SuperAdmin")
-                {
-                    Console.WriteLine($"User is SuperAdmin");
-                    var customersList = await _oracleApiServices.GetAllCustomers();
-                    Console.WriteLine($"customersList Count: {customersList.Count}");
-
-                    // Debug: Print details of the first customer in the list
-                    var firstCustomer = customersList.FirstOrDefault();
-                    if (firstCustomer != null)
-                    {
-                        Console.WriteLine($"Customer: {firstCustomer.accountName}, {firstCustomer.accountNumber}, {firstCustomer.email}, ...");
-                    }
-
-                    // Extract regions from customers and accounts
-                    allRegions = customersList
-                    .Select(c => c.region)
-                    .Distinct()
-                    .ToList();
-
-                    Console.WriteLine($"allRegions Count: {allRegions.Count}");
-
-                    // Debug: Print details of the first few regions
-                    Console.WriteLine($"First few regions: {string.Join(", ", allRegions.Take(5))}");
-                    Console.WriteLine($"Regions of Customers Oracle Connection: {string.Join(", ", allRegions)}");
-                }
-                else
-                {
-                    var customersList = await _oracleApiServices.GetAllCustomersByAdminId(adminId);
-                    // Extract regions from customers and accounts
-                    allRegions = customersList
-                    .Select(c => c.region)
-                    .Distinct()
-                    .ToList();
-                }
-
-                return Json(allRegions);
-            }
-            catch (Exception ex)
-            {
-                // Handle exception appropriately (e.g., log it)
-                return Json(new { error = "An error occurred while fetching regions." });
-            }
+            var customers = await _oracleApiServices.GetSuggestionsByKeyword(keyword);
+            var modelViews = new CustomerSelModelViews { Customers = customers.Select(cl => (CustomerSelModelViews.CustomerList)cl).ToList() };
+          
+            return Json(modelViews.Customers);
         }
 
+       
         [HttpPost]
-        public async Task<IActionResult> GetCustomersByLocation(string location)
+        public async Task<IActionResult> GetCustomersByCompany(string company)
         {
-              Console.WriteLine($"Requesting Customers for Location {location}");
-            var customers = await _oracleApiServices.GetCustomersByLocation(location);
-             Console.WriteLine($"Response {customers}");
+            var customers = await _oracleApiServices.GetCustomersByCompany(company);
             var modelViews = new CustomerSelModelViews { Customers = customers.Select(cl => (CustomerSelModelViews.CustomerList)cl).ToList() };
             return Json(modelViews.Customers);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> GetEmailsByCustomer(string accountNumber)
