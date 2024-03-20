@@ -20,7 +20,7 @@ namespace BillingSystem.Service
   [System.CodeDom.Compiler.GeneratedCode( "NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))" )]
   public partial class Client
   {
-    private string _baseUrl = "";
+    private string _baseUrl = "https://billingportalapis.azurewebsites.net/";
     private System.Net.Http.HttpClient _httpClient;
     private System.Lazy<System.Text.Json.JsonSerializerOptions> _settings;
 
@@ -6358,7 +6358,7 @@ namespace BillingSystem.Service
     {
       if( adminId == null )
         throw new System.ArgumentNullException( "adminId" );
-
+      Console.WriteLine("Getting Tickets for admin");
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/api/Ticket/GetTicketsByAdminId/{adminId}" );
       urlBuilder_.Replace( "{adminId}", System.Uri.EscapeDataString( ConvertToString( adminId, System.Globalization.CultureInfo.InvariantCulture ) ) );

@@ -62,9 +62,9 @@ namespace BillingPortalClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAccountsByEmail(string email)
+        public async Task<IActionResult> GetAccountsByEmail(string emailId)
         {
-            var accounts = await _oracleApiServices.GetAccountsByEmail(email);
+            var accounts = await _oracleApiServices.GetAccountsByEmail(emailId);
             var modelViews = new CustomerSelModelViews { Accounts = accounts.Select(ae => (CustomerSelModelViews.AccountList)ae).ToList() };
             return Json(modelViews.Accounts);
         }

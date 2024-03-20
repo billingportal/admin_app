@@ -67,10 +67,14 @@
 
                     // Populate options
                     $.each(customers, function (index, customer) {
-                        customersDropdown.append($('<option>', {
-                            value: customer.email,
-                            text: customer.email
-                        }));
+                        console.log(customer);
+
+                        $option = $('<option class="selected-email" value="' + customer.email + '">' + customer.email + '</option>');
+                    
+                        $option.attr('selected', 'selected');
+                    
+                        customersDropdown.append($option);
+                       
                     });
                     
                 },
@@ -79,9 +83,20 @@
                 }
             });
         });
+
+        document.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'CustomerEmail') {
+                // Get the selected email
+                var selectedEmail = event.target.value;
+                console.log("selectedEmail", selectedEmail);
+                // Call the function to populate accounts based on the selected email
+                populateAccounts(selectedEmail);
+            }
+        });
+      
+       
     }
 
-   
 
 
      $.ajax({
@@ -98,7 +113,7 @@
             if (res.isMain == false) {
                 accounts.push(res.customerUserCustomers[0].parentAccount);
                 for (var i = 0; i < accounts.length; i++) {
-                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
+                    $option = $('<option id="selected-email" value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
                     
                     $option.attr('selected', 'selected');
                     
@@ -116,23 +131,11 @@
                 }
             }
             //$('#changeAccountDropDown').append(optionsAsString);
-
-            //var changeDrop = document.getElementById("changeAccountDropDown");
-        }
-    });
-
-    $.ajax({
-        url: "/Authentication/GetCurrentCustomer",
-        type: 'GET',
-        dataType: 'json', // added data type
-        success: function (res) {
-            console.log(res);
-
             $("#customerNameText").text(res.name);
             $("#customerDesignationText").text(res.designation);
             $("#customerEmailText").text(res.email)
 
-
+            //var changeDrop = document.getElementById("changeAccountDropDown");
         }
     });
 
@@ -140,19 +143,13 @@
 
 });
 
-$('#CustomerEmail').on('change', function () {
-    // Get the selected email
-    var selectedEmail = $(this).val();
-    console.log("Inside email click");
-    // Call the function to populate accounts based on the selected email
-    populateAccounts(selectedEmail);
-});
+
 
 function populateAccounts(emailId) {
     console.log("Populate account calling");
     $.ajax({
-        url: '/CustomerSel/GetAccounts', // Get Accounts based on emails
-        type: 'GET',
+        url: '/CustomerSel/GetAccountsByEmail/', // Get Accounts based on emails
+        type: 'POST',
         data: { emailId: emailId },
         dataType: 'json',
         success: function (data) {
@@ -164,7 +161,12 @@ function populateAccounts(emailId) {
 }
 
 function updateAccountsDropdown(accounts) {
-        console.log(accounts); // Log the data for debugging
+    $('#CustomerAccount').empty();
+          
+    // Iterate over the accounts and add them as options
+    $.each(accounts, function(index, account) {
+        $('#CustomerAccount').append('<option value="' + account.accountNumber + '">' + account.accountNumber + '</option>');
+    });
 }
 
 function changeCustomerAccount(e) {

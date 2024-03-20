@@ -48,6 +48,7 @@ namespace BillingPortalClient.Controllers
       List<BillingSystem.Service.Ticket> allTickets = new List<BillingSystem.Service.Ticket>();
       {
         var client = new BillingSystem.Service.Client( baseUrl, _httpClient );
+        Console.WriteLine("Getting all Tickets");
         allTickets = ( await client.GetAllTicketsAsync() ).ToList();
       }
       List<BillingSystem.Service.Customer> customers = new List<BillingSystem.Service.Customer>();

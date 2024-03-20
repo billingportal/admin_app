@@ -200,12 +200,12 @@ namespace BillingPortalClient.Services
             throw new Exception($"Error fetching emails. Status code: {response.StatusCode}");
         }
 
-        public async Task<List<AccountList>> GetAccountsByEmail(string email)
+        public async Task<List<AccountList>> GetAccountsByEmail(string emailId)
         {
-            HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetAccountsByEmailOracle/{email}");
-
+            HttpResponseMessage response = await _httpClientOracle.GetAsync($"CustomerOracle/GetAccountsByEmailOracle/{emailId}");
             if (response.IsSuccessStatusCode)
             {
+                Console.WriteLine("Response from GetAccountsByEmail API");
                 return await response.Content.ReadAsAsync<List<AccountList>>();
             }
 
