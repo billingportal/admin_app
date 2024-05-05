@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -9,24 +9,6 @@ namespace BillingPortalClient.Controllers
 {
   public class PaymentController : BaseController
   {
-    //Uri baseAddress = new Uri( "https://localhost:7069/api/" );
-    ////Uri baseAddress = new Uri( "https://billingportalapis.azurewebsites.net/" );
-
-    //private readonly HttpClient _httpClient;
-
-    //public PaymentController()
-    //{
-    //  _httpClient = new HttpClient();
-    //  _httpClient.BaseAddress = baseAddress;
-    //  _httpClient.Timeout = TimeSpan.FromMinutes( 25 );
-    //}
-    //private Client _client;
-    //public PaymentController(Client client)
-    //{
-    //  _client = new Client( client;
-    //  _client.BaseUrl = baseUrl;
-    //}
-    // ... (existing code)
 
     [HttpPost]
     public async Task<ActionResult<bool>> SavePayment([FromBody] PaymentViewModel paymentViewModel)
@@ -100,17 +82,18 @@ namespace BillingPortalClient.Controllers
       string adminLastName = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "adminLastName").Value;
       string adminStatus = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "adminStatus").Value;
 
-
       List<BillingSystem.Service.Payment> allPayments = new List<BillingSystem.Service.Payment>();
       {
         var client = new Client(baseUrl, _httpClient);
         allPayments = (await client.GetAllPaymentsAsync()).ToList();
       }
+      Console.WriteLine($"All Payments Count: {allPayments.Count}");
       List<BillingSystem.Service.Customer> customers = new List<BillingSystem.Service.Customer>();
       {
         var client = new Client(baseUrl, _httpClient);
         customers = (await client.GetCustomersByAdminIdAsync(adminId)).ToList();
       }
+       Console.WriteLine($"All Customers Count: {customers.Count}");
       List<int> customerIds = customers.Select(x => x.Id).ToList();
       List<BillingSystem.Service.Payment> payments = new List<BillingSystem.Service.Payment>();
       foreach (var item in allPayments)
@@ -128,13 +111,13 @@ namespace BillingPortalClient.Controllers
       {
         PaymentRow paymentRow = new PaymentRow();
         paymentRow.id = item.Id;
-        paymentRow.accountName = item.Account.AccountName;
+        paymentRow.accountName = item.AccountName;
         paymentRow.paymentDate = Convert.ToDateTime(item.PaymentDate);
         paymentRow.receiverBank = "Null";
         paymentRow.paymentAmount = Convert.ToDecimal(item.Amount);
         paymentRow.paymentMode = item.PaymentMethod;
-        paymentRow.region = item.Account.Customer.Region;
-        paymentRow.accountNumber = item.Account.AccountNumber;
+        paymentRow.region = "";
+        paymentRow.accountNumber = item.AccountNumber;
         paymentRows.Add(paymentRow);
       }
       paymentViewModel.paymentRows = paymentRows.OrderByDescending(x => x.paymentDate).ToList();
@@ -148,8 +131,6 @@ namespace BillingPortalClient.Controllers
         foreach (var item in paymentRows)
         {
           allReceipts = allReceipts + 1;
-
-
         }
       }
 
