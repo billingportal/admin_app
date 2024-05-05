@@ -600,7 +600,18 @@ function displaySelectedFilters() {
 
      var model = @Html.Raw(JsonSerializer.Serialize(Model));
 
-
+function toggleSearch() {
+  var searchContainer = document.querySelector('.search-container');
+  var searchInput = document.querySelector('.search');
+        
+  // Toggle the 'expanded' class
+  searchContainer.classList.toggle('expanded');
+      
+  // If expanded, focus on the search input
+  if (searchContainer.classList.contains('expanded')) {
+    searchInput.focus();
+  }
+}
     function submitPermissionButton()
     {
         $("#adminPermissionsForm").submit();
