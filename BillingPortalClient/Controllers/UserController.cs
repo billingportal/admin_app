@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using BillingPortalClient.Models;
 using Newtonsoft.Json;
 using System.Text;
@@ -134,7 +134,9 @@ namespace BillingPortalClient.Controllers
             adminUserDTO.UpdatePayment = false; // Set default value
             adminUserDTO.UpdateStatement = false; // Set default value
             adminUserDTO.UpdateCustomer = false; // Set default value
-            adminUserDTO.SelectedRegions = adminUserViewModel.selectedRegions;
+            adminUserDTO.SelectedRegions = adminUserViewModel.selectedRegions ?? new List<int> { 1 };
+
+
 
 
             var json = JsonConvert.SerializeObject( adminUserDTO );

@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <!doctype html>
 <html lang="en" data-nav-layout="vertical" data-header-styles="dark" data-menu-styles="light" data-vertical-style="overlay" data-toggled="icon-overlay-close">
 <head>
@@ -236,10 +236,10 @@
 
                     <div class="header-element main-profile-user">
                         <div class="dropdown d-flex profile-1 large-screen">
-                            <img src="../assets/images/users/21.jpg" alt="profile-user"
-                                 class="avatar  profile-user cover-image" style="border-radius:10%;">
+                            <div alt="profile-user"
+                                 class="avatar  profile-user cover-image" style="border-radius:10%;"></div>
                             <a href="javascript:void(0)" data-bs-toggle="dropdown" class="dropdown-toggle nav-link leading-none d-flex">
-                                <span class="text-white" id="customerEmailText"></span>
+                                <span id="customerEmailText"></span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
