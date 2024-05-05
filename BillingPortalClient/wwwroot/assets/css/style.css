@@ -527,7 +527,7 @@ div#exportButtonsDiv {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #04744E 0% 0% no-repeat padding-box;
+    background: #04744E 0% 0% no-repeat padding-box !important;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -553,7 +553,7 @@ div#exportButtonsDiv {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background:#B27600 0% 0% no-repeat padding-box;
+    background:#B27600 0% 0% no-repeat padding-box !important;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -566,7 +566,7 @@ div#exportButtonsDiv {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #203190 0% 0% no-repeat padding-box;
+    background: #203190 0% 0% no-repeat padding-box !important;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
