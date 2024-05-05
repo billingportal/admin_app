@@ -311,6 +311,12 @@ html {
     align-items: center;
 }
 
+form#localizationForm {
+    color: #3B444D;
+}
+span#customerEmailText {
+    color: #3B444D;
+}
 .app-sidebar .main-sidebar-header {
     width: 12rem;
     position: fixed;
@@ -435,7 +441,7 @@ html {
 }
 
 
-.card-widget:first-child:before {
+/* .card-widget:first-child:before {
     content: "\e92a";
     font-family: feather !important;
     speak: none;
@@ -455,14 +461,13 @@ html {
     text-align: center;
     display: block;
     padding-top: 6px;
-}
+} */
 
 .card-body.c1 {
     height: 142px;
     /* UI Properties */
-    background: transparent linear-gradient(299deg, #a283e8 0%, #805ecb 100%) 0% 0% no-repeat padding-box;
-    border: 1px solid #9a6eef;
-    border-radius: 40px 6px 6px 6px;
+    background: transparent linear-gradient(301deg, #37A480 0%, #327E65 100%) 0% 0% no-repeat padding-box;
+    border-radius: 8px;
     opacity: 1;
     padding-left: 20px;
   padding-right: 20px;
@@ -471,9 +476,8 @@ html {
 .card-body.c2 {
     height: 142px;
     /* UI Properties */
-    background: transparent linear-gradient(299deg, #66A4E4 0%, #575DD5 100%) 0% 0% no-repeat padding-box;
-    border: 1px solid #7285D5;
-    border-radius: 6px;
+    background: transparent linear-gradient(306deg, #DA7070 0%, #CF4949 100%) 0% 0% no-repeat padding-box;
+    border-radius: 8px;
     opacity: 1;
     padding-left: 20px;
   padding-right: 20px;
@@ -481,7 +485,7 @@ html {
 .card-body.c2_user {
     background: transparent linear-gradient(299deg, #FA8547 0%, #E86118 100%) 0% 0% no-repeat padding-box;
     border: 1px solid #DD7949;
-    border-radius: 6px 6px 40px 6px;
+    border-radius: 6px 6px 6px 6px;
     opacity: 1;
     height: 142px;
     /* UI Properties */
@@ -492,9 +496,8 @@ html {
 .card-body.c3 {
     height: 142px;
     /* UI Properties */
-    background: transparent linear-gradient(299deg, #FB9967 0%, #F06820 100%) 0% 0% no-repeat padding-box;
-    border: 1px solid #DD7949;
-    border-radius: 6px;
+    background: transparent linear-gradient(300deg, #DEB25A 0%, #D89E2E 100%) 0% 0% no-repeat padding-box;
+    border-radius: 8px;
     opacity: 1;
     padding-left: 20px;
   padding-right: 20px;
@@ -503,23 +506,18 @@ html {
 .card-body.c4 {
     height: 142px;
     /* UI Properties */
-    background: transparent linear-gradient(247deg, #3BD3C3 0%, #3DA096 100%) 0% 0% no-repeat padding-box;
-    border: 1px solid #3CB0A5;
-    border-radius: 6px;
+    background: transparent linear-gradient(301deg, #66A4E4 0%, #575DD5 100%) 0% 0% no-repeat padding-box;;
+    border-radius: 8px;
     opacity: 1;
     padding-left: 20px;
   padding-right: 20px;
-}
-
-.row .card-widget:last-child .card-body {
-    border-radius: 6px 6px 49px 6px !important;
 }
 
 .card-body.c1 .btn {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #714ac0 0% 0% no-repeat padding-box !important;
+    background: #04744E 0% 0% no-repeat padding-box;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -532,7 +530,7 @@ html {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #4B56CC 0% 0% no-repeat padding-box !important;
+    background: #CF4949 0% 0% no-repeat padding-box !important;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -540,26 +538,12 @@ html {
     line-height: 1;
     opacity: 1;
 }
-
-.card-body.c2_user .btn {
-    width: 86px;
-    height: 24px;
-    /* UI Properties */
-    background: #DD7949 0% 0% no-repeat padding-box !important;
-    border-radius: 6px;
-    text-align: center;
-    font: normal normal normal 11px/31px Inter;
-    letter-spacing: 0px;
-    line-height: 1;
-    opacity: 1;
-}
-
 
 .card-body.c3 .btn {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #D15817 0% 0% no-repeat padding-box !important;
+    background:#B27600 0% 0% no-repeat padding-box;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -572,7 +556,7 @@ html {
     width: 86px;
     height: 24px;
     /* UI Properties */
-    background: #239187 0% 0% no-repeat padding-box !important;
+    background: #203190 0% 0% no-repeat padding-box;
     border-radius: 6px;
     text-align: center;
     font: normal normal normal 11px/31px Inter;
@@ -585,73 +569,86 @@ html {
     width: 38px;
     height: 38px;
     /* UI Properties */
-    background: #714ac0 0% 0% no-repeat padding-box !important;
+    background: #04744E 0% 0% no-repeat padding-box !important;
     border-radius: 50px;
     padding-left: 12px;
 }
 
+.card-body.c1 .btn {
+
+    border-bottom: 1px solid #04744E;
+    border-bottom-width: 50%;
+   
+}
 .card-body.c1 img {
-    float:left;
+    float: right;
     padding: 0px 5px 5px 0px;
-    border-bottom: 1px solid #714ac0;
 }
 
 .card-body.c2 .btn-icon {
     width: 38px;
     height: 38px;
     /* UI Properties */
-    background: #4B56CC 0% 0% no-repeat padding-box !important;
+    background: #CF4949 0% 0% no-repeat padding-box !important;
     border-radius: 50px;
     padding-left: 12px;
 }
-.card-body.c2_user .btn-icon {
-    width: 38px;
-    height: 38px;
-    /* UI Properties */
-    background: #DD7949 0% 0% no-repeat padding-box !important;
-    border-radius: 50px;
-    padding-left: 12px;
+
+.card-body.c1 .btn {
+
+    border-bottom: 1px solid #CF4949;
+    border-bottom-width: 50%;
+   
 }
 
 .card-body.c2 img {
-    float:left;
+    float: right;
     padding: 0px 5px 5px 0px;
-    border-bottom: 1px solid #4B56CC;
+    border-bottom: 1px solid #CF4949;
 }
 
-
-.card-body.c2_user img {
-    float: left;
-    padding: 0px 5px 5px 0px;
-    border-bottom: 1px solid #DD7949;
-}
 .card-body.c3 .btn-icon {
     width: 38px;
     height: 38px;
     /* UI Properties */
-    background: #D15817 0% 0% no-repeat padding-box !important;
+    background: #B27600 0% 0% no-repeat padding-box !important;
     border-radius: 50px;
     padding-left: 12px;
 }
 
-.card-body.c3 img {
-    float:left;
-    padding: 0px 5px 5px 0px;
-    border-bottom: 1px solid #D15817;
+.card-body.c3 .btn {
+
+    border-bottom: 1px solid #B27600;
+    border-bottom-width: 50%;
+   
 }
+
+.card-body.c3 img {
+    float: right;
+    padding: 0px 5px 5px 0px;
+    border-bottom: 1px solid #B27600;
+}
+
 .card-body.c4 .btn-icon {
     width: 38px;
     height: 38px;
     /* UI Properties */
-    background: #239187 0% 0% no-repeat padding-box !important;
+    background: #203190 0% 0% no-repeat padding-box !important;
     border-radius: 50px;
     padding-left: 12px;
 }
 
+.card-body.c4 .btn {
+
+    border-bottom: 1px solid #203190;
+    border-bottom-width: 50%;
+   
+}
+
 .card-body.c4 img {
-    float:left;
+    float: right;
     padding: 0px 5px 5px 0px;
-    border-bottom: 1px solid #239187;
+    border-bottom: 1px solid #203190;
 }
 
 .card-body .title {
@@ -669,11 +666,13 @@ html {
 
 .card-body .number-font {
     text-align: left;
-    font: normal normal bold 18px/38px Inter;
     letter-spacing: 0px;
     color: #FFFFFF;
-    padding-left: 5px;
-    width:100%;
+    width: 100%;
+    font-weight: 400 !important;
+    font-family: 'Inter';
+    font-size: 18px;
+    line-height: 38px;
 }
 
 h5.card-title {
@@ -935,7 +934,7 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
     width: 125px;
     height: 42px;
     background: transparent linear-gradient(268deg, #FA8547 0%, #E86118 100%) 0% 0% no-repeat padding-box !important;
-    border-radius: 10px 10px 10px 0px;
+    border-radius: 10px;
     text-align: left;
     font: normal normal medium 14px/12px Inter;
     letter-spacing: 0px;
@@ -946,8 +945,8 @@ div.dataTables_wrapper div.dataTables_paginate ul.pagination {
     width: 125px;
     height: 42px;
     /* UI Properties */
-    background: transparent linear-gradient(257deg, #5EA1F8 0%, #4486D9 100%) 0% 0% no-repeat padding-box !important;
-    border-radius: 10px 10px 10px 0px;
+    background: transparent linear-gradient(257deg, #A283E8 0%, #805ECB 100%) 0% 0% no-repeat padding-box;
+    border-radius: 10px;
     text-align: left;
     font: normal normal medium 14px/12px Inter;
     letter-spacing: 0px;
@@ -981,9 +980,9 @@ td .btn-dots {
 
 .app-header form:after {
     content: "\e92d";
-    color: #ffffff;
+    color: #3B444D;
     font-size: 12px;
-    font-family: feather!important;
+    font-family: feather !important;
     font-weight: 400;
     font-variant: normal;
     text-transform: none;
@@ -1730,9 +1729,7 @@ body {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
-    color: #ffffff;
     text-align: start;
-    background: #3B444D 0% 0% no-repeat padding-box !important;
 }
 
 .number-font {
@@ -2064,11 +2061,11 @@ pre code {
 
 .app-header .form-select {
 
-    color: #A8ACB7;
+    color: #3B444D;
     width: 250px;
     height: 48px;
-    background: #051527 0% 0% no-repeat padding-box;
-    border: 1px solid #051527;
+    background: #F0F0FA 0% 0% no-repeat padding-box;
+    border: 1px solid #0F172C29;
     border-radius: 10px 10px 10px 0px;
     font-size: 14px;
     font-weight: normal;
@@ -2130,7 +2127,7 @@ pre code {
 .container-fluid {
     width: 100%;
     padding-inline-end: 0.75rem;
-    padding-inline-start: 0.75rem;
+    padding-inline-start: 1.75rem;
     margin-inline-end: auto;
     margin-inline-start: auto;
 }
@@ -16811,7 +16808,6 @@ small,
     .app-header {
         position: fixed !important;
         z-index: 999999 !important;
-        background: #3B444D 0% 0% no-repeat padding-box;;
     }
 
     .side-menu {
@@ -25300,8 +25296,6 @@ ul.timeline>li:before {
     .app-header {
         box-shadow: none !important;
         position: fixed !important;
-        background:  #3B444D 0% 0% no-repeat padding-box;;
-        background-size: cover;
     }
 
     .page {
@@ -25513,8 +25507,7 @@ ul.timeline>li:before {
 }
 
 .dropdown .avatar.profile-user {
-    background: #6A2EBC 0% 0% no-repeat padding-box;
-    border: 1px solid #471290;
+    background: #3B444D !important;
     border-radius: 8px !important;
     width: 42px;
     height: 42px;
@@ -53290,7 +53283,6 @@ body.transparent-mode *:hover::-webkit-scrollbar-thumb {
     overflow: clip;
     margin-block-start: 74px;
     background-color: #fff;
-    border-radius: 49px 0px 0px 0px;
     padding-top: 1px;
 }
 
@@ -53337,8 +53329,8 @@ body.transparent-mode *:hover::-webkit-scrollbar-thumb {
     display: flex;
     z-index: 9999 !important;
     transition: padding-inline-start 0.3s ease;
-    background: #3B444D 0% 0% no-repeat padding-box;;
-    background-size: cover;
+    border-radius: 15px;
+    background-color: #fff;
 }
 
 @media (min-width: 992px) {
@@ -53409,6 +53401,7 @@ body.transparent-mode *:hover::-webkit-scrollbar-thumb {
     transition: left 450ms ease, width 450ms ease;
     -o-transition: left 450ms ease, width 450ms ease;
     background:  #3B444D 0% 0% no-repeat padding-box;;
+    border-radius: 15px;
 }
 
 .app-sidebar::-webkit-scrollbar {
