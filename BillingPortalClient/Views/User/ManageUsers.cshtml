@@ -1,4 +1,4 @@
-﻿
+
 @using System.Text.Json;
 
 @{
@@ -104,7 +104,7 @@
             <div class="row mb-3">
     	        <div class="col-md-12">
         	        <label  style="font-weight:bold;color:black">Password</label><br>
-                  <input asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Password">
+                  <input asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
             
                 </div>
             </div>
@@ -175,8 +175,8 @@
             </div>
             <div class="row mb-3">
     	        <div class="col-md-12">
-        	        <label  style="font-weight:bold;color:black">Password</label><br>
-                  <input id="userPasswordText" asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Password">
+        	        <label style="font-weight:bold;color:black">Password</label><br>
+                  <input id="userPasswordText" asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
                 </div>
             </div>
 
