@@ -1,4 +1,4 @@
-﻿
+
 @using System.Text.Json;
 
 @{
@@ -7,66 +7,35 @@
 @model BillingPortalClient.ModelViews.AdminUserViewModel;
 
 <script>
-
-     $(document).ready(function(){
-        console.log('*******************************************');
-         // Adjust the delay as needed
-    });
-
-   var table = $("#file-datatable").DataTable();
-
-    function filtermodal(){
+ function filtermodal(){
         console.log("Inside filtermodal function.");
         $("#testModalCenter2").modal('show');
     }
+$(document).ready(function () {
+   
 
-    function toggleSearch() {
-        var searchContainer = document.querySelector('.search-container');
-        var searchInput = document.querySelector('.search');
-        
-        // Toggle the 'expanded' class
-        searchContainer.classList.toggle('expanded');
-        
-        // If expanded, focus on the search input
-        if (searchContainer.classList.contains('expanded')) {
-            searchInput.focus();
-        }
+    var table = $("#file-datatable").DataTable();
+    function applyDateFilter() {
+            var userStatus = $("#userStatus").val();
+            var userRole = $("#userRole").val();
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                var data = this.data();
+                console.log(data);
+                var invoiceDate = new Date(data[5]);
+                var DatauserStatus = data[3];
+                var DatauserRole = data[4];
+
+                if ((userStatus !== "" && DatauserStatus !== userStatus) ||
+                    (userRole !== "" && DatauserRole !== userRole)) 
+                    {
+                    $(this.node()).hide();
+                } else {
+                    $(this.node()).show();
+                }
+            });
     }
 
-   
-        
-        function applyDateFilter() {
-                var statusTypeFilter = $('input[name="statusType"]:checked').attr('myid');  
-                 console.log("statusTypeFilter:", statusTypeFilter); 
-                var userTypeFilter =  $('input[name="userType"]:checked').attr('myid');  
-                var userNameFilter = $("#userNameSelection").val().toLowerCase(); 
-                        console.log("userNameFilter:", userNameFilter); 
-                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                    var data = this.data();
-                    var userName = data[0].toLowerCase();
-                     console.log("userName", userName);
-                    var userType = data[3];
-                    // Assuming data[4] contains the HTML string
-                    var statusTypeHTML = data[4];
-
-                    // Create a temporary element to parse the HTML
-                    var tempElement = $('<div>').html(statusTypeHTML);
-
-                    // Extract the text content
-                    var statusType = tempElement.text().toLowerCase();
-
-                    console.log("statusType", statusType);
-                    if (
-                        (userName !== '' && !userName.includes(userNameFilter)) ||
-                        (statusTypeFilter !== undefined && statusType !== statusTypeFilter) ||
-                        (userTypeFilter !== undefined && userType !== userTypeFilter)
-                    ) {
-                        $(this.node()).css("display", "none");
-                    } else {
-                        $(this.node()).css("display", "");
-                    }
-                });
-        }
     table.on('draw', function () {
         console.log("DataTable Draw Callback");
         applyDateFilter();
@@ -98,28 +67,25 @@
             console.log("search keyup function");
             table.search(this.value).draw();
         });
+  
+let selectedRows = [];
+let selectedFilters = [];
 
-    let selectedRows = [];
-    let selectedFilters = [];
+var filterData = {
+    name: getFilterName(),
+    value: getFilterValue()
+};
 
-    var filterData = {
-        name: getFilterName(),
-        value: getFilterValue()
-    };
+  $("#userStatus").val("");
+  $("#userRole").val("");
 
-    $('input[name="statusType"]:checked').prop('checked', false);
-    $('input[name="userType"]:checked').prop('checked', false);
-    $("#userNameSelection").val("");  \
-    
 // Function to determine the label based on the selected filters
 function getFilterName() {
     // Check the selected filter criteria and set the label accordingly
-    var statusTypeChecked = $('input[name="statusType"]:checked');
-    var userTypeChecked = $('input[name="userType"]:checked');
-    if  (userTypeChecked.length > 0) {
-        return "Role";
-    } else if  (statusTypeChecked.length > 0) {
-        return "Status";
+ if ($("#userStatus").val()) {
+        return "User Status";
+    } else if ($("#userRole").val()) {
+        return "User Roles";
     }
     // Return an empty string if no specific filter is applied
     return "";
@@ -152,16 +118,16 @@ function ordinalSuffix(day) {
 }
 
 function getFilterValue(filterName) {
-
-    var statusType = $('input[name="statusType"]:checked').attr('myid'); 
-    var userType = $('input[name="userType"]:checked').attr('myid'); 
+    var userStatus = $("#userStatus").val();
+    var userRole = $("#userRole").val();
+    console.log("userRole", userRole);
 
     // Construct the filter value based on the selected filter name
     switch (filterName) {
-        case "Role":
-            return userType ? `${userType}` : null;
-        case "Status":
-            return statusType ? `${statusType}` : null;
+         case "User Status":
+            return userStatus ? `${userStatus}` : null;
+           case "User Role":
+            return userRole ? `${userRole}` : null;
         default:
             return null;
     }
@@ -176,15 +142,16 @@ function displaySelectedFilters() {
     filterSelections.empty();
 
     // Get values from the modal input fields
-    var statusType = $('input[name="statusType"]:checked').attr('myid'); 
-    var userType = $('input[name="userType"]:checked').attr('myid'); 
+    var userStatus = $("#userStatus").val();
+    var userRole = $("#userRole").val();
+    console.log("displayselectedfilters userRole", userRole);
 
     // Check if at least one filter value is provided
-    if (statusType || userType ) {
+    if (userStatus || userRole) {
         filterLabel.show();
 
         // Create a div for each selected filter
-        var filterNames = ["Role", "Status"];
+        var filterNames = ["User Status", "User Role"];
 
         filterNames.forEach(function (filterName) {
             var filterValue = getFilterValue(filterName);
@@ -206,49 +173,49 @@ function displaySelectedFilters() {
                     text: filterValue,
                 });
 
-                // Create a cross icon to remove the filter
+               // Create a cross icon to remove the filter
                 var crossIcon = $("<i>", {
                     class: "fa fa-times cross-icon",
                 }).on("click", function () {
-                    console.log("Clicked on cross icon");
+                   console.log("Clicked on cross icon");
                     // Remove the filter div
                     filterDiv.remove();
+                   
 
-                    // Get the filter name from the parent filter selection
-                    var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
-                    console.log("Clicked on cross icon for filter:", clickedFilterName);
+                   // Get the filter name from the parent filter selection
+                   var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                   console.log("Clicked on cross icon for filter:", clickedFilterName);
 
-                    // Remove the filter div
-                    let currentbox = $(this).closest('.filter-selection');
+                   // Remove the filter div
+                   let currentbox = $(this).closest('.filter-selection');
                     console.log("Clicked on cross icon for currentbox:", currentbox);
-                    currentbox.remove();
+                   currentbox.remove();
 
-                    console.log("Clicked on cross icon for cfilter name:", filterName);
+                   console.log("Clicked on cross icon for cfilter name:", filterName);
 
-                    // Clear the corresponding modal input fields based on the filter type
-                    switch (filterName) {
-                        case "Role":
-                             $('input[name="userType"]:checked').prop('checked', false);
-                            break;
-                        case "Status":
-                            $('input[name="userStatus"]:checked').prop('checked', false);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // Remove the filter and update the display
+                  // Clear the corresponding modal input fields based on the filter type
+                  switch (filterName) {
+                       case "User Status":
+                         $("#userStatus").val("");
+                          break;
+                       case "User Role":
+                          $("#userRole").val("");
+                          break;
+                      default:
+                          break;
+                  }
+                 
+                  
+                   // Remove the filter and update the display
                     selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
-
+                  
                     // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
                     console.log("Updated selectedFilters after removal: ", selectedFilters);
 
-                    // Check if displaySelectedFilters is being called
-                    displaySelectedFilters();
+                     displaySelectedFilters();
 
                     if (table) {
-                        table.rows().invalidate().draw();
-                        table.page('first').draw('page');
+                        applyDateFilter();
                     } else {
                         console.log("Table is not defined");
                     }
@@ -256,6 +223,7 @@ function displaySelectedFilters() {
 
                 // Append elements to the filterDiv
                 filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+
                 // Append the filterDiv to filterSelections
                 filterSelections.append(filterDiv);
             }
@@ -267,9 +235,12 @@ function displaySelectedFilters() {
         filterLabel.hide();
         filterSelections.hide();
         // Hide Filter Div
-        $("#filters-div").hide();
+		$("#filters-div").hide();
     }
 }
+
+});
+    
 
 </script>
 <!-- CONTAINER -->
@@ -325,39 +296,38 @@ function displaySelectedFilters() {
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header" style="padding: 0px; border-bottom:none;">
-                    <div class="col-md-6">
+                    <div class="col-md-7 col-sm-12">
                         <h5 class="card-title">Manage Users</h5>
                     </div>
 
-                    <div class="col-md-6 col-sm-12">
-                        <div class="row">
-                            <div class="col-md-1 search-container right">
-                                <input class="search expandright" id="userNameSelection" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass.png" /></button>
-                            </div>
-                             <div class="col-md-2 col-sm-12">
-                      
-                                <div class="row filters-bar">
-                                    <div class="col-md-12 col-sm-12" style="float: left; text-align: center;">
-                                            <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 right" style="text-align:right;">
-                                <button type="button" onclick="openUsersModal()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Add New User</button>
+                    
+                    <div class="col-md-1 search-container right" style="text-align:right; position relative; right: 40px;">
+                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
+                                <label class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></label>
+                    </div>
+
+                    <div class="col-md-1 col-sm-12 right">
+                        <div class="row filters-bar" style="display: flex; ">
+                            <div class="col-md-12 col-sm-8">
+                                <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
                             </div>
                         </div>
                     </div>
 
+                    <div class="col-md-2 col-sm-12 right">
+                        <button type="button" onclick="openUsersModal()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Add New User</button>
+                    </div>
+
+
                     <div class="row" style="width:100%">
-                        <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                      <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
                             <div class="clear-allfilters">
                                 <label>Selected Filters</label>
                                 <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
                             </div>
                             <div id="filterSelections"></div>
-                         </div>
-                    </div>  
+                      </div>
+                    </div>
 
                 </div>
             </div>
@@ -394,26 +364,25 @@ function displaySelectedFilters() {
                                         } else {
                                             <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1;" name="status">@item.Status</span></td>
                                         }
-                                        <td style="text-align: center; display: flex; gap: 5px;">
+                                       <td style="text-align: center; display: flex; gap: 5px;">
                                             <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
                                             <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 @if(item.Status == "Active") {
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
-                                                    }
-                                                @if(item.Status == "Inactive")
-                                                    {
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
-                                                    }
-                                                @if(item.Status == "Suspended")
-                                                    {
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                                <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
-                                                    }
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                                }
+                                                else if(item.Status == "Inactive") {
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                                }
+                                                else if(item.Status == "Suspended") {
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                }
                                             </ul>
                                         </td>
+
                                         <td hidden name="id">@item.Id</td> 
                                         <td hidden name="password">@item.Password</td>            
                                     </tr>
@@ -478,9 +447,9 @@ function displaySelectedFilters() {
                                     </select>
                             </div>
 
-                            <div class="col-md-12" id="adminRegionpart">
+                            <div hidden class="col-md-12" id="adminRegionpart">
                                 <label style="font-weight:bold;color:black">Regions: </label>
-                                <select asp-for="selectedRegions" required id="regionFormAddUser" multiple class="form-select">
+                                <select asp-for="selectedRegions" id="regionFormAddUser" multiple class="form-select">
                                     @foreach(var item in Model.regions) {
                                         <option id="@item.Id" value="@item.Id">@item.Region1</option>
                                     }
@@ -576,81 +545,61 @@ function displaySelectedFilters() {
     </div>
 </div>
 
+
+<!--filter modal -->
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-    <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+        <div class="modal-content">
 
-      <div class="modal-body">
+            <div class="modal-body">
+              <div class="container">
+                  <div class="row">
+                      <h1>Filters</h1>
+                  </div>
+                 <form id="filterForm">
+                      <div class="row mb-3">
+                          <div class="panel" id="datePanel">
 
-        <div class="container">
-          <div class="row">
-            <h1>Filters</h1>
+                              <div class="row">
+                                  <div class="col-md-6">
+                                      <label class="form-label">User Status</label>
+                                      <select class="form-select" id="userStatus">
+                                          <option value="">User Status</option>
+                                          <option value="Active">Active</option>
+                                          <option value="Inactive">Inactive</option>
+                                          <option value="Suspended">Suspended</option>
+                                      </select>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">User Role</label>
+                                      <select class="form-select" id="userRole">
+                                          <option value="">User Role</option>
+                                          <option value="admin">Admin</option>
+                                          <option value="regional user">Regional User</option>
+                                          <option value="user">User</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12 text-center">
+                              <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
           </div>
-              <form id="filterForm">
-              <div class="row mb-3">
-                
 
-                                             <div class="panel" id="rolePanel">
-                                              <div class="row mb-5">
-                                                <div class="col-md-12">
-                                                  <label style="text-align:left; width:100%;">Role</label>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="admin" name="userType" >
-                                                      <label>Admin</label>
-                                                  </span>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="regional user" name="userType" >
-                                                      <label>Regional User</label>
-                                                  </span>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="user" name="userType" >
-                                                      <label>User</label>
-                                                  </span>
-                                                </div>
-                                                </div>
-                                            </div>
 
-                                            <div class="panel" id="statusPanel">
-                                              <div class="row mb-5">
-                                                <div class="col-md-12">
-                                                  <label style="text-align:left; width:100%;">Status</label>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="active" name="statusType" >
-                                                      <label>Active</label>
-                                                  </span>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="inactive" name="statusType" >
-                                                      <label>Inactive</label>
-                                                  </span>
-                                                  <span>
-                                                      <input class="form-control" type="radio" myid="suspended" name="statusType" >
-                                                      <label>Suspended</label>
-                                                  </span>
-                                                </div>
-                                                </div>
-                                            </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-12 text-center">
-                  <button type="submit"id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
-                </div>
-              </div>
-          </form>
         </div>
-
-      </div>
-
     </div>
-  </div>
 </div>
 
 <script>
 
      var model = @Html.Raw(JsonSerializer.Serialize(Model));
-    console.log({model})
 
-    
 
     function submitPermissionButton()
     {
@@ -683,6 +632,8 @@ function displaySelectedFilters() {
             // Open the edit modal
             openUsersModal2(adminId, firstName, email, phone, password, mystatus, role);
         }, 100);
+
+    });
 
     function openUsersModal2(adminId, firstName, email, phone, password, mystatus, role) {
 

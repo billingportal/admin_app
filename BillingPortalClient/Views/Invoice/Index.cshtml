@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @using System.Text.Json
 @using BillingPortalClient.Components;
 
@@ -25,8 +25,9 @@
               
               <div class="d-flex">
                 <div class="">
-                  <img src="../assets/images/dashboard/coins-icon-purple.png" />
-                  <h6 class="text title">Open <br />Transactions</h6>
+                 
+                  <h6 class="text title text-white">Open <br />Transactions</h6>
+                   <img src="../assets/images/dashboard/green-icon.png" />
                   <h2 class="mb-0 number-font text">SAR @Model.openTransactions</h2>
                 </div>                             
               </div>
@@ -44,8 +45,9 @@
             <div class="card-body c2">
               <div class="d-flex">
                 <div class="">
-                  <img src="../assets/images/dashboard/clock-icon-blue.png" />
-                  <h6 class="text title">Overdue <br />Amount</h6>
+                  
+                  <h6 class="text title text-white">Overdue <br />Amount</h6>
+                  <img src="../assets/images/dashboard/red-icon.png" />
                   <h2 class="mb-0 number-font text">SAR @Model.overdueAmount</h2>
                 </div>                        
               </div>
@@ -62,8 +64,9 @@
             <div class="card-body c3">
               <div class="d-flex">
                 <div class="">
-                  <img src="../assets/images/dashboard/file-icon-orange.png" />
-                  <h6 class="text title">Disputed <br />Invoices</h6>
+                  
+                  <h6 class="text title text-white">Disputed <br />Invoices</h6>
+                  <img src="../assets/images/dashboard/yellow-icon.png" />
                   @if(@Model.disputedInvoices != null) {
                     <h2 class="mb-0 number-font text">@Model.disputedInvoices.Count</h2>
                   } else {
@@ -84,8 +87,9 @@
             <div class="card-body c4">
               <div class="d-flex">
                 <div class="">
-                  <img src="../assets/images/dashboard/clock-icon-green.png" />
-                  <h6 class="text title">Rated But Not Invoiced</h6>
+                 
+                  <h6 class="text title text-white">Rated But Not Invoiced</h6>
+                   <img src="../assets/images/dashboard/blue-icon.png" />
                   <h2 class="mb-0 number-font text">765</h2>
                 </div>
               </div>
@@ -167,8 +171,8 @@
                   if(i > 25){
                     i = 1;
                   }
-                  <tr id="@string.Format("tr{0}",item.id)" data-docNumber="@item.docNumber" data-InvoiceIdAttribute ="@item.id" data-day="@item.invoiceDate.Day" data-month="@item.invoiceDate.Month" data-year="@item.invoiceDate.Year" data-dueDay="@item.dueDate.Day" data-dueMonth="@item.dueDate.Month" data-dueYear="@item.dueDate.Year">
-                    <td><input type="checkbox" id="@string.Format("{0}",item.docNumber)" class="invoiceTableCheckbox"/></td>
+                  <tr id="@string.Format("tr{0}", item.id)" data-docNumber="@item.docNumber" data-InvoiceIdAttribute ="@item.id" data-day="@item.invoiceDate.Day" data-month="@item.invoiceDate.Month" data-year="@item.invoiceDate.Year" data-dueDay="@item.dueDate.Day" data-dueMonth="@item.dueDate.Month" data-dueYear="@item.dueDate.Year">
+                    <td><input type="checkbox" id="@string.Format("{0}", item.docNumber)" class="invoiceTableCheckbox"/></td>
                     <td><strong>@item.docNumber</strong></td>
                     <td>@item.invoiceDate.ToString("dd MMM, yyyy")</td>
                     <td>@item.dueDate.ToString("dd MMM, yyyy")</td>
@@ -305,7 +309,6 @@
 };
 
   var model = @Html.Raw(JsonSerializer.Serialize(Model));
-  console.log({model})
 
   $("#minDateSelection").val("");
   $("#maxDateSelection").val("");
@@ -346,7 +349,6 @@
                     // Extract the text content
                     var invoiceStatus = tempElement.text().toLowerCase();
 
-                    console.log("invoiceStatus",invoiceStatus);
                     if (
                         (!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
                         (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
@@ -380,8 +382,9 @@
         $("#filters-div").show();
         displaySelectedFilters();
         if (table) {
-            table.rows().invalidate().draw();
-            table.page('first').draw('page');
+            // Iterate through each page of the table
+             table.rows().invalidate().draw();
+            table.search('').draw();
         } else {
             console.log("Table is not defined");
         }
@@ -390,8 +393,8 @@
 
   $("#invoiceNumberSelection").on("keyup", function () {
         if (table) {
-            table.rows().invalidate().draw();
-            table.page('first').draw('page');
+            // Iterate through each page of the table
+            table.search(this.value).draw();
         } else {
             console.log("Table is not defined");
         }
@@ -691,5 +694,3 @@ function toggleSearch() {
         }
     }
 </script>
-
- 

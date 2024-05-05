@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using BillingPortalClient.ModelViews;
 using System.Diagnostics;
 using BillingPortalClient.Models;

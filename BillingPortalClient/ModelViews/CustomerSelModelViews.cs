@@ -30,12 +30,13 @@ namespace BillingPortalClient.ModelViews
 
         public class AccountList
         {
-            public int Id { get; set; } // Rename to avoid conflict
-            public string accountNumber { get; set; }
             public string accountName { get; set; }
+            public string accountNumber { get; set; }
             public string email { get; set; }
             public string phoneNumber { get; set; }
+            public string courierRoute { get; set; }
             public string region { get; set; }
+            public string city { get; set; }
             // Add other properties related to Account
         }
     }

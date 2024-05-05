@@ -1,4 +1,4 @@
-﻿@{
+@{
   Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.TicketViewModel
@@ -165,7 +165,7 @@ function displaySelectedFilters() {
     console.log("displayselectedfilters issueType", issueType);
 
     // Check if at least one filter value is provided
-    if (minDate || maxDate || instrumenttype || issuetype) {
+    if (minDate || maxDate || instrumentType || issueType) {
         filterLabel.show();
 
         // Create a div for each selected filter
@@ -233,13 +233,7 @@ function displaySelectedFilters() {
                     // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
                     console.log("Updated selectedFilters after removal: ", selectedFilters);
 
-                    if(selectedFilters.length > 0){
-                        // Check if displaySelectedFilters is being called
-                        displaySelectedFilters();
-                    }else{
-                        $("#filters-div").hide();
-                    }
-                    
+                     displaySelectedFilters();
 
                     if (table) {
                         applyDateFilter();
@@ -726,7 +720,6 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 </style>
 
 <script>
-
 function headerWidgetButtonClick(instrumentType)
 {
   instrumentTypeCriteria = instrumentType;
@@ -752,7 +745,6 @@ $(document).on("click", ".statusCriteriaButton", function (event) {
   console.log(table.rows().data().toArray());
   table.draw();
 });
-
   
 function toggleSearch() {
   var searchContainer = document.querySelector('.search-container');
@@ -767,5 +759,3 @@ function toggleSearch() {
   }
 }
 </script>
-
-
