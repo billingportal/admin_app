@@ -847,7 +847,7 @@ table.table-bordered.dataTable th {
     text-transform: capitalize;
     vertical-align:middle;
     font-size: 12px;
-    font-weight: 300;
+    font-weight: 600;
 }
 
 table.table-bordered.dataTable th:after {
@@ -1162,8 +1162,8 @@ select#searchSelectBox:after {
 
 .filtering {
     height: 42px;
-    background: #F5F5FA 0% 0% no-repeat padding-box;
-    border: 1px solid #E4E3F1;
+    background: #F5F5FA 0% 0% no-repeat padding-box !important;
+    border: 1px solid #E4E3F1 !important;
     border-radius: 8px 8px 8px 0px;
 }
 
@@ -1278,16 +1278,16 @@ div#filters-div {
     cursor: pointer;
 }
 
-.searchbutton {
+button.searchbutton {
     font-size: 22px;
-    width: 50px;
     margin: 0;
     padding: 0;
-    border-radius: 15px;
     overflow: hidden;
-    background-color: #f5f5fa;
+        border: 1px solid #0F172C29 !important;
+        background: #F5F5FA 0% 0% no-repeat padding-box !important;
     color: #212529;
 }
+
 
 .search-container {
     position: relative;
