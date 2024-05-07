@@ -1,3 +1,4 @@
+
 @model BillingPortalClient.ModelViews.TicketViewModel;
 
 @using System.Text.Json
@@ -702,7 +703,7 @@
                     <div class="comment-section-place-wrap">
                         <div class="comment-write-wrap">
                             <div class="comment-profile" style="margin-left:15px;">
-                                <img src="~/assets/images/png/A-Circle.png" />
+                                <img src="~/assets/images/png/C-Circle.png" />
                             </div>
                             <div class="comment-write">
                                 <input type="text" placeholder="Reply..." id="ticketCommentText" />
@@ -713,14 +714,10 @@
                                 <input type="file" id="myFile" name="filename" style="display:none;">
                             </div>
                         </div>
-                            <a style="color:black; margin-left:80px;">Pro tip : Press <span style="background-color: rgb(255, 181, 69); font-weight: bold;">Enter</span> to Comment
+                        <a style="color:black; margin-left:80px;">
+                            Pro tip : Press <span style="background-color: rgb(255, 181, 69); font-weight: bold;">Enter</span> to Comment <span id="filenameDisplay" style="display: none; float: right; text-align: right"></span>
                         </a>
 
-
-                        @*<div class="tickets-button-div-wrap">
-                                <button class="close-ticket-button">Close Ticket</button>
-                                <button class="open-ticket-button">Open Ticket</button>
-                            </div>*@
                         @if (Model.ticket.TicketComments.Count > 0)
                         {
                             foreach (var item in Model.ticket.TicketComments.OrderByDescending(x => x.CreatedDate))
@@ -818,93 +815,123 @@
 </div>
 
 <script>
-  var model = @Html.Raw(JsonSerializer.Serialize(Model));
 
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://localhost:7069/chatHub")
-    .withAutomaticReconnect()
+var model = @Html.Raw(JsonSerializer.Serialize(Model));
+
+const connectionUrl = "https://billingportalapis.azurewebsites.net/chatHub";
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl(connectionUrl)
     .build();
 
-var username = "aa1";
+const username = "aa1";
 
 connection.on("ReceiveMessage", function(ticketComment) {
     console.log(ticketComment);
-    var createdDate = new Date(ticketComment.createDate).toLocaleString();
-    var commenterName = ticketComment.adminId != null ? ticketComment.adminFirstName + ' ' + ticketComment.adminLastName : ticketComment.customerName;
-    var firstChar = commenterName != null ? commenterName[0] : '';
-    var roundLogo = `<span>${firstChar}</span>`;
-    var newComment = `<div class="comment-user">
-                            <div class="comment-profile">
-                                    <img src="/assets/images/png/A-Circle.png" style="height:100%; width:100%">
-                            </div>
-                            <div class="comment-detail d-flex">
-                                    <h4 class="comment-user-name"><span>${commenterName}</span></h4>
-                                    <span class="comment-date" style="margin-left:10px">${createdDate}</span>
-                            </div>
-                        </div>
-                        <div class="comment-description">
-                            <p class="comment-p">${ticketComment.comment}</p>
-                        </div>
-                        <div class="hr-spacer"></div>`;
-    $("#commentsSection").prepend(newComment);
 
-    if (ticketComment.filename !== "" && ticketComment.base64String !== "") {
-        createDownloadLink(ticketComment.base64String, ticketComment.filename, "sql");
+    const {
+        comment,
+        createDate,
+        ticketId,
+        commentId,
+        adminId,
+        adminFirstName,
+        adminLastName,
+        customerAccountId,
+        customerName,
+        filename,
+        base64String
+    } = ticketComment;
+
+    
+    const createdDate = new Date(createDate).toLocaleDateString();
+    const customerNameFirstChar = customerName ? customerName[0] : '';
+    const adminNameFirstChar = adminFirstName ? adminFirstName[0] : '';
+    const roundLogo = adminId != null ? `<span>${adminNameFirstChar}</span>` : `<span>${customerNameFirstChar}</span>`;
+    const commenterName = adminId != null ? `<span>${adminFirstName} ${adminLastName}</span>` : `<span>${customerName}</span>`;
+
+
+    const newComment = `
+        <div class="comment-user">
+            <div class="comment-profile">
+                <img src="../../assets/images/png/A-Circle.png" style="height:100%; width:100%;" />
+            </div>
+            <div class="comment-detail">
+                <h4 class="comment-user-name">${commenterName}</h4>
+                <span class="comment-date">${createdDate}</span>
+            </div>
+        </div>
+        <div class="comment-description">
+            <p class="comment-p">${ticketComment.comment}</p>
+        </div>
+        <div class="hr-spacer"></div>`;
+    $("#commentsSection").append(newComment);
+
+    if (filename && base64String) {
+        createDownloadLink(base64String, filename, "sql");
     }
 });
 
-connection.start()
-    .then(function() {
-        console.log('connection started');
-    })
-    .catch(function(err) {
-        return console.error(err.toString());
-    });
+connection.start().then(function () {
+    console.log('connection started');
+}).catch(function (err) {
+    console.error(err.toString());
+});
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         sendButtonOnClick();
     }
 });
+
 function sendButtonOnClick() {
-    var comment = $("#ticketCommentText").val().trim();
-    if (!comment) {
-        alert('Kindly add a comment.');
+   const sendcomment = $("#ticketCommentText").val();
+    if (!sendcomment || !sendcomment.trim()) {
+        alert('Kindly add comment.');
         return;
     }
+    addCommentButtonClick();
+    saveComment(sendcomment);
+}
 
-    var ticketId = model.ticket.id;
-    var adminId = $("#adminId").val();
-    var customerId = 0;
-    var base64String = '';
+function addCommentButtonClick() {
+    $("#addCommentModal").modal('show');
+}
 
+function saveComment(sendcomment) {
+    const ticketId = model.ticket.id;
+    const adminId = $("#adminId").val();
+    const customerId = 0;
     const fileInput = document.getElementById('myFile');
     const file = fileInput.files[0];
+    let base64String = '';
 
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             base64String = event.target.result;
-            console.log(base64String);
-            invokeSaveComment(adminId, customerId, comment, ticketId, base64String, file.name);
+            saveCommentWithAttachment(base64String, file.name, adminId, customerId, ticketId, sendcomment);
         };
         reader.readAsDataURL(file);
     } else {
-        invokeSaveComment(adminId, customerId, comment, ticketId, '', '');
+        saveCommentWithAttachment('', '', adminId, customerId, ticketId, sendcomment);
     }
 
     fileInput.value = '';
 }
 
-function invokeSaveComment(adminId, customerId, comment, ticketId, base64String, fileName) {
-    connection.invoke("SaveComment", Number(adminId), customerId, comment, Number(ticketId), base64String, fileName)
-        .then(function() {
+function saveCommentWithAttachment(base64String, fileName, adminId, customerId, ticketId, sendcomment) {
+    connection.invoke("SaveComment", Number(adminId), Number(customerId), sendcomment, Number(ticketId), base64String, fileName)
+        .then(() => {
             $("#ticketCommentText").val('');
+            $("#filenameDisplay").hide(); // Hide filename display after sending comment
+      
         })
-        .catch(function(err) {
-            return console.error(err.toString());
+        .catch(err => {
+            console.error(err.toString());
         });
 }
+
 
 function createDownloadLink(base64String, fileName) {
     const downloadLink = document.createElement('a');
@@ -916,9 +943,16 @@ function createDownloadLink(base64String, fileName) {
     $("#fileSection").append(downloadLink);
 }
 
-function addCommentButtonClick() {
-    $("#addCommentModal").modal('show');
-}
+
+
+document.getElementById('myFile').addEventListener('change', function () {
+    var file = this.files[0];
+    var filenameDisplay = document.getElementById('filenameDisplay');
+    if (file) {
+        filenameDisplay.innerText = file.name;
+        filenameDisplay.style.display = 'inline'; // Show filename display
+    }
+});
 
 function changeTicketStatus(val1, val2) {
     console.log(val1, val2);
@@ -998,3 +1032,4 @@ function addNotesButtonClick() {
 
 
 </script>
+
