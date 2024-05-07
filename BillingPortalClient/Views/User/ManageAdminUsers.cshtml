@@ -1,4 +1,4 @@
-﻿
+
 @using System.Text.Json;
 
 @{
@@ -6,7 +6,243 @@
 }
 @model BillingPortalClient.ModelViews.AdminUserViewModel;
 
+<script>
+ function filtermodal(){
+        console.log("Inside filtermodal function.");
+        $("#testModalCenter2").modal('show');
+    }
+$(document).ready(function () {
+   
 
+    var table = $("#file-datatable").DataTable();
+    function applyDateFilter() {
+            var userStatus = $("#userStatus").val();
+            var userRole = $("#userRole").val();
+
+            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                var data = this.data();
+                console.log(data);
+                var invoiceDate = new Date(data[5]);
+                var DatauserStatus = data[3];
+                var DatauserRole = data[4];
+
+                if ((userStatus !== "" && DatauserStatus !== userStatus) ||
+                    (userRole !== "" && DatauserRole !== userRole)) 
+                    {
+                    $(this.node()).hide();
+                } else {
+                    $(this.node()).show();
+                }
+            });
+    }
+
+    table.on('draw', function () {
+        console.log("DataTable Draw Callback");
+        applyDateFilter();
+    });
+
+        $('#filterForm').submit(function (e) {
+            e.preventDefault();
+            $("#filters-div").show();
+            console.log("Form Submitted");
+            $('#testModalCenter2').modal('hide');
+            applyDateFilter();
+            displaySelectedFilters();
+        });
+        
+        $("#clearAllFilters").on("click", function (e) {
+          // Clear the form first
+          $("#testModalCenter2 #filterForm")[0].reset();
+          $('#filterForm').find(':input').val('');
+          // Then clear selectedFilters
+          selectedFilters = [];
+          // Finally, display selected filters and redraw the DataTable
+          displaySelectedFilters();
+          $("#filters-div").hide();
+          applyDateFilter();
+          e.preventDefault();
+        });
+
+        $('#searchright').on('keyup', function () {
+            console.log("search keyup function");
+            table.search(this.value).draw();
+        });
+  
+let selectedRows = [];
+let selectedFilters = [];
+
+var filterData = {
+    name: getFilterName(),
+    value: getFilterValue()
+};
+
+  $("#userStatus").val("");
+  $("#userRole").val("");
+
+// Function to determine the label based on the selected filters
+function getFilterName() {
+    // Check the selected filter criteria and set the label accordingly
+ if ($("#userStatus").val()) {
+        return "User Status";
+    } else if ($("#userRole").val()) {
+        return "User Roles";
+    }
+    // Return an empty string if no specific filter is applied
+    return "";
+}
+
+function formatDate(inputDate) {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+    const formattedDate = `${day}${ordinalSuffix(day)} ${month} ${year}`;
+    return formattedDate;
+}
+
+function ordinalSuffix(day) {
+    if (day >= 11 && day <= 13) {
+        return 'th';
+    }
+    switch (day % 10) {
+        case 1:
+            return 'st';
+        case 2:
+            return 'nd';
+        case 3:
+            return 'rd';
+        default:
+            return 'th';
+    }
+}
+
+function getFilterValue(filterName) {
+    var userStatus = $("#userStatus").val();
+    var userRole = $("#userRole").val();
+    console.log("userRole", userRole);
+
+    // Construct the filter value based on the selected filter name
+    switch (filterName) {
+         case "User Status":
+            return userStatus ? `${userStatus}` : null;
+           case "User Role":
+            return userRole ? `${userRole}` : null;
+        default:
+            return null;
+    }
+}
+
+
+function displaySelectedFilters() {
+    var filterSelections = $("#filterSelections");
+    var filterLabel = $("#filterLabel");
+
+    // Clear previous filter selections
+    filterSelections.empty();
+
+    // Get values from the modal input fields
+    var userStatus = $("#userStatus").val();
+    var userRole = $("#userRole").val();
+    console.log("displayselectedfilters userRole", userRole);
+
+    // Check if at least one filter value is provided
+    if (userStatus || userRole) {
+        filterLabel.show();
+
+        // Create a div for each selected filter
+        var filterNames = ["User Status", "User Role"];
+
+        filterNames.forEach(function (filterName) {
+            var filterValue = getFilterValue(filterName);
+
+            if (filterValue) {
+                var filterDiv = $("<div>", {
+                    class: "filter-selection",
+                });
+
+                // Create a label for filter name only if filter value is not null or empty
+                var filterNameLabel = $("<label>", {
+                    class: "filter-label",
+                    text: filterName + ": ",
+                });
+
+                // Create a span for filter value
+                var filterValueSpan = $("<span>", {
+                    class: "filter-value",
+                    text: filterValue,
+                });
+
+               // Create a cross icon to remove the filter
+                var crossIcon = $("<i>", {
+                    class: "fa fa-times cross-icon",
+                }).on("click", function () {
+                   console.log("Clicked on cross icon");
+                    // Remove the filter div
+                    filterDiv.remove();
+                   
+
+                   // Get the filter name from the parent filter selection
+                   var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
+                   console.log("Clicked on cross icon for filter:", clickedFilterName);
+
+                   // Remove the filter div
+                   let currentbox = $(this).closest('.filter-selection');
+                    console.log("Clicked on cross icon for currentbox:", currentbox);
+                   currentbox.remove();
+
+                   console.log("Clicked on cross icon for cfilter name:", filterName);
+
+                  // Clear the corresponding modal input fields based on the filter type
+                  switch (filterName) {
+                       case "User Status":
+                         $("#userStatus").val("");
+                          break;
+                       case "User Role":
+                          $("#userRole").val("");
+                          break;
+                      default:
+                          break;
+                  }
+                 
+                  
+                   // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+                  
+                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
+                    console.log("Updated selectedFilters after removal: ", selectedFilters);
+
+                     displaySelectedFilters();
+
+                    if (table) {
+                        applyDateFilter();
+                    } else {
+                        console.log("Table is not defined");
+                    }
+                });
+
+                // Append elements to the filterDiv
+                filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
+
+                // Append the filterDiv to filterSelections
+                filterSelections.append(filterDiv);
+            }
+        });
+        // Show the filterSelections container
+        filterSelections.show();
+    } else {
+        // If no filters are selected, hide the filter selections container
+        filterLabel.hide();
+        filterSelections.hide();
+        // Hide Filter Div
+		$("#filters-div").hide();
+    }
+}
+
+});
+    
+
+</script>
 <!-- CONTAINER -->
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
 
@@ -58,26 +294,43 @@
 
     <div class="row row-sm">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card" style="margin-bottom:0px !important;">
                 <div class="card-header" style="padding: 0px; border-bottom:none;">
-                    <div class="col-md-6">
-                        <h5 class="card-title">Manage Users</h5>
+                    <div class="col-md-8 col-sm-12">
+                        <h5 class="card-title">Manage Employees</h5>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="row">
+                    
+                    <div class="col-md-1 search-container right" style="text-align: center;margin-left: 0px !important;margin-right: 10px !important;padding-left: 0px !important;padding-right: 0px !important;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="toggleSearch()">
+                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></button>
+                    </div>
+
+                    <div class="col-md-1 col-sm-12" style="float: right;text-align: right;margin-right:  0px !important;padding-right: 0px !important;margin-left: 0px !important;">
+                        <div class="row filters-bar">
+                                <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
                         </div>
                     </div>
 
-                    <div class="col-md-2" style="text-align:end;">
-                        <button type="button" onclick="openUsersModal()" class="btn btn-success ticket">
-                            <i class="fe fe-file-text"></i> Add New User
-                        </button>
-
+                    <div class="col-md-2 col-sm-12" style="margin-left: 0px !important;padding-left: 0px !important;padding-right: 0px !important;margin-right: 0px !important;text-align: center;">
+                        <button type="button" onclick="openUsersModal()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Add New User</button>
                     </div>
+
+
+                    <div class="row" style="width:100%">
+                      <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            <div id="filterSelections"></div>
+                      </div>
+                    </div>
+
                 </div>
-                <hr>
-                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+            </div>
+            <hr>
+            <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
 
                     <div class="table-responsive">
                         <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
@@ -96,15 +349,12 @@
                                 {
                                     foreach( var item in Model.adminUsers )
                                     {
-                                        
-                                    <tr>
-                                   
-                                    <td hidden name="id">@item.Id</td> 
-                                        <td hidden name="password">@item.Password</td>                                     
-                                        <td><strong name="firstName">@item.FirstName</strong></td>
+                                    <tr data-EmailAttribute="@item.Email" data-FirstNameAttribute="@item.FirstName" data-LastNameAttribute="@item.LastName">                         
+                                        <td name="firstName" class="font-weight:bold;">@item.FirstName</td>
                                         <td name="email">@item.Email</td>
                                         <td name="phone">@item.LastName</td>
-                                        <td name="designation">@item.Role</td>
+                                        <td name="mystatus" hidden>@item.Status</td>  
+                                        <td name="role">@item.Role</td>
                                         @if(@item.Status == "Inactive") {
                                             <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(91deg, #F8BB46 0%, #E59806 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1; " name="status">@item.Status</span></td>
                                         } else if (@item.Status == "Active") {
@@ -112,28 +362,27 @@
                                         } else {
                                             <td style="text-align:center"><span class="badge rounded-pill" style="background: transparent linear-gradient(265deg, #C15555 0%, #F47356 100%) 0% 0% no-repeat padding-box; border-radius: 6px; opacity: 1;" name="status">@item.Status</span></td>
                                         }
-                                        <td style="text-align: center; display: flex; gap: 5px;">
-                                        <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
-                                        <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
-
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                            @if(item.Status == "Active") {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                       <td style="text-align: center; display: flex; gap: 5px;">
+                                            <button type="button" class="btn-pen editAdminUserButton"><i class="fe fe-edit-2"></i></button>
+                                            <button type="button" class="btn-dots dropdown userPermissionsButton" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fe fe-more-horizontal"></i></button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                @if(item.Status == "Active") {
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
                                                 }
-                                            @if(item.Status == "Inactive")
-                                                {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
+                                                else if(item.Status == "Inactive") {
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Suspended"})">Suspended</a></li>
                                                 }
-                                            @if(item.Status == "Suspended")
-                                                {
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
-                                            <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
+                                                else if(item.Status == "Suspended") {
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Active"})">Active</a></li>
+                                                    <li><a class="dropdown-item" href="@Url.Action("SetAdminStatus","User", new {adminId = @item.Id, status = "Inactive"})">Inactive</a></li>
                                                 }
-                                        </ul>
-                                        
+                                            </ul>
                                         </td>
+
+                                        <td hidden name="id">@item.Id</td> 
+                                        <td hidden name="password">@item.Password</td>            
                                     </tr>
                                     }
                                 }
@@ -158,37 +407,37 @@
                     <h2 class="text-center" id="modalTitle" style="color:black;">Create User</h2>
                     <p class="text-center" style="color:black">Enter the details below to create a user.</p>
                     <form asp-controller="User" asp-action="AddAdminUser" method="post">
-                         <input asp-for="adminUser.Id" hidden id="adminUserId" />
+                         <input id="adminUserId" asp-for="adminUser.Id" hidden  />
+                       
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Full Name<span style="color:red; margin-left:2px">*</span></label>
-                                    <input id="modalFirstName" asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User First Name">
+                                    <input id="modalFirstName" asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Full Name">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Contact Number<span style="color:red; margin-left:2px">*</span></label>
-                                    <input id="modalPhone" asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Last Name">
+                                    <input id="modalPhone" asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Contact Number">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px;">*</span></label>
-                                    <input id="modalEmail" asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
+                                    <input id="modalEmail" asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Email">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Password<span style="color:red; margin-left:2px;">*</span></label><br>
-                                    <input id="modalPassword" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
+                                    <input id="modalPassword" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter Password">
                                 </div>
                             </div>
 
                             <div class="col-md-12" style="padding-top: 10px; padding-bottom: 10px;">
                                     <label style="font-weight:bold;color:black">Role<span style="color:red; margin-left:2px;">*</span></label>
                                     <select id="SelectedRole" asp-for="adminUser.Role" class="form-control">
-                                        <option value="super">Super Admin</option>
                                         <option value="admin">Admin</option>
                                         <option value="regional">Regional User</option>
                                         <option value="user">User</option>
@@ -196,85 +445,88 @@
                             </div>
 
                             <div class="col-md-12" id="adminRegionpart">
-                                        <label style="font-weight:bold;color:black">Regions: </label>
-                                        <select asp-for="selectedRegions" required id="regionFormAddUser" multiple class="form-select">
-                                            @foreach(var item in Model.regions) {
-                                            <option id="@item.Id" value="@item.Id">@item.Region1</option>
-                                            }
-                                        </select>
+                                <label style="font-weight:bold;color:black">Regions: </label>
+                                <select asp-for="selectedRegions" id="regionFormAddUser" multiple class="form-select">
+                                    @foreach(var item in Model.regions) {
+                                        <option id="@item.Id" value="@item.Id">@item.Region1</option>
+                                    }
+                                </select>
+                               
+                                <div class="row" hidden>
+                                    <div class="row mb-6">
+                                        <div class="col-md-12">
+                                            <label style="font-weight:bold;color:black">Invoice: </label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="viewInvoiceCheckbox"><input asp-for="adminPermission.ViewInvoice" type="checkbox" />View</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="updateInvoiceCheckbox"><input asp-for="adminPermission.UpdateInvoice" type="checkbox" />Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col-md-12">
+                                            <label style="font-weight:bold;color:black">Payment: </label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="viewPaymentCheckbox"><input asp-for="adminPermission.ViewPayment" type="checkbox" />View</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="updatePaymentCheckbox"><input asp-for="adminPermission.UpdatePayment" type="checkbox" />Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col-md-12">
+                                            <label style="font-weight:bold;color:black">Statement: </label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="viewStatementCheckbox"><input asp-for="adminPermission.ViewStatement" type="checkbox" />View</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="updateStatementCheckbox"><input asp-for="adminPermission.UpdateStatement" type="checkbox" />Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col-md-12">
+                                            <label style="font-weight:bold;color:black">Ticket: </label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="viewTicketCheckbox"><input asp-for="adminPermission.ViewTicket" type="checkbox" />View</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="updateTicketCheckbox"><input asp-for="adminPermission.UpdateTicket" type="checkbox" />Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-6">
+                                        <div class="col-md-12">
+                                            <label style="font-weight:bold;color:black">Customers: </label>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="viewCustomerCheckbox"><input asp-for="adminPermission.ViewCustomer" type="checkbox" />View</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="updateCustomerCheckbox"><input asp-for="adminPermission.UpdateCustomer" type="checkbox" />Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                              <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label style="font-weight:bold;color:black">Invoice: </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="viewInvoiceCheckbox"><input asp-for="adminPermission.ViewInvoice" type="checkbox" />View</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="updateInvoiceCheckbox"><input asp-for="adminPermission.UpdateInvoice" type="checkbox" />Update</label>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label style="font-weight:bold;color:black">Payment: </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="viewPaymentCheckbox"><input asp-for="adminPermission.ViewPayment" type="checkbox" />View</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="updatePaymentCheckbox"><input asp-for="adminPermission.UpdatePayment" type="checkbox" />Update</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label style="font-weight:bold;color:black">Statement: </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="viewStatementCheckbox"><input asp-for="adminPermission.ViewStatement" type="checkbox" />View</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="updateStatementCheckbox"><input asp-for="adminPermission.UpdateStatement" type="checkbox" />Update</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label style="font-weight:bold;color:black">Ticket: </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="viewTicketCheckbox"><input asp-for="adminPermission.ViewTicket" type="checkbox" />View</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="updateTicketCheckbox"><input asp-for="adminPermission.UpdateTicket" type="checkbox" />Update</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb-6">
-                            <div class="col-md-12">
-                                <label style="font-weight:bold;color:black">Customers: </label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="viewCustomerCheckbox"><input asp-for="adminPermission.ViewCustomer" type="checkbox" />View</label>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="updateCustomerCheckbox"><input asp-for="adminPermission.UpdateCustomer" type="checkbox" />Update</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        
-                            </div>
+                             
+                             
                         </div>
 
                       
-
+                         <input id="modalStatus" asp-for="adminUser.Status" hidden />
                         <div class="row">
                             <div class="col-md-3"></div>
                             <div class="col-md-6">
@@ -290,148 +542,198 @@
     </div>
 </div>
 
+
+<!--filter modal -->
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+              <div class="container">
+                  <div class="row">
+                      <h1>Filters</h1>
+                  </div>
+                 <form id="filterForm">
+                      <div class="row mb-3">
+                          <div class="panel" id="datePanel">
+
+                              <div class="row">
+                                  <div class="col-md-6">
+                                      <label class="form-label">User Status</label>
+                                      <select class="form-select" id="userStatus">
+                                          <option value="">User Status</option>
+                                          <option value="Active">Active</option>
+                                          <option value="Inactive">Inactive</option>
+                                          <option value="Suspended">Suspended</option>
+                                      </select>
+                                  </div>
+                                  <div class="col-md-6">
+                                      <label class="form-label">User Role</label>
+                                      <select class="form-select" id="userRole">
+                                          <option value="">User Role</option>
+                                          <option value="admin">Admin</option>
+                                          <option value="regional user">Regional User</option>
+                                          <option value="user">User</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-12 text-center">
+                              <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+
+
+        </div>
+    </div>
+</div>
+
 <script>
-  var model = @Html.Raw(JsonSerializer.Serialize(Model));
-  console.log({model});
 
-  function submitPermissionButton()
-  {
-    $("#adminPermissionsForm").submit();
+     var model = @Html.Raw(JsonSerializer.Serialize(Model));
+
+function toggleSearch() {
+  var searchContainer = document.querySelector('.search-container');
+  var searchInput = document.querySelector('.search');
+        
+  // Toggle the 'expanded' class
+  searchContainer.classList.toggle('expanded');
+      
+  // If expanded, focus on the search input
+  if (searchContainer.classList.contains('expanded')) {
+    searchInput.focus();
   }
-
-  function openUserPermissions()
-  {
-    $("#adminPermissionsModal").modal('show')
-  }
-
-  function openUsersModal()
-  {
-    $("#testModalCenter1").modal('show');
-
-  }
-
-  function openUsersModal2(adminId, firstName, email, phone, password, role) {
-
-    console.log("Values I am getting:", adminId, firstName, email, phone, password, role);
-     // Set values in the modal form
-    $('#adminUserId').val(adminId);
-    $('#modalFirstName').val(firstName);
-    $('#modalEmail').val(email);
-    $('#modalPhone').val(phone);
-    $('#modalPassword').val(password);
-
-     role = role.toLowerCase();
-
-    $('#SelectedRole').val(role);
-
-    // Disable the email input field
-    $('#modalEmail').prop('disabled', true);
-
-    // Set permissions checkboxes
-   var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
-    $("#viewInvoiceCheckbox").prop("checked", adminPermissions.viewInvoice);
-    $("#updateInvoiceCheckbox").prop("checked", adminPermissions.updateInvoice);
-    $("#viewPaymentCheckbox").prop("checked", adminPermissions.viewPayment);
-    $("#updatePaymentCheckbox").prop("checked", adminPermissions.updatePayment);
-    $("#viewStatementCheckbox").prop("checked", adminPermissions.viewStatement);
-    $("#updateStatementCheckbox").prop("checked", adminPermissions.updateStatement);
-    $("#viewCustomerCheckbox").prop("checked", adminPermissions.viewCustomer);
-    $("#updateCustomerCheckbox").prop("checked", adminPermissions.updateCustomer);
-    $("#viewTicketCheckbox").prop("checked", adminPermissions.viewTicket);
-    $("#updateTicketCheckbox").prop("checked", adminPermissions.updateTicket);
-
-    // Set selected regions in the multiselect dropdown
-    var adminRegions = model.adminUsers.find(x => x.id == adminId).adminRegions;
-    if (adminRegions.length > 0) {
-       adminRegions.forEach(row => {
-            var data = {
-                value: row.regionId,
-                text: row.region.region1,
-            };
-            var newOption = new Option(data.text, data.value, true, true);
-            $('#regionFormAddUser').append(newOption).trigger('change');
-        });
+}
+    function submitPermissionButton()
+    {
+        $("#adminPermissionsForm").submit();
     }
 
+    function openUserPermissions()
+    {
+        $("#adminPermissionsModal").modal('show')
+    }
+
+    function openUsersModal()
+    {
+        $("#testModalCenter1").modal('show');
+
+    }
+
+    $('.editAdminUserButton').on('click', function () {
+        // Retrieve user information from the table row
+        var adminId = $(this).closest("tr").find('[name=id]').text();
+        var firstName = $(this).closest("tr").find('[name=firstName]').text();
+        var email = $(this).closest("tr").find('[name=email]').text();
+        var phone = $(this).closest("tr").find('[name=phone]').text();
+        var password = $(this).closest("tr").find('[name=password]').text();
+        var mystatus = $(this).closest("tr").find('[name=mystatus]').text();
+        var role = $(this).closest("tr").find('[name=role]').text();  
     
-     $('#modalTitle').text('Edit User');
-     $('#adminRegionpart').css('display', 'none');
-    // Modal opening logic here
-    $("#testModalCenter1").modal('show');
-}
+        console.log("Values I am passing:", adminId, firstName, email, phone, password, mystatus, role);
+        setTimeout(function () {
+            // Open the edit modal
+            openUsersModal2(adminId, firstName, email, phone, password, mystatus, role);
+        }, 100);
 
-  $(document).ready(function () {
+    });
 
+    function openUsersModal2(adminId, firstName, email, phone, password, mystatus, role) {
+
+        console.log("Values I am getting:", adminId, firstName, email, phone, password, mystatus, role);
+        // Set values in the modal form
+        $('#adminUserId').val(adminId);
+        $('#modalFirstName').val(firstName);
+        $('#modalEmail').val(email);
+        $('#modalPhone').val(phone);
+        $('#modalPassword').val(password);
+        $('#modalStatus').val(mystatus);
+
+        role = role.toLowerCase();
+        $('#SelectedRole').val(role);
+
+        // Set permissions checkboxes
+        var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+        $("#viewInvoiceCheckbox").prop("checked", adminPermissions.viewInvoice);
+        $("#updateInvoiceCheckbox").prop("checked", adminPermissions.updateInvoice);
+        $("#viewPaymentCheckbox").prop("checked", adminPermissions.viewPayment);
+        $("#updatePaymentCheckbox").prop("checked", adminPermissions.updatePayment);
+        $("#viewStatementCheckbox").prop("checked", adminPermissions.viewStatement);
+        $("#updateStatementCheckbox").prop("checked", adminPermissions.updateStatement);
+        $("#viewCustomerCheckbox").prop("checked", adminPermissions.viewCustomer);
+        $("#updateCustomerCheckbox").prop("checked", adminPermissions.updateCustomer);
+        $("#viewTicketCheckbox").prop("checked", adminPermissions.viewTicket);
+        $("#updateTicketCheckbox").prop("checked", adminPermissions.updateTicket);
+        
+        // Set selected regions in the multiselect dropdown
+        var adminRegions = model.adminUsers.find(x => x.id == adminId).adminRegions;
     
+        if (adminRegions.length > 0) {
+            var selectedRegionIds = [];
 
-   $('.editAdminUserButton').on('click', function () {
-    // Retrieve user information from the table row
-    var adminId = $(this).closest("tr").find('[name=id]').text();
-    var firstName = $(this).closest("tr").find('[name=firstName]').text();
-    var email = $(this).closest("tr").find('[name=email]').text();
-    var phone = $(this).closest("tr").find('[name=phone]').text();
-    var password = $(this).closest("tr").find('[name=password]').text();
-    var role = $(this).closest("tr").find('[name=designation]').text();
+            adminRegions.forEach(row => {
+                selectedRegionIds.push(row.regionId);
+            });
 
-   
-   
+            $('#regionFormAddUser').val(selectedRegionIds); // Set the selected values
+
+            // If you're using a library that enhances the select element (e.g., Select2),
+            // trigger an update (e.g., trigger 'change' event for Select2)
+            $('#regionFormAddUser').trigger('change');
+        }
     
-    console.log("Values I am passing:", adminId, firstName, email, phone, password, role);
-     setTimeout(function () {
-        // Open the edit modal
-      openUsersModal2(adminId, firstName, email, phone, password, role);
-     }, 100); // Adjust the delay as needed
-});
+        $('#modalTitle').text('Edit User');
+        $('#adminRegionpart').css({
+            'position': 'absolute',
+            'left': '-9999px',
+            'opacity': '0'
+        });
 
+        // Modal opening logic here
+        $("#testModalCenter1").modal('show');
+    }
+
+ 
 
     $('.userPermissionsButton').on('click', function () {
-      console.log(model)
+        
+        console.log(model);
+        var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
+        $("#adminIdPermissions").val(adminId);
 
-      var adminId = $(this).closest("tr")[0].getAttribute("data-itemId");
-      $("#adminIdPermissions").val(adminId);
+        var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
 
-      var adminPermissions = model.adminUsers.find(x => x.id == adminId).adminPermissions[0];
+        document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+        document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
+        document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
+        document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
+        document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
+        document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
+        document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
+        document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
+        document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
+        document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
+        document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
 
-      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
-      document.getElementById("viewInvoiceCheckbox").checked = adminPermissions.viewInvoice;
-      document.getElementById("updateInvoiceCheckbox").checked = adminPermissions.updateInvoice;
-      document.getElementById("viewPaymentCheckbox").checked = adminPermissions.viewPayment;
-      document.getElementById("updatePaymentCheckbox").checked = adminPermissions.updatePayment;
-      document.getElementById("viewStatementCheckbox").checked = adminPermissions.viewStatement;
-      document.getElementById("updateStatementCheckbox").checked = adminPermissions.updateStatement;
-      document.getElementById("viewCustomerCheckbox").checked = adminPermissions.viewCustomer;
-      document.getElementById("updateCustomerCheckbox").checked = adminPermissions.updateCustomer;
-      document.getElementById("viewTicketCheckbox").checked = adminPermissions.viewTicket;
-      document.getElementById("updateTicketCheckbox").checked = adminPermissions.updateTicket;
-
-      $("#adminPermissionsModal").modal('show');
+        $("#adminPermissionsModal").modal('show');
 
     });
 
     $("#adminUserViewModalViewModel_regions").select2({
       width: '100%',
-      //pointer-events:none,
-      //tags: tags1,
-      //templateResult:null,
       tags:true,
-      //tokenSeparators: [',', ' '],
-      //disabled: true
-      //readonly: true
     })
 
     $("#regionFormAddUser").select2({
       width: '100%',
-      //pointer-events:none,
-      //tags: tags1,
-      //templateResult:null,
       tags:true,
-      //tokenSeparators: [',', ' '],
-      //disabled: true
-      //readonly: true
     })
 
-    
-  });
 
   function setPermissionCheckboxes()
   {
@@ -455,7 +757,5 @@
     $("#adminPermissionsModal").modal('show');
   }
 
-
-
-
+   
 </script>
