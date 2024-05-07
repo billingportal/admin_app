@@ -349,7 +349,7 @@ function displaySelectedFilters() {
                                 {
                                     foreach( var item in Model.adminUsers )
                                     {
-                                    <tr>                         
+                                    <tr data-EmailAttribute="@item.Email" data-FirstNameAttribute="@item.FirstName" data-LastNameAttribute="@item.LastName">                         
                                         <td name="firstName" class="font-weight:bold;">@item.FirstName</td>
                                         <td name="email">@item.Email</td>
                                         <td name="phone">@item.LastName</td>
@@ -438,7 +438,6 @@ function displaySelectedFilters() {
                             <div class="col-md-12" style="padding-top: 10px; padding-bottom: 10px;">
                                     <label style="font-weight:bold;color:black">Role<span style="color:red; margin-left:2px;">*</span></label>
                                     <select id="SelectedRole" asp-for="adminUser.Role" class="form-control">
-                                        <option value="super">Super Admin</option>
                                         <option value="admin">Admin</option>
                                         <option value="regional">Regional User</option>
                                         <option value="user">User</option>
