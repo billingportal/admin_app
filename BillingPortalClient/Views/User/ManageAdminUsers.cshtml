@@ -294,27 +294,25 @@ function displaySelectedFilters() {
 
     <div class="row row-sm">
         <div class="col-lg-12">
-            <div class="card">
+            <div class="card" style="margin-bottom:0px !important;">
                 <div class="card-header" style="padding: 0px; border-bottom:none;">
                     <div class="col-md-7 col-sm-12">
-                        <h5 class="card-title">Manage Users</h5>
+                        <h5 class="card-title">Manage Employees</h5>
                     </div>
 
                     
-                    <div class="col-md-1 search-container right" style="text-align:right; position relative; right: 40px;">
+                    <div class="col-md-1 search-container right" style="text-align: center;margin-left: 0px !important;margin-right: 10px !important;padding-left: 0px !important;padding-right: 0px !important;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="toggleSearch()">
                                 <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
                                 <label class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></label>
                     </div>
 
-                    <div class="col-md-1 col-sm-12 right">
-                        <div class="row filters-bar" style="display: flex; ">
-                            <div class="col-md-12 col-sm-8">
+                    <div class="col-md-1 col-sm-12" style="float: right;text-align: right;margin-right:  0px !important;padding-right: 0px !important;margin-left: 0px !important;">
+                        <div class="row filters-bar">
                                 <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-2 col-sm-12 right">
+                    <div class="col-md-2 col-sm-12" style="margin-left: 0px !important;padding-left: 0px !important;padding-right: 0px !important;margin-right: 0px !important;text-align: center;">
                         <button type="button" onclick="openUsersModal()" class="btn btn-success ticket"><i class="fe fe-file-text"></i> Add New User</button>
                     </div>
 
@@ -415,25 +413,25 @@ function displaySelectedFilters() {
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Full Name<span style="color:red; margin-left:2px">*</span></label>
-                                    <input id="modalFirstName" asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User First Name">
+                                    <input id="modalFirstName" asp-for="adminUser.FirstName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Full Name">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Contact Number<span style="color:red; margin-left:2px">*</span></label>
-                                    <input id="modalPhone" asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Last Name">
+                                    <input id="modalPhone" asp-for="adminUser.LastName" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Contact Number">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px;">*</span></label>
-                                    <input id="modalEmail" asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
+                                    <input id="modalEmail" asp-for="adminUser.Email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Email">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="col-md-12">
                                     <label style="font-weight:bold;color:black">Password<span style="color:red; margin-left:2px;">*</span></label><br>
-                                    <input id="modalPassword" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
+                                    <input id="modalPassword" asp-for="adminUser.Password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter Password">
                                 </div>
                             </div>
 
@@ -447,7 +445,7 @@ function displaySelectedFilters() {
                                     </select>
                             </div>
 
-                            <div hidden class="col-md-12" id="adminRegionpart">
+                            <div class="col-md-12" id="adminRegionpart">
                                 <label style="font-weight:bold;color:black">Regions: </label>
                                 <select asp-for="selectedRegions" id="regionFormAddUser" multiple class="form-select">
                                     @foreach(var item in Model.regions) {
