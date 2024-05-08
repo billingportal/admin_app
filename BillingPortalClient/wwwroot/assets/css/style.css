@@ -314,7 +314,7 @@ html {
 form#localizationForm {
     color: #3B444D;
 }
-span#customerEmailText {
+span#adminEmailText {
     color: #3B444D;
 }
 
@@ -1026,26 +1026,29 @@ td .btn-dots {
     bottom:15px;
   }
   
-  .app-sidebar .sidebarToggleClass:before{
-    content:"\e910" !important;
-  }
+  .app-sidebar .sidebarToggleClass {
+    float: inline-end;
+    position: absolute !important;
+    margin-right: -12px;
+    color: #ffffff !important;
+    background: #D15817;
+    border-radius: 50px;
+    width: 22px;
+    height: 22px;
+    bottom: 15px;
+}
+
+.app-sidebar .sidebarToggleClass:before {
+    content: "\e90f" !important;
+}
+
+.sidenav-toggled .app-sidebar .sidebarToggleClass:before {
+    content: "\e911" !important;
+}
   .dropdown.d-flex.profile-1.small-screen {
     display: none !important;
 }  
-/* table.table-bordered.dataTable th:last-child:after {
-    width: 36px;
-    height: 36px;
-    background: #66a3e4;
-    border-radius:6px;
-    vertical-align: middle;
-    content: "\e9af";
-    color: #714ac0;
-    font-family: 'feather';
-    font-size: 20px;
-    margin: 0 auto;
-    text-align: center;
-    position: absolute;
-} */
+
 
 .table-bordered tr:hover {
     box-shadow: 2px 2px 14px #0F172C29;
@@ -2086,7 +2089,7 @@ pre code {
     height: 48px;
     background: #F0F0FA 0% 0% no-repeat padding-box;
     border: 1px solid #0F172C29;
-    border-radius: 10px 10px 10px 0px;
+    border-radius: 10px 10px 10px 10px;
     font-size: 14px;
     font-weight: normal;
     line-height:11px;
@@ -15434,7 +15437,7 @@ a.icon:hover {
 }
 
 @media (max-width: 991px) {
-    span#customerEmailText {
+    span#adminEmailText {
         display: none;
     }
     .app-sidebar .main-sidebar-header{
