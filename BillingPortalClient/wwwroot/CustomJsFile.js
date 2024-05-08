@@ -1,4 +1,4 @@
-﻿  // Place this script in the head to ensure it runs after jQuery is loaded
+  // Place this script in the head to ensure it runs after jQuery is loaded
   $(document).ready(function () {
 
     $('#CustomerName').on('input', function () {
@@ -100,40 +100,16 @@
 
 
      $.ajax({
-        url: "/Authentication/GetCurrentCustomer",
+        url: "/Authentication/GetCurrentAdmin",
         type: 'GET',
         dataType: 'json', // added data type
         success: function (res) {
             console.log(res);
 
-            var optionsAsString = "";
-
-            let accounts = [];
-
-            if (res.isMain == false) {
-                accounts.push(res.customerUserCustomers[0].parentAccount);
-                for (var i = 0; i < accounts.length; i++) {
-                    $option = $('<option id="selected-email" value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
-                    
-                    $option.attr('selected', 'selected');
-                    
-                    $('#changeAccountDropDown').append($option);
-                }
-            }
-            else {
-                accounts = res.accounts
-                for (var i = 0; i < accounts.length; i++) {
-                    $option = $('<option value="' + accounts[i].id + '">' + accounts[i].accountName + '</option>');
-                    if (accounts[i].isSelected == true) {
-                        $option.attr('selected', 'selected');
-                    }
-                    $('#changeAccountDropDown').append($option);
-                }
-            }
-            //$('#changeAccountDropDown').append(optionsAsString);
-            $("#customerNameText").text(res.name);
-            $("#customerDesignationText").text(res.designation);
-            $("#customerEmailText").text(res.email)
+           //$('#changeAccountDropDown').append(optionsAsString);
+            $("#adminNameText").text(res.firstName);
+            $("#adminDesignationText").text(res.role);
+            $("#adminEmailText").text(res.email)
 
             //var changeDrop = document.getElementById("changeAccountDropDown");
         }

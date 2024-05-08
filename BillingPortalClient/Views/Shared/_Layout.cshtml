@@ -239,14 +239,14 @@
                             <div alt="profile-user"
                                  class="avatar  profile-user cover-image" style="border-radius:10%;"></div>
                             <a href="javascript:void(0)" data-bs-toggle="dropdown" class="dropdown-toggle nav-link leading-none d-flex">
-                                <span id="customerEmailText"></span>
+                                <span id="adminEmailText"></span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <div class="drop-heading">
                                     <div class="text-center">
-                                        <h5 class="text-dark mb-0 fs-14 fw-semibold" id="customerNameText"></h5>
-                                        <small class="text-muted" id="customerDesignationText"></small>
+                                        <h5 class="text-dark mb-0 fs-14 fw-semibold" id="adminNameText"></h5>
+                                        <small class="text-muted" id="adminDesignationText"></small>
                                     </div>
                                 </div>
 
@@ -344,7 +344,7 @@
 
                         <li class="slide" style="position:absolute; bottom:0px;">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("Logout","Authentication")">
-                                <img src="../assets/images/dashboard/logout-icon.png"><span class="side-menu__label">@localizer["Logout"]</span>
+                                <img src="../assets/images/dashboard/logout-icon.png" style="margin-left: 5px; margin-right: 5px;"><span class="side-menu__label">@localizer["Logout"]</span>
                             </a>
                         </li>
 
