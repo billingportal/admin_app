@@ -107,9 +107,9 @@
             console.log(res);
 
            //$('#changeAccountDropDown').append(optionsAsString);
-            $("#adminNameText").text(res.FirstName);
-            $("#adminDesignationText").text(res.Role);
-            $("#adminEmailText").text(res.Email)
+            $("#adminNameText").text(res.firstName);
+            $("#adminDesignationText").text(res.role);
+            $("#adminEmailText").text(res.email)
 
             //var changeDrop = document.getElementById("changeAccountDropDown");
         }
