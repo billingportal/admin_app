@@ -569,23 +569,23 @@ namespace BillingPortalClient.Controllers
       return accounts;
     }
 
-    public async Task<ActionResult<Customer>> GetCurrentCustomer()
+    public async Task<ActionResult<Admin>> GetCurrentAdmin()
     {
-      int customerId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault().Value );
-      Customer customer = new Customer();
-      using( var response = await _httpClient.GetAsync( $"Customer/GetCustomerById/{customerId}" ) )
+      int adminId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault().Value );
+      Admin admin = new Admin();
+      using( var response = await _httpClient.GetAsync( $"Admin/GetAdminProfile/{adminId}" ) )
       {
         string apiResponse = await response.Content.ReadAsStringAsync();
         if( apiResponse != null )
         {
-          if( JsonConvert.DeserializeObject<Customer>( apiResponse ) != null)
+          if( JsonConvert.DeserializeObject<Admin>( apiResponse ) != null)
           {
-            customer = JsonConvert.DeserializeObject<Customer>( apiResponse );
+            admin = JsonConvert.DeserializeObject<Admin>( apiResponse );
           }
         }
       }
 
-      return customer;
+      return admin;
     }
 
 
