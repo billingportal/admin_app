@@ -842,19 +842,21 @@ connection.on("ReceiveMessage", function(ticketComment) {
         filename,
         base64String
     } = ticketComment;
-
-    
+ 
     const createdDate = new Date(createDate).toLocaleDateString();
     const customerNameFirstChar = customerName ? customerName[0] : '';
     const adminNameFirstChar = adminFirstName ? adminFirstName[0] : '';
-    const roundLogo = adminId != null ? `<span>${adminNameFirstChar}</span>` : `<span>${customerNameFirstChar}</span>`;
-    const commenterName = adminId != null ? `<span>${adminFirstName} ${adminLastName}</span>` : `<span>${customerName}</span>`;
 
+    const profileImageSrc = customerId != null ? "../../assets/images/png/C-Circle.png" : "../../assets/images/png/A-Circle.png";
+    const commenterFirstName = customerId != null ? customerNameFirstChar : adminFirstName;
+    const commenterLastName = customerId != null ? '' : adminLastName;
+
+    const commenterName = `<span>${commenterFirstName} ${commenterLastName}</span>`;
 
     const newComment = `
         <div class="comment-user">
             <div class="comment-profile">
-                <img src="../../assets/images/png/A-Circle.png" style="height:100%; width:100%;" />
+                <img src="${profileImageSrc}" style="height:100%; width:100%;" />
             </div>
             <div class="comment-detail">
                 <h4 class="comment-user-name">${commenterName}</h4>
@@ -862,9 +864,10 @@ connection.on("ReceiveMessage", function(ticketComment) {
             </div>
         </div>
         <div class="comment-description">
-            <p class="comment-p">${ticketComment.comment}</p>
+            <p class="comment-p">${comment}</p>
         </div>
         <div class="hr-spacer"></div>`;
+
     $("#commentsSection").append(newComment);
 
     if (filename && base64String) {
