@@ -301,12 +301,12 @@ function displaySelectedFilters() {
                     </div>
 
                     
-                    <div class="col-md-1 search-container right" style="text-align: center;margin-left: 0px !important;margin-right: 10px !important;padding-left: 0px !important;padding-right: 0px !important;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="toggleSearch()">
+                    <div class="col-md-1 search-container right" style="text-align: center;margin-left: 0px !important;margin-right: 10px !important;padding-left: 0px !important;padding-right: 0px !important;margin-top: 1px !important;margin-bottom: 0px !important;" onclick="toggleSearch()">
                                 <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></button>
+                                <button class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass-icon.png" width="20px" /></button>
                     </div>
 
-                    <div class="col-md-1 col-sm-12" style="float: right;text-align: right;margin-right:  0px !important;padding-right: 0px !important;margin-left: 0px !important;">
+                    <div class="col-md-1 col-sm-12" style="ftext-align: center;margin-right:  0px !important;padding-right: 0px !important;margin-left: 0px !important;">
                         <div class="row filters-bar">
                                 <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
                         </div>
@@ -447,9 +447,13 @@ function displaySelectedFilters() {
                             <div class="col-md-12" id="adminRegionpart">
                                 <label style="font-weight:bold;color:black">Regions: </label>
                                 <select asp-for="selectedRegions" id="regionFormAddUser" multiple class="form-select">
-                                    @foreach(var item in Model.regions) {
+                                    <option id="Central Region" value="Central Region">Central Region</option>
+                                    <option id="Eastern Region" value="Eastern Region">Eastern Region</option>
+                                    <option id="Western Region" value="Western Region">Western Region</option>
+                                    <option id="Southern Region" value="Southern Region">Southern Region</option>
+                                    <!-- @foreach(var item in Model.regions) {
                                         <option id="@item.Id" value="@item.Id">@item.Region1</option>
-                                    }
+                                    } -->
                                 </select>
                                
                                 <div class="row" hidden>
@@ -527,7 +531,7 @@ function displaySelectedFilters() {
 
                       
                          <input id="modalStatus" asp-for="adminUser.Status" hidden />
-                        <div class="row">
+                        <div class="row mt-5">
                             <div class="col-md-3"></div>
                             <div class="col-md-6">
                                 <button type="submit" class="btn btn-primary" style="width:100% !important;">Submit</button>
@@ -561,7 +565,7 @@ function displaySelectedFilters() {
                                   <div class="col-md-6">
                                       <label class="form-label">User Status</label>
                                       <select class="form-select" id="userStatus">
-                                          <option value="">User Status</option>
+                                          <option value="">Select User Status</option>
                                           <option value="Active">Active</option>
                                           <option value="Inactive">Inactive</option>
                                           <option value="Suspended">Suspended</option>
@@ -570,7 +574,7 @@ function displaySelectedFilters() {
                                   <div class="col-md-6">
                                       <label class="form-label">User Role</label>
                                       <select class="form-select" id="userRole">
-                                          <option value="">User Role</option>
+                                          <option value="">Select User Role</option>
                                           <option value="admin">Admin</option>
                                           <option value="regional user">Regional User</option>
                                           <option value="user">User</option>
@@ -579,7 +583,7 @@ function displaySelectedFilters() {
                               </div>
                           </div>
                       </div>
-                      <div class="row">
+                      <div class="row mt-5">
                           <div class="col-md-12 text-center">
                               <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
                           </div>
@@ -731,7 +735,7 @@ function toggleSearch() {
 
     $("#regionFormAddUser").select2({
       width: '100%',
-      tags:true,
+      tags:false,
     })
 
 
