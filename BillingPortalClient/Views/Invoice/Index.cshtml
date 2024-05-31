@@ -1,139 +1,145 @@
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 @using System.Text.Json
 @using BillingPortalClient.Components;
 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
-    ViewData["Title"] = "Register";
-    Layout = "_Layout";
+  ViewData["Title"] = "Register";
+  Layout = "_Layout";
 }
-@model BillingPortalClient.ModelViews.InvoiceViewModel;
-
+@model BillingPortalClient.ModelViews.CustomerInvoiceViewModel
 
  <!-- CONTAINER -->
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
+
     <!-- ROW-1 -->
-  <div class="row widget-row">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
-      <div class="row">
-        <div class="card-widget">
+    <div class="row widget-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c1">
+                            <div class="d-flex">
+                                <div class="">
+                                   
+                                    <h6 class="text title">Open <br />Transactions</h6>
+                                     <img src="../assets/images/dashboard/green-icon.png" />
+                                    @if (@Model.openTransaction != null)
+                                    {
+                                        <h2 class="mb-0 number-font text">SAR @Model.openTransaction.ToString("N2")</h2>
+                                    }
+                                    else
+                                    {
+                                        <h2 class="mb-0 number-font text">SAR 0.00</h2>
+                                    }
 
-          <div class="card overflow-hidden">
-            <div class="card-body c1">
-              
-              <div class="d-flex">
-                <div class="">
-                 
-                  <h6 class="text title text-white">Open <br />Transactions</h6>
-                   <img src="../assets/images/dashboard/green-icon.png" />
-                  <h2 class="mb-0 number-font text">SAR @Model.openTransactions</h2>
-                </div>                             
-              </div>
-              <span class="text-muted fs-12">
-                <a href="@Url.Action("RefreshInvoices","Invoice")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-              </span>
-                            
-            </div>
-          </div>
-          
-        </div>
-        <div class="card-widget">
-          <div class="card overflow-hidden">
-
-            <div class="card-body c2">
-              <div class="d-flex">
-                <div class="">
-                  
-                  <h6 class="text title text-white">Overdue <br />Amount</h6>
-                  <img src="../assets/images/dashboard/red-icon.png" />
-                  <h2 class="mb-0 number-font text">SAR @Model.overdueAmount</h2>
-                </div>                        
-              </div>
-              <span class="text-muted fs-12">
-                <a href="javascript:void(0)" onclick="payNowButtonClick()" class="btn btn-primary mt-2"><i class="fe fe-credit-card"></i> Pay Now </a>
-              </span>
-            </div>
-                    
-          </div>
-        </div>
-        <div class="card-widget">
-          <div class="card overflow-hidden">
-
-            <div class="card-body c3">
-              <div class="d-flex">
-                <div class="">
-                  
-                  <h6 class="text title text-white">Disputed <br />Invoices</h6>
-                  <img src="../assets/images/dashboard/yellow-icon.png" />
-                  @if(@Model.disputedInvoices != null) {
-                    <h2 class="mb-0 number-font text">@Model.disputedInvoices.Count</h2>
-                  } else {
-                    <h2 class="mb-0 number-font text">0</h2>
-                  }
-                </div>                
-              </div>
-              <span class="text-muted fs-12">
-                <a class="btn btn-primary mt-2" onclick="disputedInvoicesOnClick()"> View All </a>
-              </span>
-            </div>
-
-          </div>
-        </div>
-        <div class="card-widget">
-          <div class="card overflow-hidden">
-        
-            <div class="card-body c4">
-              <div class="d-flex">
-                <div class="">
-                 
-                  <h6 class="text title text-white">Rated But Not Invoiced</h6>
-                   <img src="../assets/images/dashboard/blue-icon.png" />
-                  <h2 class="mb-0 number-font text">765</h2>
+                                    
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="@Url.Action("RefreshInvoices","Invoice")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
+                            </span>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <span class="text-muted fs-12">
-                <a href="#" class="btn btn-primary mt-2"> View All </a>
-              </span>
-            </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c2">
+                            <div class="d-flex">
+                                <div class="">
+                                   
+                                    <h6 class="text title">Overdue <br />Amount</h6>
+                                     <img src="../assets/images/dashboard/red-icon.png" />
+                                      @if (@Model.overdueAmount != null)
+                                    {
+                                        <h2 class="mb-0 number-font text">SAR @Model.overdueAmount.ToString("N2")</h2>
+                                    }
+                                    else
+                                    {
+                                        <h2 class="mb-0 number-font text">SAR 0.00</h2>
+                                    }
 
-          </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="javascript:void(0)" onclick="payNowButtonClick()" class="btn btn-primary mt-2"><i class="fe fe-credit-card"></i> Pay Now </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c3">
+                            <div class="d-flex">
+                                <div class="">
+                                    <img src="../assets/images/dashboard/yellow-icon.png" />
+                                    <h6 class="text title">Disputed <br />Invoices</h6>
+                                      @if (@Model.disputedInvoices != null)
+                                      {
+                                        <h2 class="mb-0 number-font text">@Model.disputedInvoices.Count</h2>
+                                      }
+                                      else
+                                      {
+                                        <h2 class="mb-0 number-font text">0</h2>
+                                      }
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a class="btn btn-primary mt-2" onclick="disputedInvoicesOnClick()"> View All </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-widget">
+                    <div class="card overflow-hidden">
+                        <div class="card-body c4">
+                            <div class="d-flex">
+                                <div class="">
+                               
+                                    <h6 class="text title">Rated But Not Invoiced</h6>
+                                     <img src="../assets/images/dashboard/blue-icon.png" />
+                                    <h2 class="mb-0 number-font text">765</h2>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <a href="" class="btn btn-primary mt-2"> View All </a>
+                              </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- ROW-1 END -->
-      
-  <!-- Row -->
-  <div class="row row-sm">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
-          
-          <div class="row" style="width:100%;">
-            <div class="col-md-8 col-sm-12">
+    <!-- ROW-1 END -->
+
+ <!-- Row -->
+    <div class="row row-sm">
+        <div class="col-lg-12">
+            <div class="card" style="margin-bottom:0px;">
+                <div class="card-header" style="padding: 0px;border-bottom:none;display: block;margin-top: 20px;">
+                  <div class="row" style="width: 100%;margin: 0 auto;padding-left: 0px;padding-right: 15px;">
+                    <div class="col-md-4 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
                       <h5 class="card-title" style="color:black;" id="accountNameDiv"><span>Showing details of</span> @Model.accountName</h5>
                      <h5 class="card-sub-title" style="color:black"><span>Account No: </span><span class="orange" id="accountNumberDiv">@Model.accountNumber</span></h5>
-            </div>
-            <div class="col-md-1 col-sm-12 search-container right" style="text-align:right; position:relative; right:40px;">
-                                <input class="search expandright" id="invoiceNumberSelection" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass-icon.png" /></button>
-            </div>
-            <div class="col-md-2 col-sm-12">
-                      
-              <div class="row filters-bar">
-                        <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
-                          <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                    </div>
+                    <div class="col-md-8 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                        <div class="row" style="justify-content: flex-end;">
+                              <div class="search-container">
+                                <input class="search" id="invoiceNumberSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass-icon.png"/></button>
+                              </div>
+                              <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                              <div class="export-button-wrapper" onmouseleave="hideDownloadOptions()">
+                                <button class="btn btn-export" id="exportButtonsDiv"><img onmouseover="showDownloadOptions()" src="../assets/images/dashboard/downinv.png" /></button>
+                                <div id="downloadOptions" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                                  <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadInvoiceReport('pdf')">PDF</button>
+                                  <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadInvoiceReport('Excel')">Excel</button>
+                                </div>
+                              </div>
+                          </div>
                         </div>
-                        <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
-                          <div class="btn-export" id="exportButtonsDiv"></div>
-                        </div>
-              </div>
-            </div>
-          </div>
-
-           <div class="row" style="width:100%">
+                    </div>
+                  </div>
+                   <div class="row" style="width:100%">
                         <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
                             <div class="clear-allfilters">
                                 <label>Selected Filters</label>
@@ -142,92 +148,105 @@
                             <div id="filterSelections"></div>
                          </div>
                     </div>
-               
-        </div>
-      </div>
-
-      <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">            
-        <div class="table-responsive">
-          <table id="file-datatable" data-show-refresh="true" class="table table-bordered text-nowrap key-buttons border-bottom">
-            <thead>
-              <tr>
+                  </div>
+                </div>
+                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+                  <div class="table-responsive">
+                        <table id="file-datatable" data-show-refresh="true" class="table table-bordered text-nowrap key-buttons border-bottom">
+                            <thead>
+                                <tr>
                                     <th></th>
                                     <th class="border-bottom-0" id="invoiceNumberColumn">Invoice No.</th>
                                     <th class="border-bottom-0" id="invoiceDateColumn">Invoice Date</th>
                                     <th class="border-bottom-0" id="dueDateColumn">Due Date</th>
-                                    <th class="border-bottom-0">Account No.</th>
-                                    <th class="border-bottom-0">Region</th>
-                                    <th class="border-bottom-0">Status</th>
+                                    <th class="border-bottom-0" id="invoiceStatusColumn">Status</th>
                                     <th class="border-bottom-0">Total</th>
                                     <th class="border-bottom-0">Paid</th>
                                     <th class="border-bottom-0">Balance</th>
                                     <th class="border-bottom-0">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              @{int i = 1;}
-              @if(Model.invoiceTable.Count > 0){
-                foreach( var item in Model.invoiceTable ){
-                  if(i > 25){
-                    i = 1;
-                  }
-                  <tr id="@string.Format("tr{0}", item.id)" data-docNumber="@item.docNumber" data-InvoiceIdAttribute ="@item.id" data-day="@item.invoiceDate.Day" data-month="@item.invoiceDate.Month" data-year="@item.invoiceDate.Year" data-dueDay="@item.dueDate.Day" data-dueMonth="@item.dueDate.Month" data-dueYear="@item.dueDate.Year">
-                    <td><input type="checkbox" id="@string.Format("{0}", item.docNumber)" class="invoiceTableCheckbox"/></td>
-                    <td><strong>@item.docNumber</strong></td>
-                    <td>@item.invoiceDate.ToString("dd MMM, yyyy")</td>
-                    <td>@item.dueDate.ToString("dd MMM, yyyy")</td>
-                    <td><strong>@item.accountNumber</strong></td>
-                    <td><strong>@item.region</strong></td>
-                     @if (item.status == "CL")
-                      {
-                                                      <td style="text-align:center"><span class="badge rounded-pill bg-success">@item.status</span></td>
-                      }
-                      else if (item.status == "Unpaid")
-                      {
-                                                      <td style="text-align:center"><span class="badge rounded-pill bg-danger">@item.status</span></td>
-
-                      }
-                      else
-                      {
-                                                      <td style="text-align:center"><span class="badge rounded-pill bg-warning">@item.status</span></td>
-                      }
-                    <td><strong>@item.total</strong></td>
-                    <td>@item.paid</td>
-                    <td><strong>@item.balance</strong> SAR</td>
-                    <td>
-                      <button type="button" class="btn btn-success btn-ticket productButton"
-                        data-itemId="@item.id" data-docNumber="@item.docNumber" data-invoiceDate="@item.invoiceDate.ToShortDateString()" data-dueDate="@item.dueDate.ToShortDateString()"
-                        data-status="@item.status" data-total="@item.total" data-paid="@item.paid" data-balance="@item.balance"><i class="fe fe-download"></i></button>
-                    </td>
-                  </tr>
-                  i++; 
+                                </tr>
+                            </thead>
+                            <tbody>
+                @{
+                  int i = 1;
                 }
-              }                            
-            </tbody>
-          </table>
+                @if (Model.invoiceTable.Count > 0)
+                {
+                  foreach (var item in Model.invoiceTable)
+                  {
+                    if (i > 25)
+                    {
+                      i = 1;
+                    }
+
+                                            <tr id="@string.Format("tr{0}", item.id)" data-itemId="@item.id" data-docNumber="@item.docNumber" data-InvoiceIdAttribute="@item.id" data-day="@item.invoiceDate.Day" data-month="@item.invoiceDate.Month" data-year="@item.invoiceDate.Year" data-dueDay="@item.dueDate.Day" data-dueMonth="@item.dueDate.Month" data-dueYear="@item.dueDate.Year">
+
+                                              <td><input type="checkbox" id="@item.id" data-itemId="@item.id" data-docNumber="@item.docNumber" data-invoiceDate="@item.invoiceDate.ToShortDateString()" data-dueDate="@item.dueDate.ToShortDateString()"
+                                                    data-status="@item.status" data-total="@item.total" data-paid="@item.paid" data-balance="@item.balance" class="invoiceTableCheckbox"/></td>
+                                              <td><strong>@item.id</strong></td>
+                                              <td>@item.invoiceDate.ToString("dd MMM, yyyy")</td>
+                                              <td>@item.dueDate.ToString("dd MMM, yyyy")</td>
+                                              <td>
+                                                  @if (item.status == "Fully Paid")
+                                                  {
+                                                      <span class="badge rounded-pill bg-success">@item.status</span>
+                                                  }
+                                                  else if (item.status == "Unpaid")
+                                                  {
+                                                      <span class="badge rounded-pill bg-danger">@item.status</span>
+                                                  }
+                                                  else
+                                                  {
+                                                      <span class="badge rounded-pill bg-warning">@item.status</span>
+                                                  }
+                                              </td>
+                                              <td><strong>@item.total</strong></td>
+                                              <td>@item.paid</td>
+                                              <td><strong>@item.balance</strong> SAR</td>
+                                              <td>
+                                                  
+                                                  <div class="download-button-wrapper" onmouseleave="hideDownloadROptions('@item.id')">
+                                                    <button type="button" class="btn btn-success btn-ticket productButton"><img onmouseover="showDownloadROptions('@item.id')" src="../assets/images/dashboard/downinv.png" /></button>
+                                                    <div id="downloadROptions@(item.id)" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                                                      <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadRecieptReport('pdf', '@item.id')">PDF</button>
+                                                      <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadRecieptReport('Excel', '@item.id')">Excel</button>
+                                                    </div>
+                                                  </div>
+                                              </td>
+                                          </tr>
+
+                    i++;
+                  }
+                }else{
+
+                  <div>No Data Found</div>
+                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- End Row -->
-  
-</div>               
+    <!-- End Row -->
+</div>
 <!-- CONTAINER CLOSED -->
 
 
-<!--***********************************************************************************************************************************************-->
 
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
-
+      <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
       <div class="modal-body">
 
         <div class="container">
           <div class="row">
             <h1>Filters</h1>
           </div>
-              <form id="filterForm">
+            <form id="filterForm">
               <div class="row mb-3">
                  <div class="panel" id="datePanel">
                    <div class="row mb-5">
@@ -237,11 +256,11 @@
 
                                                 <div class="col-md-6">
                                                   <h5>From</h5>
-                                                  <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                                                  <input class="form-control" type="date" id="minDateSelection" />
                                                 </div>
                                                 <div class="col-md-6">
                                                  <h5>To</h5>
-                                                    <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                                                    <input class="form-control" type="date" id="maxDateSelection" />
                                                 </div>
                                               </div>
                                             </div>
@@ -254,11 +273,11 @@
 
                                                 <div class="col-md-6">
                                                  <h5>From</h5>
-                                                  <input class="form-control" type="date" id="minDueDateSelection" onchange="mDateOnChange()" />
+                                                  <input class="form-control" type="date" id="minDueDateSelection" />
                                                 </div>
                                                 <div class="col-md-6">
                                                  <h5>To</h5>
-                                                    <input class="form-control" type="date" id="maxDueDateSelection" onchange="mDateOnChange()" />
+                                                    <input class="form-control" type="date" id="maxDueDateSelection" />
                                                 </div>
                                               </div>
                                             </div>
@@ -268,8 +287,8 @@
                                                 <div class="col-md-12">
                                                   <label style="text-align:left; width:100%;">Status</label>
                                                   <span>
-                                                      <input class="form-control" type="radio" myid="cl" name="invoiceStatus" >
-                                                      <label>Paid</label>
+                                                      <input class="form-control" type="radio" myid="fully paid" name="invoiceStatus" >
+                                                      <label>Fully Paid</label>
                                                   </span>
                                                   <span>
                                                       <input class="form-control" type="radio" myid="unpaid" name="invoiceStatus" >
@@ -298,17 +317,51 @@
   </div>
 </div>
 
+
+<div class="modal" id="downloadProgressModal" tabindex="-1" role="dialog" aria-labelledby="downloadProgressModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+ <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
+      <div class="modal-header">
+        <h1 class="modal-title" style="color: #191616; font-size:24px;" id="downloadProgressModalLabel">Please Wait</h1>
+      </div>
+      <div class="modal-body">
+        <span style="color:#191616">Download is in progress...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
- 
+
+  var model = @Html.Raw(JsonSerializer.Serialize(Model));
  // let selectedRows = [];
   let selectedFilters = [];
+  var selectedRows = [];
+
+  function closeModal(btn) {
+    selectedRows = [];
+    // Find the closest modal
+    var modal = $(btn).closest('.modal');
+    console.log("Button clicked:", btn); // Log the button element
+    console.log("Modal found:", modal); // Log the modal element
+     $('#file-datatable').find('input[type="checkbox"]').prop('checked', false);
+    // Close the found modal
+    $(modal).modal('hide');
+  }
+
+  function updateFileName(input) {
+    var fileName = input.files[0].name;
+    document.getElementById('fileName').innerText = 'Selected file: ' + fileName;
+  }
 
   var filterData = {
     name: getFilterName(),
     value: getFilterValue()
-};
-
-  var model = @Html.Raw(JsonSerializer.Serialize(Model));
+  };
 
   $("#minDateSelection").val("");
   $("#maxDateSelection").val("");
@@ -316,14 +369,23 @@
   $("#maxDueDateSelection").val("");
   $('input[name="invoiceStatus"]:checked').prop('checkedd', false);
 
-  var statusCriteria = "all";
   var isDisputedInvoices = false;
 
-  $(document).ready(function(){
+ jQuery(document).ready(function ($) {
     console.log('*******************************************');
-  });
+  
+});
 
-   if (!$.fn.DataTable.isDataTable('#file-datatable')) {
+
+  $('input[name="invoiceStatus"]').on('click', function() {                       
+    // Add 'selected' attribute to the clicked radio button
+    $(this).attr('checked', 'checked');
+});
+
+
+    
+
+     if (!$.fn.DataTable.isDataTable('#file-datatable')) {
         table = $("#file-datatable").DataTable({
             // ... (your existing DataTable configuration)
             drawCallback: function () {
@@ -341,14 +403,13 @@
                     var dueDate = new Date(data[3]);
                     var inv = model.disputedInvoices.find((x) => x.Id === Number($(this.node()).data("invoiceidattribute")));
                     // Assuming data[4] contains the HTML string
-                    var invoiceStatusHTML = data[6];
+                    var invoiceStatusHTML = data[4];
 
                     // Create a temporary element to parse the HTML
                     var tempElement = $('<div>').html(invoiceStatusHTML);
 
                     // Extract the text content
                     var invoiceStatus = tempElement.text().toLowerCase();
-
                     if (
                         (!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
                         (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
@@ -367,23 +428,12 @@
         });
     }
 
-
-  $("#minDateSelection, #maxDateSelection, #minDueDateSelection, #maxDueDateSelection").on("change", function () {
-        // if (table) {
-        //     table.rows().invalidate().draw();
-        //     table.page('first').draw('page');
-        // } else {
-        //     console.log("Table is not defined");
-        // }
-  });
-
- $("#filterForm").on("submit", function (event) {
+  $("#filterForm").on("submit", function (event) {
         event.preventDefault();
         $("#filters-div").show();
         displaySelectedFilters();
         if (table) {
-            // Iterate through each page of the table
-             table.rows().invalidate().draw();
+            table.rows().invalidate().draw();
             table.search('').draw();
         } else {
             console.log("Table is not defined");
@@ -393,7 +443,6 @@
 
   $("#invoiceNumberSelection").on("keyup", function () {
         if (table) {
-            // Iterate through each page of the table
             table.search(this.value).draw();
         } else {
             console.log("Table is not defined");
@@ -528,20 +577,15 @@ function displaySelectedFilters() {
                 var crossIcon = $("<i>", {
                     class: "fa fa-times cross-icon",
                 }).on("click", function () {
-                    console.log("Clicked on cross icon");
                     // Remove the filter div
                     filterDiv.remove();
 
                     // Get the filter name from the parent filter selection
                     var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
-                    console.log("Clicked on cross icon for filter:", clickedFilterName);
 
                     // Remove the filter div
                     let currentbox = $(this).closest('.filter-selection');
-                    console.log("Clicked on cross icon for currentbox:", currentbox);
                     currentbox.remove();
-
-                    console.log("Clicked on cross icon for cfilter name:", filterName);
 
                     // Clear the corresponding modal input fields based on the filter type
                     switch (filterName) {
@@ -561,15 +605,12 @@ function displaySelectedFilters() {
                     // Remove the filter and update the display
                     selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
 
-                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
-                    console.log("Updated selectedFilters after removal: ", selectedFilters);
-
                     // Check if displaySelectedFilters is being called
                     displaySelectedFilters();
 
                     if (table) {
                         table.rows().invalidate().draw();
-                        table.page('first').draw('page');
+                        table.search('').draw('page');
                     } else {
                         console.log("Table is not defined");
                     }
@@ -592,94 +633,310 @@ function displaySelectedFilters() {
     }
 }
 
+function disputedInvoicesOnClick()
+  {
+    isDisputedInvoices = true;
+    statusCriteria = 'disputedInvoices'
+    if (table) {
+            table.rows().invalidate().draw();
+            table.search('').draw();
+    } else {
+            console.log("Table is not defined");
+    }
+  }
+
 if (table != undefined && table != null) {
     table.destroy();
 }
 
-var selectedRows = [];
 
-$(document).on("click",".invoiceTableCheckbox",function(e){
-// your code goes here
-  console.log(event);
 
-  var selectedRow = model.invoices.find(x => x.docNumber == event.target.id)
+$(document).on("change", ".invoiceTableCheckbox", function (event) {
+    var itemId = event.target.id; // Get the item ID from the checkbox
+    var isChecked = $(this).prop("checked");
+    var selectedRow = model.invoices.find(x => x.TransactionNumber == itemId); // Find the selected row using the item ID
+    console.log("SelectedRow", selectedRow);
+    var index = selectedRows.indexOf(itemId); // Find the index of the item ID in selectedRows
+    if (isChecked) {
+        if (index === -1) {
+            // Add the item ID to the selectedRows array if it's not already present
+            selectedRows.push(itemId);
+            console.log("selectedRows", selectedRows);
+        }
 
-  console.log('docNumer', selectedRow)
+        // Update selected invoices count in UI
+        updateSelectedInvoicesCount();
+    } else {
 
-  if(selectedRow.invoiceStatuses.length > 0 && selectedRow.invoiceStatuses[0].Status == 'Paid')
+        if (index !== -1) {
+            selectedRows.splice(index, 1); // Remove the item ID from the selectedRows array
+            console.log("selectedRows", selectedRows);
+            updateSelectedInvoicesCount();
+        }
+    }
+    // Iterate through each checkbox to remove unchecked items from selectedRows
+    $(".invoiceTableCheckbox").each(function() {
+        var itemId = $(this).prop("id");
+        var isChecked = $(this).prop("checked");
+        var index = selectedRows.indexOf(itemId);
+        if (!isChecked && index !== -1) {
+            selectedRows.splice(index, 1);
+            console.log("selectedRows", selectedRows);
+            updateSelectedInvoicesCount();
+        }
+    });
+});
+
+// Function to update selected invoices count in UI
+function updateSelectedInvoicesCount() {
+    $("#selectedInvoicesCount").text(selectedRows.length);
+    $("#selectedInvoicesCountSummary").text(selectedRows.length);
+}
+
+function addReceiptsForTicket() {
+    if (selectedRows.length > 0) {
+        var nonEmptyRows = selectedRows.filter(row => typeof row !== 'undefined' && row.trim() !== '');
+
+        if (nonEmptyRows.length > 0) {
+            nonEmptyRows.forEach(row => {
+                var data = {
+                    value: row,
+                    text: row,
+                };
+                var newOption = new Option(data.text, data.value, true, true);
+                $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
+            });
+            $("#testModalCenter1").modal('show');
+        } else {
+            alert('All selected rows are empty.');
+        }
+    } else {
+        alert('Kindly select an invoice.');
+    }
+}
+
+
+// Function to calculate total outstanding balance of selected invoices
+function calculateTotalOutstandingBalance() {
+    var totalOutstandingBalance = 0;
+   
+    selectedRows.forEach((rowId) => {
+    let invoiceTableRow = model.invoices.find(x => x.TransactionNumber == rowId);
+    console.log("Invoice Table Row:", invoiceTableRow);
+    if (invoiceTableRow && typeof invoiceTableRow.InvoiceBalanceAmount !== 'undefined') {
+      totalOutstandingBalance += invoiceTableRow.InvoiceBalanceAmount;
+      }
+    });
+
+    return totalOutstandingBalance;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------
+
+function onGatewaysButtonClick()
   {
-    event.target.checked = false;
-    alert('Selected invoice is already paid.')
+    //alert('sasdf')
+    $.ajax({
+        url: "/Home/GetAmazonPage",
+        type: 'GET',
+        dataType: 'text', // added data type
+        success: function (res) {
+            var newWindow = window.open(); // Open a new window
+            newWindow.document.write(res); // Write the HTML content to the new window
+            newWindow.document.close();
+        },
+        error: function(xhr, status, error) {
+            // Handle errors
+            console.error('Error:', error);
+        }
+    });
   }
-  else
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+// 
+
+
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+  function fullPaymentButtonClick()
   {
-    if(event.target.checked)
+    $("#fullPaymentButton").addClass("active")
+    $("#partialPaymentButton").removeClass("active")
+    document.getElementById('partialPaymentRadio').checked = false;
+    document.getElementById('fullPaymentRadio').checked = true;
+    var panel = $("#partialPaymentPanel");
+    panel[0].style.maxHeight = '0px';
+    $("#partialPaymentTextbox").val('')
+  }
+
+  function partialPaymentButtonClick()
+  {
+    $("#fullPaymentButton").removeClass("active")
+    $("#partialPaymentButton").addClass("active")
+    document.getElementById('fullPaymentRadio').checked = false;
+    document.getElementById('partialPaymentRadio').checked = true;
+    var panel = $("#partialPaymentPanel");
+
+    panel[0].style.maxHeight = '90px';
+  }
+
+  function partialPaymentInputChange()
+  {
+    if(Number($("#partialPaymentTextbox").val()) > Number($("#totalOutstandingAmount").text()))
     {
-      selectedRows.push(event.target.id);
+      alert('Entered amount is greater than the total amount.')
+      $("#partialPaymentTextbox").val('')
+    }
+  }
+
+  function cancelPaymentButtonClick()
+  {
+
+    $("#testModalCenter").modal('hide');
+  }
+
+  function proceedPaymentButtonClick()
+  {
+    document.querySelector('.payform').style.display = 'none';
+    var paymentObject = new Object(); 
+    if($("#fullPaymentButton").hasClass("active") == true)
+    {
+       var totalOutstandingAmount = $("#totalOutstandingAmount").text();
+        paymentObject.paymentAmount = parseInt(totalOutstandingAmount).toString();
+      //paymentObject.paymentAmount = $("#totalOutstandingAmount").text().toString();
     }
     else
     {
-      selectedRows = selectedRows.filter(x => x != event.target.id);
+       var partialPaymentAmount = $("#partialPaymentTextbox").val();
+      //alert($("#partialPaymentTextbox").val())
+       if (!partialPaymentAmount) 
+      {
+        alert('Kindly enter the partial payment amount.');
+        return;
+      }
+      else
+      {
+         paymentObject.paymentAmount = parseInt(partialPaymentAmount).toString();
+        //paymentObject.paymentAmount = $("#partialPaymentTextbox").val();
+      }
     }
-    //(... rest of your JS code)
-    console.log(selectedRows);
-    $("#selectedInvoicesCount").text(selectedRows.length);
-    $("#selectedInvoicesCountSummary").text(selectedRows.length);
-    console.log(model)
 
-  }
-});
+    paymentObject.selectedInvoices = selectedRows;
+    paymentObject.paymentMethod = "Net Banking";
+    paymentObject.accountNumber = '@Model.accountNumber';
+    paymentObject.accountName ='@Model.accountName';
 
-  function instrumentTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-
-}
-
-function issueTypeSelectionOnChange()
-{
-  //var table = $('#file-datatable').DataTable();
-  //table.draw();
-
-}
-
-function mDateOnChange()
-{
- // var table = $('#file-datatable').DataTable();
- // table.draw();
-}
-
-
-  function disputedInvoicesOnClick()
-  {
-    isDisputedInvoices = true;
-    statusCriteria = 'disputedInvoices'
-    var table = $('#file-datatable').DataTable();
-    table.draw();
+    if (paymentObject != null) {
+	        $.ajax({
+	            type: "POST",
+	            url: "/HyperPay/InitiateCheckout",
+	            data: JSON.stringify(paymentObject),
+	            contentType: "application/json; charset=utf-8",
+	            dataType: "json",
+	            success: function(response) {
+	                // Assuming the response contains the checkoutId
+	                var checkoutId = response;
+                  console.log("checkoutId", checkoutId);
+	                // Show the payment form in the modal using checkoutId
+	                showPaymentForm(response.checkoutId, paymentObject)
+	            },
+	            error: function(response) {
+	                alert(response.responseText);
+	            },
+	        });
+	    }
   }
 
-function validateForm() {
-  // This function deals with validation of the form fields
-  var x, y, i, valid = true;
-  x = document.getElementsByClassName("tab");
-  y = x[currentTab].getElementsByTagName("input");
-  // A loop that checks every input field in the current tab:
-  for (i = 0; i < y.length; i++) {
-    // If a field is empty...
-    if (y[i].value == "") {
-      // add an "invalid" class to the field:
-      //y[i].className += " invalid";
-      // and set the current valid status to false
-      valid = true;
+function showPaymentForm(checkoutId, paymentObject) {
+    try {
+        if (!checkoutId) {
+            console.error("Invalid checkoutId");
+            return;
+        }
+        // Create a new script element
+        var scriptElement = document.createElement("script");
+        
+        // Set the async and id attributes
+        scriptElement.async = true;
+        scriptElement.id = "paymentWidgetsScript";
+          if (scriptElement) {
+        // Set the src attribute with the checkoutId
+        scriptElement.src = "https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=" + checkoutId;
+        } else {
+            console.error("Script element with ID 'paymentWidgetsScript' not found");
+            return;
+        }
+          // Append the script element to the document body
+          document.body.appendChild(scriptElement);
+        
+         // Hide other modal content and show the payment form container
+            $("#modalBody").hide();
+            $("#paymentFormContainer").show();
+            var form = document.querySelector(".wpwl-form-card");
+        if (form) {
+            var shopperResultUrl = "/Invoice/index?callback=handlePaymentResult&paymentObject=" + encodeURIComponent(JSON.stringify(paymentObject));
+            form.action = shopperResultUrl;
+              var shopperResultUrlInput = form.querySelector('input[name="shopperResultUrl"]');
+            if (shopperResultUrlInput) {
+                shopperResultUrlInput.value = shopperResultUrl;
+            }
+        } else {
+            console.error("Form element not found");
+        }
+    } catch (error) {
+        console.error("Error in showPaymentForm:", error);
     }
-  }
-  // If the valid status is true, mark the step as finished and valid:
-  if (valid) {
-    
-  }
-  return valid; // return the valid status
 }
+
+var wpwlOptions = {
+    style: "card",
+     // Enable brand detection
+    brandDetection: true,
+    // Use our internal BIN list to precisely detect brands
+    brandDetectionType: "binlist",
+    // Give priority to detected brands
+    brandDetectionPriority: ["CARTEBANCAIRE","VISA","MAESTRO","MASTER"],
+    onReady: function(e){
+      $(".wpwl-group-cardHolder").after($(".wpwl-group-expiry"));
+      $(".wpwl-group-cardNumber").before($(".wpwl-group-cardHolder"));
+      $('.wpwl-form-card').find('.wpwl-button-pay').on('click', function(e){
+        validateHolder(e);
+      });
+    },
+    onBeforeSubmitCard: function(e){
+      return validateHolder(e);
+    },
+}
+
+function validateHolder(e){
+  var holder = $('.wpwl-control-cardHolder').val();
+  if (holder.trim().length < 2){
+    $('.wpwl-control-cardHolder').addClass('wpwl-has-error').after('<div class="wpwl-hint wpwl-hint-cardHolderError">Invalid card holder</div>');
+    return false;
+  }
+  return true;
+}
+
+ function unloadWidget(e) {
+   e.preventDefault();
+    if (window.wpwl !== undefined && window.wpwl.unload !== undefined) {
+        window.wpwl.unload();
+        $("script").each(function () {
+            if (this.src.indexOf("static.min.js") !== -1) {
+                $(this).remove();
+            }
+        });
+    }
+
+}; 
 
 function toggleSearch() {
         var searchContainer = document.querySelector('.search-container');
@@ -693,6 +950,338 @@ function toggleSearch() {
             searchInput.focus();
         }
     }
-</script>
 
- 
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
+function showTab(n) {
+  // This function will display the specified tab of the form...
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  //... and fix the Previous/Next buttons:
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if( n == 1)
+  {
+    document.getElementById("nextBtn").innerHTML = "Proceed Payment";
+  } else
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").innerHTML = "Download Receipt";
+    document.getElementById("prevBtn").style.display = "none"
+  } else {
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+  //... and run a function that will display the correct step indicator:
+  //fixStepIndicator(n)
+}
+
+function dumpCall()
+{
+
+  var paymentObject = new Object(); 
+  paymentObject.paymentAmount = 0;
+  paymentObject.selectedInvoices = selectedRows;
+
+  if(document.getElementById("fullPayment").checked)
+  {
+    paymentObject.paymentAmount = document.getElementById("totalOutstandingAmount").textContent;
+  }
+  else
+  {
+    paymentObject.paymentAmount = document.getElementById("partialPaymentTextbox").value;
+  }
+  //paymentObject.paymentAmount = 11212;
+  paymentObject.paymentMethod = "Net Banking";
+
+
+  if (paymentObject != null) 
+  {  
+    $.ajax({  
+        type: "POST",  
+        url: "/payment/StartPayfortPayment",  
+        data: JSON.stringify(paymentObject),  
+        contentType: "application/json; charset=utf-8",  
+        dataType: "text",  
+        success: function(response) {  
+          var newWindow = window.open(); // Open a new window
+          newWindow.document.write(res); // Write the HTML content to the new window
+          newWindow.document.close();
+        },  
+        failure: function(response) {  
+            alert(response.responseText);  
+        },  
+        error: function(response) {  
+            alert(response.responseText);  
+        }  
+    });
+  }
+  return true;
+}
+
+
+function validateForm() {
+  // This function deals with validation of the form fields
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  // A loop that checks every input field in the current tab:
+  for (i = 0; i < y.length; i++) {
+    // If a field is empty...
+    if (y[i].value == "") {
+      valid = true;
+    }
+  }
+  // If the valid status is true, mark the step as finished and valid:
+  if (valid) {
+
+  }
+  return valid; // return the valid status
+}
+
+function nextPrev(n) {
+
+  if(currentTab == 1)
+    {
+      if(n > 0)
+        {
+            var result = dumpCall();
+            if(result)
+            {
+              var x = document.getElementsByClassName("tab");
+              // Exit the function if any field in the current tab is invalid:
+              if (n == 1 && !validateForm()) return false;
+              // Hide the current tab:
+              x[currentTab].style.display = "none";
+              // Increase or decrease the current tab by 1:
+              currentTab = currentTab + n;
+              // if you have reached the end of the form...
+              if (currentTab >= x.length) {
+                // ... the form gets submitted:
+                document.getElementById("regForm").submit();
+                return false;
+              }
+              // Otherwise, display the correct tab:
+              showTab(currentTab);
+            }
+
+        }
+        else
+        {
+              // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+            if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form...
+            if (currentTab >= x.length) {
+              // ... the form gets submitted:
+              document.getElementById("regForm").submit();
+              return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+        }
+    }
+    else
+    {
+        // This function will figure out which tab to display
+          var x = document.getElementsByClassName("tab");
+          // Exit the function if any field in the current tab is invalid:
+          if (n == 1 && !validateForm()) return false;
+          // Hide the current tab:
+          x[currentTab].style.display = "none";
+          // Increase or decrease the current tab by 1:
+          currentTab = currentTab + n;
+          // if you have reached the end of the form...
+          if (currentTab >= x.length) {
+            // ... the form gets submitted:
+            //document.getElementById("regForm").submit();
+            var paymentSummary = {}
+            paymentSummary.dateOfTransaction = $("#dateOfTransactionSummary").text();
+            paymentSummary.transactionNumber = $("#transactionNumberSummary").text();
+            paymentSummary.noOfInvoices = $("#selectedInvoicesCountSummary").text();
+            paymentSummary.paymentType = $("#paymentTypeSummary").text();
+            paymentSummary.paidTo = $("#paidToSummary").text();
+            paymentSummary.paidVia = $("#paidViaSummary").text();
+            paymentSummary.modeOfPayment = $("#modeOfPaymentSummary").text();
+            paymentSummary.balanceDue = $("#balanceDueSummary").text();
+            printPaymentSummary(paymentSummary)
+            //alert('asdfasdf')
+            return false;
+          }
+          // Otherwise, display the correct tab:
+          showTab(currentTab);
+
+    }
+
+}
+
+function showDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "block";
+}
+function hideDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "none";
+}
+function showDownloadROptions(itemId) {
+  document.getElementById('downloadROptions' + itemId).style.display = 'block';
+}
+function hideDownloadROptions(itemId) {
+    document.getElementById('downloadROptions' + itemId).style.display = 'none';
+}
+
+function convertBase64ToPDF(base64String, filename) {
+    try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded PDF
+        const pdfDataUri = 'data:application/pdf;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        // Create a new document
+        const newWindow = window.open();
+        newWindow.document.open();
+        
+        // Write the PDF content to the document
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+        
+        newWindow.document.close();
+        // Trigger download
+        // const link = document.createElement('a');
+        // link.href = pdfDataUri;
+        // link.download = filename;
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error converting base64 to PDF:', error);
+    }
+}
+
+
+
+
+function convertBase64ToExcel(base64String, filename) {
+      try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded Excel file
+        const excelDataUri = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        const link = document.createElement('a');
+        link.href = excelDataUri;
+        link.download = filename;
+        link.click();
+    } catch (error) {
+        console.error('Error converting base64 to Excel:', error);
+    }
+    
+}
+
+function downloadInvoiceReport(attachmentType) {
+    var buId = '@Model.businessUnitId';
+    var startDate = "12-04-2000";
+    var endDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadInvoiceReport',
+        type: 'POST',
+        data: {
+            buId: buId,
+            startDate: startDate,
+            endDate: endDate,
+            attachmentType: attachmentType,
+            customerAccountNumber: customerAccountNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, customerAccountNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, customerAccountNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function downloadRecieptReport(attachmentType, transactionNumber) {
+    var buId = '@Model.businessUnitId';
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadReceiptReport',
+        type: 'POST',
+        data: {
+            buId :buId,
+            attachmentType : attachmentType,
+            customerAccountNumber : customerAccountNumber,
+            transactionType :"Corporate",
+            transactionNumber : transactionNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, transactionNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, transactionNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function showDownloadInProgressMessage() {
+    // Assuming you have a div or some element to show the message
+    $('#downloadProgressModal').modal('show');
+}
+
+function hideDownloadInProgressMessage() {
+    // Hide the download progress message
+     $('#downloadProgressModal').modal('hide');
+}
+
+</script>
