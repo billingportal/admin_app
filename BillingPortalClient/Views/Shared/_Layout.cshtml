@@ -1,4 +1,4 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <!doctype html>
 <html lang="en" data-nav-layout="vertical" data-header-styles="dark" data-menu-styles="light" data-vertical-style="overlay" data-toggled="icon-overlay-close">
 <head>
@@ -281,8 +281,9 @@
             <div class="main-sidebar" id="sidebar-scroll">
 
                 <nav class="main-menu-container nav nav-pills flex-column sub-open">
-
-                    <ul class="main-menu">
+                    
+ <ul class="main-menu">
+  @if(User?.Claims?.FirstOrDefault(x => x.Type == "custAccountNumber")?.Value != null) {
                        @if(User?.Claims?.FirstOrDefault(x => x.Type == "adminRole")?.Value == "SuperAdmin" || 
                             Convert.ToBoolean(User?.Claims?.FirstOrDefault(x => x.Type == "viewInvoice")?.Value) == true)
                         {
@@ -336,7 +337,7 @@
 
                         </li>
                         }
-
+ }
 
 
                         @***********************************************************************************************************************@
@@ -358,6 +359,8 @@
                         <a aria-label="Hide Sidebar" class="app-sidebar__toggle sidebarToggleClass" data-bs-toggle="sidebar" href="javascript:void(0)"></a>
 
                     </ul>
+                    
+                   
 
 
                 </nav>
