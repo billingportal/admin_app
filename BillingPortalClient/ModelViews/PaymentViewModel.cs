@@ -1,4 +1,4 @@
-﻿namespace BillingPortalClient.ModelViews
+namespace BillingPortalClient.ModelViews
 {
   public class PaymentViewModel
   {
@@ -29,7 +29,6 @@
     public string paymentMode { get; set; }
     public DateTime paymentDate { get; set; }
     public decimal paymentAmount { get; set; }
-    public string accountNumber { get; set; }
-    public string region { get; set; }
+    public string paymentRef { get; set; }
   }
 }
