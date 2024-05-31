@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using BillingPortalClient.Models;
 using Newtonsoft.Json;
@@ -11,196 +11,131 @@ namespace BillingPortalClient.Controllers
     
     public async Task<ActionResult> Index()
     {
-      //ClaimsPrincipal claimsUser = HttpContext.User;
-      //int _accountId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountId" ).Value );
-      //string _accountNumber = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "customerAccountNumber" ).Value;
-      //string _accountName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountName" ).Value;
+            
+            var claims = HttpContext.User.Claims;
 
-      //string otpVerifyResult;
-      //using( var response = await _httpClient.GetAsync( $"Authentication/VerifyOTP/{otp.email}/{otpCode}" ) )
-      //{
-      //  otpVerifyResult = await response.Content.ReadAsStringAsync();
-      //  //otpVerifyResult = JsonConvert.DeserializeObject<string>( apiResponse );
-      //}
-      int adminId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminId" ).Value );
-      string adminEmail = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminEmail" ).Value;
-      string adminRole = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value;
-      string adminFirstName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminFirstName" ).Value;
-      string adminLastName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminLastName" ).Value;
-      string adminStatus = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminStatus" ).Value;
+            string customerIdClaim = claims.FirstOrDefault(x => x.Type == "custCustomerId")?.Value;
+            string customerId = string.IsNullOrEmpty(customerIdClaim) ? string.Empty : customerIdClaim;
 
-      //List<Statement> statements = new List<Statement>();
-      //using( var response = await _httpClient.GetAsync( $"Transaction/GetCustomerStatementByAccountNumber/{_accountNumber}" ) )
-      //{
-      //  string apiResponse = await response.Content.ReadAsStringAsync();
-      //  statements = JsonConvert.DeserializeObject<List<Statement>>( apiResponse );
-      //}
-      List<BillingSystem.Service.Statement> allStatements = new List<BillingSystem.Service.Statement>();
-      {
-        var client = new BillingSystem.Service.Client( baseUrl, _httpClient );
-        allStatements = ( await client.GetAllStatementsAsync() ).ToList();
-      }
-      List<BillingSystem.Service.Customer> customers = new List<BillingSystem.Service.Customer>();
-      {
-        var client = new BillingSystem.Service.Client( baseUrl, _httpClient );
-        customers = ( await client.GetCustomersByAdminIdAsync( adminId ) ).ToList();
-      }
-      List<string> accountNumbers = new List<string>();
-      foreach(var item in customers)
-      {
-        foreach(var acc in item.Accounts)
-        {
-          if(!accountNumbers.Contains(acc.AccountNumber))
-          {
-            accountNumbers.Add(acc.AccountNumber);
-          }
-        }
-      }
-      List<int> customerIds = customers.Select( x => x.Id ).ToList();
-      List<BillingSystem.Service.Statement> statements = new List<BillingSystem.Service.Statement>();
+             
+            string accountNumberClaim = claims.FirstOrDefault(x => x.Type == "custAccountNumber")?.Value;
+            string _accountNumber = string.IsNullOrEmpty(accountNumberClaim) ? string.Empty : accountNumberClaim;
 
-      foreach(var item in allStatements)
-      {
-        if(accountNumbers.Contains(item.AccountNumber))
-        {
-          statements.Add( item );
-        }
-      }
+            string newAccountNumberClaim = claims.FirstOrDefault(x => x.Type == "custNewAccountNumber")?.Value;
+            string _newAccountNumber = string.IsNullOrEmpty(newAccountNumberClaim) ? string.Empty : newAccountNumberClaim;
 
-      StatementViewModel statementViewModel = new StatementViewModel();
-      statementViewModel.statements = statements;
+            string accountIdClaim = claims.FirstOrDefault(x => x.Type == "custAccountId")?.Value;
+            int _accountId = string.IsNullOrEmpty(accountIdClaim) ? 0 : Convert.ToInt32(accountIdClaim);
 
-      List<StatementRow> statementTable = new List<StatementRow>();
-      decimal balanceAmount = 0;
-      foreach( var item in statements.OrderBy(x => x.TrxDate).ToList())
-      {
+            string accountNameClaim = claims.FirstOrDefault(x => x.Type == "custAccountName")?.Value;
+            string _accountName = string.IsNullOrEmpty(accountNameClaim) ? string.Empty : accountNameClaim;
 
+            string arabicNameClaim = claims.FirstOrDefault(x => x.Type == "custArabicName")?.Value;
+            string _arabicName = string.IsNullOrEmpty(arabicNameClaim) ? string.Empty : arabicNameClaim;
 
-        decimal paidAmount = 0;
-        string invoiceStatus;
+            string businessUnitIdClaim = claims.FirstOrDefault(x => x.Type == "custBusinessUnitId")?.Value;
+            string _businessUnitId = string.IsNullOrEmpty(businessUnitIdClaim) ? string.Empty : businessUnitIdClaim;
 
-        //if( item.InvoiceStatuses.Count > 0 )
-        //{
-        //  invoiceStatus = item.InvoiceStatuses.FirstOrDefault().Status;
-        //}
-        //else
-        //{
-        //  invoiceStatus = "Unpaid";
-        //}
+            Console.WriteLine($"customerId: {customerId}");
+            Console.WriteLine($"_accountNumber: {_accountNumber}");
+            Console.WriteLine($"_newAccountNumber: {_newAccountNumber}");
+            Console.WriteLine($"_accountId: {_accountId}");
+            Console.WriteLine($"_accountName: {_accountName}");
+            Console.WriteLine($"_arabicName: {_arabicName}");
+            Console.WriteLine($"_businessUnitId: {_businessUnitId}");
 
-        //if( item.InvoicesPayments.Count > 0 )
-        //{
-        //  foreach( var invoicePayment in item.InvoicesPayments )
-        //  {
-        //    paidAmount = Convert.ToDecimal( paidAmount + invoicePayment.AmountPaid );
-        //  }
-        //}
+            // Fetch Invoices
+            List<CustomerInvoice> invoices = new List<CustomerInvoice>();
+            
+              string invoiceRequestUri = new Uri(baseAddress, "Invoice/GetCustomerInvoicesByAccountNumber/" + _accountNumber).ToString();
+          using (var response = await _httpClient.GetAsync(invoiceRequestUri))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                invoices = JsonConvert.DeserializeObject<List<CustomerInvoice>>(apiResponse);
+            }
 
-        //balanceAmount = Convert.ToDecimal( item.Debit - paidAmount );
-        balanceAmount = balanceAmount + Convert.ToDecimal( item.Debit) - Convert.ToDecimal( item.Credit);
+            // Fetch Payments
+            List<BillingPortalClient.Models.Payment> payments = new List<BillingPortalClient.Models.Payment>(); // Use fully qualified name
+               string paymentRequestUri = new Uri(baseAddress, "Payment/GetPaymentsByAccountNumber/" + _accountNumber).ToString();
 
+            using (var response2 = await _httpClient.GetAsync(paymentRequestUri))
+            {
+                string apiResponse2 = await response2.Content.ReadAsStringAsync();
+                payments = JsonConvert.DeserializeObject<List<BillingPortalClient.Models.Payment>>(apiResponse2); // Use fully qualified name
+            }
 
-        StatementRow statementRow = new StatementRow();
-        //statementRow.status = invoiceStatus;
-        statementRow.id = item.Id;
-        statementRow.refNo = item.RefNo;
-        statementRow.type = item.TransactionClass;
-        statementRow.debit = Convert.ToDecimal( item.Debit);
-        statementRow.credit = Convert.ToDecimal( item.Credit);
-        //statementRow.paid = paidAmount;
-        statementRow.docNumber = item.DocNumber;
-        //statementRow.balance = balanceAmount;
-        statementRow.createdDate = Convert.ToDateTime( item.TrxDate );
-        //statementRow.dueDate = item.TrxDate.Value.AddMonths( 1 );
-        //statementRow.total = Convert.ToDecimal( item.Debit );
-        statementRow.balance = balanceAmount;
-        statementRow.accountNumber = item.AccountNumber;
-        statementRow.region = customers.Where( x => x.Accounts.Any( y => y.AccountNumber == item.AccountNumber ) ).FirstOrDefault().Region;
+            // Combine Invoices and Payments into StatementDTO
+            List<Statement> statements = new List<Statement>();
 
-        statementTable.Add( statementRow );
+            statements.AddRange(invoices.Select(invoice => new Statement
+            {
+                transactionClass = "Invoice",
+                docNumber = invoice.DocumentNumber,
+                glDate = invoice.TransactionDate,
+                trxDate = invoice.TransactionDate,
+                debit = (double)invoice.TotalPaidAmount,
+                credit = 0,
+                customerPartyId =  invoice.CustomerId ?? 0,// Assuming correct property name
+                custTrxTypeId = 0, // Assuming correct property name
+                refNo = invoice.TransactionNumber.ToString(),
+                accountNumber = _accountNumber, // Assuming correct property name
+                accountName = _accountName, // Assuming correct property name
+                oldAccountId = _newAccountNumber // Assuming correct property name
+            }));
 
+            statements.AddRange(payments.Select(payment => new Statement
+            {
+                transactionClass = "Payment",
+                docNumber = payment.InvoiceId.ToString(),
+                glDate = payment.PaymentDate,
+                trxDate = payment.PaymentDate,
+                debit = 0,
+                credit = (double)payment.Amount,
+                customerPartyId = payment.CustomerId ?? 0,
+                custTrxTypeId = 0,
+                refNo = payment.DocNumber,
+                accountNumber = _accountNumber,
+                accountName = _accountName,
+                oldAccountId = _newAccountNumber
+            }));
 
-      }
+            // Generate the StatementViewModel
+            StatementViewModel statementViewModel = new StatementViewModel();
+            List<StatementRow> statementRows = new List<StatementRow>();
 
-      statementViewModel.statementRows = statementTable.OrderByDescending(x => x.createdDate).ToList();
+            decimal balanceAmount = 0;
+            int counter = 1;
 
-      int allTransactionsCount = 0;
-      decimal debitAmountTotal = 0;
-      decimal creditAmountTotal = 0;
+            foreach (var item in statements.OrderBy(x => x.trxDate))
+            {
+                balanceAmount += Convert.ToDecimal(item.debit) - Convert.ToDecimal(item.credit);
+                statementRows.Add(new StatementRow
+                {
+                    id = counter++,
+                    refNo = item.refNo,
+                    type = item.transactionClass,
+                    debit = Convert.ToDecimal(item.debit),
+                    credit = Convert.ToDecimal(item.credit),
+                    docNumber = item.docNumber,
+                    createdDate = item.trxDate ?? DateTime.MinValue,
+                    balance = balanceAmount
+                });
+            }
 
-      if(statementTable != null && statementTable.Count > 0)
-      {
-        foreach(var item in statementTable)
-        {
-          allTransactionsCount = allTransactionsCount + 1;
-          debitAmountTotal = debitAmountTotal + item.debit;
-          creditAmountTotal = creditAmountTotal + item.credit;
-        }
-      }
+            statementViewModel.statementRows = statementRows.OrderByDescending(x => x.createdDate).ToList();
+            statementViewModel.allTransactionCount = statementRows.Count;
+            statementViewModel.debitAmountTotal = statementRows.Sum(x => x.debit);
+            statementViewModel.creditAmountTotal = statementRows.Sum(x => x.credit);
+            statementViewModel.accountNumber = _accountNumber;
+            statementViewModel.accountName = _accountName;
 
-      statementViewModel.allTransactionCount = allTransactionsCount;
-      statementViewModel.debitAmountTotal = debitAmountTotal;
-      statementViewModel.creditAmountTotal = creditAmountTotal;
-
-      //statementViewModel.accountNumber = _accountNumber;
-      //statementViewModel.accountName = _accountName;
-
-      return View(statementViewModel);
+            return View(statementViewModel);
     }
 
     public async Task<ActionResult> RefreshCustomerStatements()
     {
-      int _accountId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountId" ).Value );
-      string _accountNumber = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "customerAccountNumber" ).Value;
-      string _accountName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountName" ).Value;
-
-      List<InvoiceDTO> statementsOracle = new List<InvoiceDTO>();
-      using( var response = await _httpClientOracle.GetAsync( $"Invoice/GetStatementsByAccountNumberOracleDB/{_accountNumber}" ) )
-      {
-        string apiResponse = await response.Content.ReadAsStringAsync();
-        if( apiResponse != null )
-        {
-          if( JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse ) != null )
-          {
-            statementsOracle = JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse );
-          }
-        }
-      }
-
-      List<Statement> statements = new List<Statement>();
-      foreach( var item in statementsOracle )
-      {
-        Statement invoice = new Statement();
-        invoice.Id = default;
-        invoice.AccountNumber = item.accountNumber;
-        invoice.OldAccountId = item.oldAccountId;
-        invoice.GlDate = item.glDate;
-        invoice.Credit = Convert.ToDecimal( item.credit );
-        invoice.Debit = Convert.ToDecimal( item.debit );
-        invoice.TrxDate = item.trxDate;
-        invoice.RefNo = item.refNo;
-        invoice.TransactionClass = item.transactionClass;
-        invoice.DocNumber = item.docNumber;
-        invoice.CustomerPartyId = item.customerPartyId;
-        invoice.CustTrxTypeId = item.custTrxTypeId;
-        invoice.AccountName = item.accountName;
-        statements.Add( invoice );
-      }
-
-      RefreshStatementDTO refreshStatementDTO = new RefreshStatementDTO();
-      refreshStatementDTO.accountNumber = _accountNumber;
-      refreshStatementDTO.statements = statements;
-
-      var jsonStatements = JsonConvert.SerializeObject( refreshStatementDTO );
-      var contentStatements = new StringContent( jsonStatements, Encoding.UTF8, "application/json" );
-
-      bool statementsResult;
-      using( var response = await _httpClient.PostAsync( $"Transaction/RefreshCustomerStatements/", contentStatements ) )
-      {
-        string apiResponse = await response.Content.ReadAsStringAsync();
-        statementsResult = JsonConvert.DeserializeObject<bool>( apiResponse );
-      }
-      return RedirectToAction( "Index" );
+     
+      return RedirectToAction( "Statement", "Index" );
     }
   }
 }
