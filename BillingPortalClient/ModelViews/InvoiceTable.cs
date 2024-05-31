@@ -2,7 +2,7 @@
 {
   public class InvoiceRow
   {
-    public int id { get; set; }
+    public string id { get; set; }
     public string docNumber { get; set; }
     public DateTime invoiceDate { get; set; }
     public DateTime dueDate { get; set; }
