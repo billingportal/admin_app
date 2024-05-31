@@ -1,112 +1,109 @@
-﻿@using System.Text.Json;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@using System.Text.Json
+@using BillingPortalClient.Components;
+
 
 @{
-    Layout = "_Layout";
+  Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.PaymentViewModel;
 
- <!-- CONTAINER -->
-<div class="main-container container-fluid"  style="margin-top:1%; padding-left:0; padding-right:0;">
+<!-- CONTAINER -->
+<div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
 
-    <!-- PAGE-HEADER -->
-   
-    <!-- PAGE-HEADER END -->                       
-
-
-    <!-- ROW-1 -->
-    <div class="row widget-row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
-            <div class="row">
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c1">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/flow-icon-purple.png" />
-                                    <h6 class="text title">All <br />Reciepts</h6>
-                                    <h2 class="mb-0 number-font text">@Model.allReceiptsCount</h2>
-                                </div>
-                                
-                            </div>
-                              <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh</a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c3">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/coin-icon-orange.png" />
-                                    <h6 class="text title">Paid Amount Receipts</h6>
-                                    <h2 class="mb-0 number-font text">SAR 167,987</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c4">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/coins-icon-green.png" />
-                                    <h6 class="text title">Recieved Amount Receipts</h6>
-                                    <h2 class="mb-0 number-font text">SAR 584</h2>
-                                </div>
-                                
-                            </div>
-                            <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- ROW-1 END -->
-
-
-
-    <!-- Row -->
-    <div class="row row-sm">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
-                  <div class="row" style="width:100%;">
-
-                    <div class="col-md-7 col-sm-12">
-              <h5 class="card-title text black">Showing details of @Model.accountName</h5>
-              <h5 class="card-sub-title text"><span>Account No: </span><span class="orange">@Model.accountNumber</span>
-              </h5>
-            </div>
-            <div class="col-md-2 col-sm-12 search-container right" style="text-align:right;">
-                                <input class="search expandright" id="receiptNumberSelection" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass.png" /></button>
-            </div>
-            <div class="col-md-2 col-sm-12">
-              <div class="row filters-bar">
-
-                <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
-                  <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
-                </div>
-
-                <div class="col-md-6 col-sm-12" style="float: left; text-align: center;">
-                  <div class="btn-export" id="exportButtonsDiv"></div>
+  <!-- ROW-1 -->
+  <div class="row widget-row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+      <div class="row">
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c1">
+              <div class="d-flex">
+                <div class="">
+                 <img src="../assets/images/dashboard/green-icon.png" />
+                  <h6 class="text title">All <br />Reciepts</h6>
+                  <h2 class="mb-0 number-font text">@Model.allReceiptsCount</h2>
                 </div>
 
               </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh</a>
+              </span>
             </div>
-
           </div>
-          <div class="row" style="width:100%">
+        </div>
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c2">
+              <div class="d-flex">
+                <div class="">
+                  <img src="../assets/images/dashboard/red-icon.png" />
+                  <h6 class="text title">Paid Receipts</h6>
+                  <h2 class="mb-0 number-font text">SAR @Model.sumReceiptsCount.ToString("N2")</h2>
+                </div>
+
+              </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c3">
+              <div class="d-flex">
+                <div class="">
+                  <img src="../assets/images/dashboard/yellow-icon.png" />
+                  <h6 class="text title">Recieved Receipts</h6>
+                  <h2 class="mb-0 number-font text">SAR 584.00</h2>
+                </div>
+
+              </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerPayments","Payment")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ROW-1 END -->
+
+  <!-- Row -->
+  <div class="row row-sm">
+    <div class="col-lg-12">
+      <div class="card" style="margin-bottom:0px;">
+        <div class="card-header" style="padding: 0px;border-bottom:none;display: block;margin-top: 20px;">
+                  <div class="row" style="width: 100%;margin: 0 auto;padding-left: 0px;padding-right: 15px;">
+                    <div class="col-md-4 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                      <h5 class="card-title" style="color:black;" id="accountNameDiv"><span>Showing details of</span> @Model.accountName</h5>
+                     <h5 class="card-sub-title" style="color:black"><span>Account No: </span><span class="orange" id="accountNumberDiv">@Model.accountNumber</span></h5>
+                    </div>
+                    <div class="col-md-8 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                        <div class="row" style="justify-content: flex-end;">
+                              <div class="search-container">
+                                <input class="search" id="receiptNumberSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass-icon.png"/></button>
+                              </div>
+                              <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                             <div class="export-button-wrapper" onmouseleave="hideDownloadOptions()">
+                                <button class="btn btn-export" id="exportButtonsDiv"><img onmouseover="showDownloadOptions()" src="../assets/images/dashboard/downinv.png" /></button>
+                              
+                              <div id="downloadOptions" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                                <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadPaymentReport('pdf')">PDF</button>
+                                <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadPaymentReport('Excel')">Excel</button>
+                              </div>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                   <div class="row" style="width:100%">
                         <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
                             <div class="clear-allfilters">
                                 <label>Selected Filters</label>
@@ -115,184 +112,97 @@
                             <div id="filterSelections"></div>
                          </div>
                     </div>
-        </div>
-                <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
-
-                  <div class="row mb-2">
-
-                    <div class="panel" id="datePanel">
-                      <div class="row">
-                        <div class="col-md-6">
-                        </div>
-                        <div class="col-md-3">
-                          <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
-                        </div>
-                        <div class="col-md-3">
-                            <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
-                        </div>
-                      </div>
-                    </div>
-
                   </div>
-
-                    <div class="table-responsive">
-                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th class="border-bottom-0">Receipt No.</th>
-                                    <th class="border-bottom-0">Account Name</th>
-                                    <th class="border-bottom-0">Account No.</th>
-                                    <th class="border-bottom-0">Region</th>
-                                    <th class="border-bottom-0">Receiver's Bank</th>
-                                    <th class="border-bottom-0">Payment Mode</th>
-                                    <th class="border-bottom-0">Date</th>
-                                    <th class="border-bottom-0">Amount Paid</th>
-                                    <th class="border-bottom-0">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              @if(@Model.paymentRows != null && @Model.paymentRows.Count > 0)
-                                {
-
-
-                                    foreach( var item in Model.paymentRows )
-                                    {
-                                        <tr id="@string.Format("tr{0}",item.id)" data-day="@item.paymentDate.Day" data-month="@item.paymentDate.Month" data-year="@item.paymentDate.Year">
-                                            @*<td hidden name="receiptId">@item.id</td>*@
-                                            <td><input type="checkbox" id="@string.Format("{0}",item.id)" class="receiptsTableCheckbox"/></td>
-                                            <td><strong>@item.id</strong></td>
-                                            <td>@item.accountName</td>
-                                            <td>@item.accountNumber</td>
-                                            <td>@item.region</td>
-
-                                            <td>@item.receiverBank</td>
-                                            <td>@item.paymentMode</td>
-                                            <td>@item.paymentDate.ToString("dd MMM, yyyy")</td>
-                                            <td><strong>@item.paymentAmount</strong> SAR</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-download paymentPrintRowButton" style="width:10px"
-                                                  data-itemId=@item.id
-                                                  data-accountName=@item.accountName.Replace(" ", "&nbsp;")
-                                                  data-receiverBank=@item.receiverBank.Replace(" ", "&nbsp;")
-                                                  data-paymentDate=@item.paymentDate.ToString("dd MMM, yyyy").Replace(" ", "&nbsp;")
-                                                  data-paymentMode=" "
-                                                  data-paymentAmount=@item.paymentAmount
-                                                ><i class="fe fe-file-text"></i></button>
-                                                <button data-itemId=@item.id type="button" class="btn btn-success btn-pay ticketModalButton" style="width:10px" ><i class="fe fe-credit-card"></i></button>
-                                            </td>
-                                        </tr>
-                                    }
-                                }
-
-                                
-                            </tbody>
-                        </table>
-                    </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <!-- End Row -->
 
+        </div>
+        <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+
+          <div class="table-responsive">
+            <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="border-bottom-0" id="recieptNumberColumn">Receipt No.</th>
+                  <th class="border-bottom-0" id="invoiceDateColumn">Date</th>
+                  <th class="border-bottom-0">Account Name</th>
+                  <th class="border-bottom-0">Invoice Number</th>
+                  <th class="border-bottom-0" id="paymentModeColumn">Payment Mode</th>
+                  <th class="border-bottom-0">Amount Paid</th>
+                  <th class="border-bottom-0">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (@Model.paymentRows != null && @Model.paymentRows.Count > 0)
+                {
+
+
+                  foreach (var item in Model.paymentRows)
+                  {
+                    <tr id="@string.Format("tr{0}",item.id)" data-docNumber="@item.paymentRef" data-day="@item.paymentDate.Day"
+                      data-month="@item.paymentDate.Month" data-year="@item.paymentDate.Year">
+                      <td><input type="checkbox" id="@string.Format("{0}",item.id)" class="receiptsTableCheckbox" /></td>
+                      <td><strong>@item.paymentRef</strong></td>
+                      <td>@item.paymentDate.ToString("dd MMM, yyyy")</td>
+                      <td>@item.accountName</td>
+                      <td>@item.receiverBank</td>
+                      <td>@item.paymentMode</td>
+                      <td><strong>@item.paymentAmount</strong> SAR</td>
+                      <td>
                        
-</div>
-<!-- CONTAINER CLOSED -->
+                        <div class="download-button-wrapper" onmouseleave="hideDownloadROptions('@item.paymentRef')">
+                          <button type="button" class="btn btn-success btn-ticket productButton"><img onmouseover="showDownloadROptions('@item.paymentRef')" src="../assets/images/dashboard/downinv.png" /></button>
+                          <div id="downloadROption@(item.paymentRef)" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                                                        <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadRecieptReport('pdf', '@item.id')">PDF</button>
+                                                        <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadRecieptReport('Excel', '@item.id')">Excel</button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                }
 
-<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div class="container">
-          <h2 class="text-center">Create Ticket</h2>
-          <p class="text-center">Enter the details below to create a ticket.</p>
-          <form asp-controller="Ticket" asp-action="SaveTicket" method="post">
-            <div class="row mb-3">
-              <div class="col-md-6">
-      	        <label style="font-weight:bold">Instrument Type<span style="color:red; margin-left:2px">*</span></label>
-                <select asp-for="ticketViewModel.instrumentType" class="form-select" aria-label="Default select example">
-                  <option value="Receipt" selected>Receipt</option>
-                </select>
-              </div>
-      
-              <div class="col-md-6">
-      	        <label style="font-weight:bold">Issue Type<span style="color:red; margin-left:2px">*</span></label>
-                <select asp-for="ticketViewModel.issueType" class="form-select" aria-label="Default select example">
-                  <option value="Complain" selected>Complain</option>
-                  <option value="Dispute">Dispute</option>
-                  <option value="Feedback">Feedback</option>
-                </select>
-              </div>
-      
-            </div>
-    
-            <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label style="font-weight:bold">Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
-        	            <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers" multiple class="form-select" >
-                      </select>
-                </div>
-            </div>
-    
-            <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold">Description<span style="color:red; margin-left:2px;">*</span></label>
-        	        <textarea asp-for="ticketViewModel.description" required placeholder="Give a description of your ticket" class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
-                </div>
-            </div>
-    
-            <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold">Upload Image</label><br>
-        	        <input type="file" id="myFile" name="filename" class="btn btn-primary">
-            
-                </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4">
-
-              </div>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
-
-              </div>
-              <div class="col-md-4">
-
-              </div>
-
-            </div>
-          </form>
+              </tbody>
+            </table>
+          </div>
         </div>
-
       </div>
     </div>
   </div>
+  <!-- End Row -->
+
+
 </div>
+<!-- CONTAINER CLOSED -->
 
-<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+
+
+<div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
-
+      <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
       <div class="modal-body">
 
         <div class="container">
           <div class="row">
             <h1>Filters</h1>
           </div>
-
-          <form id="filterForm">
-            <div class="row mb-3">
+            <form id="filterForm">
+              <div class="row mb-3">
+                 <div class="panel" id="datePanel">
+                   <div class="row mb-5">
               <div class="panel" id="datePanel">
                 <div class="row mb-5">
                   <div class="col-md-12">
                     <label style="text-align:left; float:left;">Receipt Date</label>
                   </div>
                   <div class="col-md-6">
-                    <input class="form-control" type="date" id="minDateSelection" onchange="mDateOnChange()" />
+                    <input class="form-control" type="date" id="minDateSelection" />
                   </div>
                   <div class="col-md-6">
-                    <input class="form-control" type="date" id="maxDateSelection" onchange="mDateOnChange()" />
+                    <input class="form-control" type="date" id="maxDateSelection" />
                   </div>
                 </div>
               </div>
@@ -315,10 +225,10 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-12 text-center">
-                <button type="submit" id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                <div class="col-md-12 text-center">
+                  <button type="submit"id="applyFilterButton" class="btn" style="width:100%;">Apply Filter</button>
+                </div>
               </div>
-            </div>
           </form>
 
         </div>
@@ -329,7 +239,41 @@
   </div>
 </div>
 
+
+<div class="modal" id="downloadProgressModal" tabindex="-1" role="dialog" aria-labelledby="downloadProgressModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+ <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
+      <div class="modal-header">
+        <h1 class="modal-title" style="color: #191616; font-size:24px;" id="downloadProgressModalLabel">Please Wait</h1>
+      </div>
+      <div class="modal-body">
+        <span style="color:#191616">Download is in progress...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
+
+ function closeModal(btn) {
+    selectedRows = [];
+    // Find the closest modal
+    var modal = $(btn).closest('.modal');
+    console.log("Button clicked:", btn); // Log the button element
+    console.log("Modal found:", modal); // Log the modal element
+     $('#file-datatable').find('input[type="checkbox"]').prop('checked', false);
+    // Close the found modal
+    $(modal).modal('hide');
+  }
+
+  function updateFileName(input) {
+    var fileName = input.files[0].name;
+    document.getElementById('fileName').innerText = 'Selected file: ' + fileName;
+  }
 
  // let selectedRows = [];
   let selectedFilters = [];
@@ -338,25 +282,17 @@
   var filterData = {
     name: getFilterName(),
     value: getFilterValue()
-};
+  };
 
   var model = @Html.Raw(JsonSerializer.Serialize(Model));
-  console.log({model})
 
   $("#minDateSelection").val("");
   $("#maxDateSelection").val("");
   $('input[name="paymentMode"]:checked').prop('checkedd', false);
 
-  var statusCriteria = "all";
 
     $(document).ready(function () {
         console.log('*******************************************');
-
-          $("#ticketViewModel_instrumentNumbers").select2({
-            width: '100%',
-            templateResult:null,
-            tags:true,
-          })
     }); 
 
      if (!$.fn.DataTable.isDataTable('#file-datatable')) {
@@ -365,21 +301,16 @@
             drawCallback: function () {
                 var minRecieptDate = new Date($("#minDateSelection").val());
                 var maxRecieptDate = new Date($("#maxDateSelection").val());
-                console.log("minRecieptDate:", minRecieptDate);
                 var recieptNumberFilter = $("#receiptNumberSelection").val().toLowerCase();
-                selectedPaymentMode= $('input[name="paymentMode"]:checked').attr('myid');
+                selectedPaymentMode= $('input[name="paymentMode"]:checked').attr('myid').toLowerCase();
                 if (selectedPaymentMode === '' || selectedPaymentMode === undefined){
                   selectedPaymentMode = "online"
                 }
-               
-                console.log("selectedPaymentMode",selectedPaymentMode);
                 this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var data = this.data();
                     var recieptNumber = data[1].toLowerCase();
                     var recieptDate = new Date(data[2]);
-                    console.log("recieptDate:",recieptDate);
                     var paymentMode = data[5].toLowerCase();
-                    console.log("paymentMode",paymentMode);
                  
                     if (
                         (!isNaN(minRecieptDate) && recieptDate < minRecieptDate) ||
@@ -396,14 +327,11 @@
         });
     }
 
-  $("#minDateSelection, #maxDateSelection").on("change", function () {
-        // if (table) {
-        //     table.rows().invalidate().draw();
-        //     table.page('first').draw('page');
-        // } else {
-        //     console.log("Table is not defined");
-        // }
-  });
+
+$('#testModalCenter1').on('hidden.bs.modal', function (e) {
+      $('#ticketViewModel_instrumentNumbers').val(null).trigger('change');
+      // Your code to execute when the modal is closed
+    });
 
   $("#filterForm").on("submit", function (event) {
         event.preventDefault();
@@ -412,7 +340,7 @@
         if (table) {
             table.rows().invalidate().draw();
             // table.page('first').draw('page');
-            table.draw();
+            table.search('').draw();
         } else {
             console.log("Table is not defined");
         }
@@ -421,9 +349,7 @@
 
   $("#receiptNumberSelection").on("keyup", function () {
         if (table) {
-            table.rows().invalidate().draw();
-            //table.page('first').draw('page');
-            table.draw();
+            table.search(this.value).draw();
         } else {
             console.log("Table is not defined");
         }
@@ -460,6 +386,7 @@ function getFilterName() {
     // Return an empty string if no specific filter is applied
     return "";
 }
+
 
 function formatDate(inputDate) {
     const date = new Date(inputDate);
@@ -503,6 +430,8 @@ function getFilterValue(filterName) {
             return null;
     }
 }
+
+
 
 function displaySelectedFilters() {
     var filterSelections = $("#filterSelections");
@@ -549,21 +478,16 @@ function displaySelectedFilters() {
                 var crossIcon = $("<i>", {
                     class: "fa fa-times cross-icon",
                 }).on("click", function () {
-                   console.log("Clicked on cross icon");
                     // Remove the filter div
                     filterDiv.remove();
                    
 
                    // Get the filter name from the parent filter selection
                    var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
-                   console.log("Clicked on cross icon for filter:", clickedFilterName);
 
                    // Remove the filter div
                    let currentbox = $(this).closest('.filter-selection');
-                    console.log("Clicked on cross icon for currentbox:", currentbox);
                    currentbox.remove();
-
-                   console.log("Clicked on cross icon for cfilter name:", filterName);
 
                   // Clear the corresponding modal input fields based on the filter type
                   switch (filterName) {
@@ -580,9 +504,6 @@ function displaySelectedFilters() {
                   
                    // Remove the filter and update the display
                     selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
-                  
-                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
-                    console.log("Updated selectedFilters after removal: ", selectedFilters);
 
                     // Check if displaySelectedFilters is being called
                     displaySelectedFilters();
@@ -620,15 +541,9 @@ if (table != undefined && table != null) {
 
 var selectedRows = [];
 
-function mDateOnChange()
-{
- // var table = $('#file-datatable').DataTable();
- // table.draw();
-}
 // Handle checkbox clicks
 $(document).on("change", ".receiptsTableCheckbox", function () {
   var docNumber = $(this).closest("tr").attr("data-docNumber");
-    console.log(docNumber);
   if ($(this).prop("checked")) {
     // If checkbox is checked, add the document number to the array
     selectedRows.push(docNumber);
@@ -641,52 +556,50 @@ $(document).on("change", ".receiptsTableCheckbox", function () {
   }
 });
 
+$(document).on("change", ".receiptsTableCheckbox", function (event) {
+    var itemId = event.target.id; // Get the item ID from the checkbox
+    var isChecked = $(this).prop("checked");
+    var selectedRow = model.paymentRows.find(x => x.TransactionNumber == itemId); // Find the selected row using the item ID
+    console.log("SelectedRow", selectedRow);
+    var index = selectedRows.indexOf(itemId); // Find the index of the item ID in selectedRows
+    if (isChecked) {
+        if (index === -1) {
+            // Add the item ID to the selectedRows array if it's not already present
+            selectedRows.push(itemId);
+            console.log("selectedRows", selectedRows);
+        }
 
+        // Update selected invoices count in UI
+        updateSelectedReceiptsCount();
+    } else {
 
-  function addReceiptsForTicket()
-  {
-    //document.getElementById("ticketViewModel_instrumentNumbers").style.pointerEvents = "none";
-
-    if(selectedRows.length > 0)
-    {
-      selectedRows.forEach(row => {
-        var data = {
-
-          value: row,
-          text: row,
-      
-        };
-
-
-        var newOption = new Option(data.text, data.value, true, true);
-        $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
-      })
-      $("#testModalCenter1").modal('show');
+        if (index !== -1) {
+            selectedRows.splice(index, 1); // Remove the item ID from the selectedRows array
+            console.log("selectedRows", selectedRows);
+            updateSelectedReceiptsCount();
+        }
     }
-    else
-    {
-      alert('Kindly select a payment transaction.')
-    }
-
-  }
-
-  $(document).on("click",".ticketModalButton",function(e){
-
-    //var id = $(this).closest("tr").find('[name=receiptId]').html();
-    var id= this.dataset.itemid;
-
-    var data = {
-      value: id,
-      text: id,
-    };
+    // Iterate through each checkbox to remove unchecked items from selectedRows
+    $(".receiptTableCheckbox").each(function() {
+        var itemId = $(this).prop("id");
+        var isChecked = $(this).prop("checked");
+        var index = selectedRows.indexOf(itemId);
+        if (!isChecked && index !== -1) {
+            selectedRows.splice(index, 1);
+            console.log("selectedRows", selectedRows);
+            updateSelectedReceiptsCount();
+        }
+    });
+});
 
 
-    var newOption = new Option(data.text, data.value, true, true);
-    $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
 
-    $("#testModalCenter1").modal('show');
-  
-  });
+
+function updateSelectedReceiptsCount() {
+    $("#selectedReceiptsCount").text(selectedRows.length);
+    $("#selectedReceiptsCountSummary").text(selectedRows.length);
+}
+
 
   function toggleSearch() {
         var searchContainer = document.querySelector('.search-container');
@@ -701,5 +614,166 @@ $(document).on("change", ".receiptsTableCheckbox", function () {
         }
     }
 
+function showDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "block";
+}
+function hideDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "none";
+}
+function showDownloadROptions(itemId) {
+ document.getElementById('downloadROptions' + itemId).style.display = 'block';
+}
+function hideDownloadROptions(itemId) {
+   document.getElementById('downloadROptions' + itemId).style.display = 'none';
+}
+
+function convertBase64ToPDF(base64String, filename) {
+    try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded PDF
+        const pdfDataUri = 'data:application/pdf;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        // Create a new document
+        const newWindow = window.open();
+        newWindow.document.open();
+        
+        // Write the PDF content to the document
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+        
+        newWindow.document.close();
+        // Trigger download
+        // const link = document.createElement('a');
+        // link.href = pdfDataUri;
+        // link.download = filename;
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error converting base64 to PDF:', error);
+    }
+}
+
+
+
+
+function convertBase64ToExcel(base64String, filename) {
+      try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded Excel file
+        const excelDataUri = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        const link = document.createElement('a');
+        link.href = excelDataUri;
+        link.download = filename;
+        link.click();
+    } catch (error) {
+        console.error('Error converting base64 to Excel:', error);
+    }
+    
+}
+
+function downloadPaymentReport(attachmentType) {
+    var buId = '@Model.businessUnitId';
+    var startDate = "12-04-2000";
+    var endDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadInvoiceReport',
+        type: 'POST',
+        data: {
+            buId: buId,
+            startDate: startDate,
+            endDate: endDate,
+            attachmentType: attachmentType,
+            customerAccountNumber: customerAccountNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, customerAccountNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, customerAccountNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function downloadRecieptReport(attachmentType, transactionNumber) {
+    var buId = '@Model.businessUnitId';
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadReceiptReport',
+        type: 'POST',
+        data: {
+            buId :buId,
+            attachmentType : attachmentType,
+            customerAccountNumber : customerAccountNumber,
+            transactionType :"Corporate",
+            transactionNumber : transactionNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, transactionNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, transactionNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function showDownloadInProgressMessage() {
+    // Assuming you have a div or some element to show the message
+    $('#downloadProgressModal').modal('show');
+}
+
+function hideDownloadInProgressMessage() {
+    // Hide the download progress message
+     $('#downloadProgressModal').modal('hide');
+}
 
 </script>
