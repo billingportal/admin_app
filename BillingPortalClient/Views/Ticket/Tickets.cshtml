@@ -1,36 +1,140 @@
-﻿@{
+@{
   Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.TicketViewModel
 <script>
 
-var statusCriteria = "all";
-var instrumentTypeCriteria = "allTickets";
 
 function addReceiptsForTicket() {
   $("#testModalCenter1").modal('show');     
 }
 
 function filtermodal(){
-  console.log("Inside filtermodal function.");
   $("#testModalCenter2").modal('show');
 }
 
 $(document).ready(function () {
-  
-    var table = $("#file-datatable").DataTable();
+
+
+
+let selectedRows = [];
+
+var instrumentTypeCriteria = "allTickets";
+$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    var trNode = data[3];
+    // Check if instrument type criteria is "allTickets"
+    if (instrumentTypeCriteria == "allTickets") {
+        return true;
+    }
+    // Check if the instrument type attribute matches the criteria
+    if (trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase() == instrumentTypeCriteria) {
+        return true;
+    }
+    // If no match found, return false
+    return false;
+});
+
+function headerWidgetButtonClick(instrumentType)
+{
+  instrumentTypeCriteria = instrumentType;
+  var table = $('#file-datatable').DataTable();
+  if (table) {
+                        table.rows().invalidate().draw();
+                        table.search('').draw('page');
+                    } else {
+                        console.log("Table is not defined");
+                    }
+}
+
+ $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+    var status = data[6]; // Use the index of the Status column
+    if (statusCriteria === "all" || statusCriteria === status) {
+      return true;
+    }
+    return false;
+  });
+
+// Ensure statusCriteria is defined in the correct scope
+var statusCriteria = "all"; 
+
+$(document).on("click", ".statusCriteriaButton", function (event) {
+  console.log("Button clicked: ", event.target.id); // Log the ID of the clicked element
+
+  // Check which button was clicked and set the statusCriteria accordingly
+  switch (event.target.id) {
+    case "allStatusRadio":
+      statusCriteria = "all";
+      break;
+    case "openStatusRadio":
+      statusCriteria = "Open";
+      break;
+    case "inprogressStatusRadio":
+      statusCriteria = "Inprogress";
+      break;
+    case "closedStatusRadio":
+      statusCriteria = "Closed";
+      break;
+    default:
+      console.log("Unknown button clicked");
+      return; // Exit if the clicked element is not recognized
+  }
+
+  console.log("Selected statusCriteria: ", statusCriteria); // Log the selected statusCriteria
+
+  // Update and redraw the DataTable
+  var table = $('#file-datatable').DataTable();
+  if (table) {
+    table.rows().invalidate().draw();
+    table.search('').draw('page');
+  } else {
+    console.log("Table is not defined");
+  }
+});
+
+       
+
+// $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+//   var trNode = data[6];
+//   var statusAttribute = trNode.getAttribute("data-StatusAttribute");
+
+//   if (statusCriteria == "all" || statusAttribute == statusCriteria) {
+//     var searchSelectBoxValue = $("#searchSelectBox").val();
+
+//     if (searchSelectBoxValue == "") {
+//       return true;
+//     }
+
+//     if (searchSelectBoxValue == "issueType" || searchSelectBoxValue == "instrumentType") {
+//       var searchAttributeValue = trNode.getAttribute("data-" + capitalizeFirstLetter(searchSelectBoxValue) + "Attribute").toLowerCase();
+//       var inputValue = $("#" + searchSelectBoxValue + "Selection").val().toLowerCase();
+//       return searchAttributeValue.includes(inputValue);
+//     }
+
+//     if (searchSelectBoxValue == "createdOn") {
+//       var minDate = new Date($("#minDateSelection").val()) || new Date(0000, 00, 00);
+//       var maxDate = new Date($("#maxDateSelection").val()) || new Date(9999, 12, 30);
+//       var ticketDate = new Date(trNode.getAttribute("data-year"), Number(trNode.getAttribute("data-month")) - 1, trNode.getAttribute("data-day"));
+//       return ticketDate >= minDate && ticketDate <= maxDate;
+//     }
+//   }
+
+//   return false;
+// });
+
+let selectedFilters = [];
+
+ var table = $("#file-datatable").DataTable();
     function applyDateFilter() {
             var minInvoiceDate = new Date($("#minDateSelection").val());
             var maxInvoiceDate = new Date($("#maxDateSelection").val());
-            var instrumentType = $("#instrumenttype").val();
-            var issueType = $("#issuetype").val();
+            var instrumentType = $("#instrumenttype").val().toLowerCase();
+            var issueType = $("#issuetype").val().toLowerCase();
 
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                 var data = this.data();
-                console.log(data);
                 var invoiceDate = new Date(data[5]);
-                var DatainstrumentType = data[3];
-                var DataissueType = data[4];
+                var DatainstrumentType = data[3].toLowerCase();
+                var DataissueType = data[4].toLowerCase();
 
                 if ((!isNaN(minInvoiceDate) && invoiceDate < minInvoiceDate) ||
                     (!isNaN(maxInvoiceDate) && invoiceDate > maxInvoiceDate) ||
@@ -42,17 +146,15 @@ $(document).ready(function () {
                     $(this.node()).show();
                 }
             });
-    }
+        }
 
-    table.on('draw', function () {
-        console.log("DataTable Draw Callback");
-        applyDateFilter();
-    });
+        table.on('draw', function () {
+            applyDateFilter();
+        });
 
         $('#filterForm').submit(function (e) {
             e.preventDefault();
             $("#filters-div").show();
-            console.log("Form Submitted");
             $('#testModalCenter2').modal('hide');
             applyDateFilter();
             displaySelectedFilters();
@@ -72,12 +174,8 @@ $(document).ready(function () {
         });
 
         $('#searchright').on('keyup', function () {
-            console.log("search keyup function");
             table.search(this.value).draw();
         });
-
-let selectedRows = [];
-let selectedFilters = [];
 
 var filterData = {
     name: getFilterName(),
@@ -134,8 +232,6 @@ function getFilterValue(filterName) {
     var maxDate = $("#maxDateSelection").val();
     var instrumentType = $("#instrumenttype").val();
     var issueType = $("#issuetype").val();
-    console.log("issueType", issueType);
-
     // Construct the filter value based on the selected filter name
     switch (filterName) {
         case "Ticket Date":
@@ -149,28 +245,21 @@ function getFilterValue(filterName) {
     }
 }
 
-
 function displaySelectedFilters() {
     var filterSelections = $("#filterSelections");
     var filterLabel = $("#filterLabel");
-
     // Clear previous filter selections
     filterSelections.empty();
-
     // Get values from the modal input fields
     var minDate = $("#minDateSelection").val();
     var maxDate = $("#maxDateSelection").val();
     var instrumentType = $("#instrumenttype").val();
     var issueType = $("#issuetype").val();
-    console.log("displayselectedfilters issueType", issueType);
-
     // Check if at least one filter value is provided
     if (minDate || maxDate || instrumentType || issueType) {
         filterLabel.show();
-
         // Create a div for each selected filter
         var filterNames = ["Ticket Date", "Instrument Type", "Issue Type"];
-
         filterNames.forEach(function (filterName) {
             var filterValue = getFilterValue(filterName);
 
@@ -178,39 +267,27 @@ function displaySelectedFilters() {
                 var filterDiv = $("<div>", {
                     class: "filter-selection",
                 });
-
                 // Create a label for filter name only if filter value is not null or empty
                 var filterNameLabel = $("<label>", {
                     class: "filter-label",
                     text: filterName + ": ",
                 });
-
                 // Create a span for filter value
                 var filterValueSpan = $("<span>", {
                     class: "filter-value",
                     text: filterValue,
                 });
-
                // Create a cross icon to remove the filter
                 var crossIcon = $("<i>", {
                     class: "fa fa-times cross-icon",
                 }).on("click", function () {
-                   console.log("Clicked on cross icon");
                     // Remove the filter div
                     filterDiv.remove();
-                   
-
                    // Get the filter name from the parent filter selection
                    var clickedFilterName = $(this).siblings('.filter-label').text().replace(": ", "").trim();
-                   console.log("Clicked on cross icon for filter:", clickedFilterName);
-
                    // Remove the filter div
                    let currentbox = $(this).closest('.filter-selection');
-                    console.log("Clicked on cross icon for currentbox:", currentbox);
                    currentbox.remove();
-
-                   console.log("Clicked on cross icon for cfilter name:", filterName);
-
                   // Clear the corresponding modal input fields based on the filter type
                   switch (filterName) {
                       case "Ticket Date":
@@ -225,32 +302,30 @@ function displaySelectedFilters() {
                       default:
                           break;
                   }
-                 
-                  
-                   // Remove the filter and update the display
-                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
-                  
-                    // selectedFilters = selectedFilters.filter((item) => item.name !== clickedFilterName);
-                    console.log("Updated selectedFilters after removal: ", selectedFilters);
 
-                     displaySelectedFilters();
+                 // Remove the filter and update the display
+                    selectedFilters = selectedFilters.filter((item) => item.name !== filterName);
+
+                    // Check if displaySelectedFilters is being called
+                    displaySelectedFilters();
 
                     if (table) {
-                        applyDateFilter();
+                        table.rows().invalidate().draw();
+                        table.search('').draw('page');
                     } else {
                         console.log("Table is not defined");
                     }
                 });
-
                 // Append elements to the filterDiv
                 filterDiv.append(filterNameLabel).append(filterValueSpan).append(crossIcon);
-
                 // Append the filterDiv to filterSelections
-                filterSelections.append(filterDiv);
+                filterSelections.append(filterDiv);                
             }
+            
         });
         // Show the filterSelections container
         filterSelections.show();
+                        
     } else {
         // If no filters are selected, hide the filter selections container
         filterLabel.hide();
@@ -262,119 +337,12 @@ function displaySelectedFilters() {
 
 });
 
-$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-  var trNode = settings.aoData[dataIndex].nTr;
 
-  if(instrumentTypeCriteria == "allTickets")
-  {
-    return true;
-  }
-  if(trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase() == instrumentTypeCriteria )
-  {
-    return true;
-  }
 
-  return false;
-});
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
-$.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-  var trNode = settings.aoData[dataIndex].nTr;
-  if(statusCriteria == "all")
-  {
-    if($("#searchSelectBox").val() == "")
-    {
-      return true;
-    }
-    else if($("#searchSelectBox").val() == "issueType")
-    {
-      if(trNode.getAttribute("data-IssueTypeAttribute").toLowerCase().includes($("#issueTypeSelection").val().toLowerCase()))
-      {
-        return true;
-      }
-    }
-    else if($("#searchSelectBox").val() == "instrumentType")
-    {
-      if(trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase().includes($("#instrumentTypeSelection").val().toLowerCase()))
-      {
-        return true;
-      }
-
-    }
-    else if($("#searchSelectBox").val() == "createdOn")
-    {
-      var minDate = new Date( $("#minDateSelection").val());
-      var maxDate = new Date( $("#maxDateSelection").val());
-      var ticketDateDay = trNode.getAttribute("data-day");
-      var ticketDateMonth = trNode.getAttribute("data-month");
-      var ticketDateYear = trNode.getAttribute("data-year");
-      var ticketDate = new Date(ticketDateYear, Number(ticketDateMonth) - 1, ticketDateDay);
-
-      if(maxDate.toString() == "Invalid Date")
-      {
-        maxDate = new Date(9999,12,30);
-      }
-      if(minDate.toString() == "Invalid Date")
-      {
-        minDate = new Date(0000,00,00);
-      }
-
-      if(ticketDate >= minDate && ticketDate <= maxDate)
-      {
-        return true;
-      }
-
-    }
-  }
-  if(trNode.getAttribute("data-StatusAttribute") == statusCriteria)
-  {
-    if($("#searchSelectBox").val() == "")
-    {
-      return true;
-    }
-    else if($("#searchSelectBox").val() == "issueType")
-    {
-      if(trNode.getAttribute("data-IssueTypeAttribute").toLowerCase().includes($("#issueTypeSelection").val().toLowerCase()))
-      {
-        return true;
-      }
-    }
-    else if($("#searchSelectBox").val() == "instrumentType")
-    {
-      if(trNode.getAttribute("data-InstrumentTypeAttribute").toLowerCase().includes($("#instrumentTypeSelection").val().toLowerCase()))
-      {
-        return true;
-      }
-
-    }
-    else if($("#searchSelectBox").val() == "createdOn")
-    {
-      var minDate = new Date( $("#minDateSelection").val());
-      var maxDate = new Date( $("#maxDateSelection").val());
-      //var ticketDate = trNode.getAttribute("data-CreatedDateAttribute");
-      var ticketDateDay = trNode.getAttribute("data-day");
-      var ticketDateMonth = trNode.getAttribute("data-month");
-      var ticketDateYear = trNode.getAttribute("data-year");
-      var ticketDate = new Date(ticketDateYear, Number(ticketDateMonth) - 1, ticketDateDay);
-
-      if(maxDate.toString() == "Invalid Date")
-      {
-        maxDate = new Date(9999,12,30);
-      }
-      if(minDate.toString() == "Invalid Date")
-      {
-        minDate = new Date(0000,00,00);
-      }
-
-      if(ticketDate >= minDate && ticketDate <= maxDate)
-      {
-        return true;
-      }
-
-    }
-  }
-  return false;
-
-});
 </script>
 
 
@@ -460,13 +428,14 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
     <!-- ROW-1 END -->
 
      <!-- Row -->
-<div class="row row-sm">
+<<div class="row row-sm">
     <div class="col-lg-12">
-        <div class="card" style="margin-bottom:0px !important;">
-            <div class="card-header" style="padding: 0px; border-bottom: none; display: block;">
-                <div class="row" style="width:100%;">
-                    <div class="col-md-9 col-sm-12">
-                        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+        <div class="card" style="margin-bottom:0px;">
+            <div class="card-header" style="padding: 0px;border-bottom:none;display: block;margin-top: 20px;">
+              
+                <div class="row" style="width: 100%;margin: 0 auto;padding-left: 0px;padding-right: 15px;">
+                    <div class="col-md-4 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                     <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
      
                           <input type="radio" class="btn-check" name="btnradio" id="btnradio1"  autocomplete="off" checked>
                           <label class="btn statusCriteriaButton" for="btnradio1" id="allStatusRadio"
@@ -485,20 +454,17 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
                             style="border-top:0px; border-right:0px; border-left:0px; border-bottom-width:thick; border-radius:0px;color:black;">Closed(@Model.closedTicketsCount)</label>
                        </div>
                     </div>
-
-                    <div class="col-md-1 search-container" style="text-align: center;margin-left: 0px !important;margin-right: 0px !important;padding-left: 0px !important;padding-right: 0px !important;margin-top: 0px !important;margin-bottom: 0px !important;" onclick="toggleSearch()">
-                                <input class="search expandright" id="searchright" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright"><img src="../assets/images/dashboard/glass.png" width="20px" /></button>
-                    </div>
-
-                    <div class="col-md-2 col-sm-12" style="text-align: center;margin-left: 0px !important;margin-right: 0px !important;padding-left: 30px !important;padding-right: 0px !important;">
-                        <div class="row filters-bar" >
-                                <button class="btn filtering" id="searchSelectBox" onclick="filtermodal();">Filters</button>
+                    <div class="col-md-8 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                        <div class="row" style="justify-content: flex-end;">
+                              <div class="search-container">
+                                <input class="search" id="invoiceNumberSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass-icon.png"/></button>
+                              </div>
+                              <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                          </div>
                         </div>
                     </div>
-
-
-                </div>
+                  </div>
 
                 <div class="row" style="width:100%">
                       <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
@@ -596,7 +562,9 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
-
+          <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+            &times;
+          </button>
             <div class="modal-body">
               <div class="container">
                   <div class="row">
@@ -653,7 +621,7 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 
 
 <style>
-        .custom-file-input {
+         .custom-file-input {
             position: relative;
             overflow: hidden;
             margin: 0;
@@ -719,13 +687,16 @@ $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
 </style>
 
 <script>
-
-function headerWidgetButtonClick(instrumentType)
-{
-  instrumentTypeCriteria = instrumentType;
-  var table = $('#file-datatable').DataTable();
-  table.draw();
+ function closeModal(btn) {
+  // Find the closest modal
+  var modal = $(btn).closest('.modal');
+  console.log("Button clicked:", btn); // Log the button element
+  console.log("Modal found:", modal); // Log the modal element
+   $('#file-datatable').find('input[type="checkbox"]').prop('checked', false);
+  // Close the found modal
+  $(modal).modal('hide');
 }
+
 
 $(document).on("click", ".statusCriteriaButton", function (event) {
   console.log(event);
@@ -746,7 +717,11 @@ $(document).on("click", ".statusCriteriaButton", function (event) {
   table.draw();
 });
 
-  
+function updateFileName(input) {
+    var fileName = input.files[0].name;
+    document.getElementById('fileName').innerText = 'Selected file: ' + fileName;
+}
+
 function toggleSearch() {
   var searchContainer = document.querySelector('.search-container');
   var searchInput = document.querySelector('.search');
