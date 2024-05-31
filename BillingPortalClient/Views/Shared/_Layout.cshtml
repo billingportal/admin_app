@@ -1,4 +1,4 @@
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
 <!doctype html>
 <html lang="en" data-nav-layout="vertical" data-header-styles="dark" data-menu-styles="light" data-vertical-style="overlay" data-toggled="icon-overlay-close">
 <head>
@@ -210,15 +210,13 @@
                     </div>
 
                     <div class="main-header-center  d-none d-lg-block header-link">
-                         <form>
+                         <form style="height: 42px; display: block; width: 710px;">
                                <input type="text" class="form-select" id="CustomerName" placeholder="Search by Company Name">
                                 <div id="suggestions-container"></div>
-                               <select class="form-select" aria-label="Default select example" id="CustomerEmail">
-                                <option selected>Seacrh by Email Id</option>
-                               </select>
-                               <select class="form-select" aria-label="Default select example" id="CustomerAccount">
-                                <option selected disabled>Select by Account No</option>
-                               </select>
+                                 <input type="text" class="form-select" id="CustomerEmail" placeholder="Search by Email">
+                                <div id="email-container"></div>
+                                 <input type="text" class="form-select" id="CustomerAccount" placeholder="Search by Account No">
+                                <div id="account-container"></div>
                          </form>
                         <button class="navbar-toggler navresponsive-toggler d-lg-none ms-auto" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent-4"
@@ -285,7 +283,8 @@
                 <nav class="main-menu-container nav nav-pills flex-column sub-open">
 
                     <ul class="main-menu">
-                        @if(@User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin" || Convert.ToBoolean( @User.Claims.FirstOrDefault( x => x.Type == "viewInvoice" ).Value) == true)
+                       @if(User?.Claims?.FirstOrDefault(x => x.Type == "adminRole")?.Value == "SuperAdmin" || 
+                            Convert.ToBoolean(User?.Claims?.FirstOrDefault(x => x.Type == "viewInvoice")?.Value) == true)
                         {
                         <li class="slide">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("Index","Invoice")">
@@ -295,7 +294,8 @@
 
                         }
 
-                        @if(@User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin" || Convert.ToBoolean( @User.Claims.FirstOrDefault( x => x.Type == "viewPayment" ).Value) == true)
+                        @if(User?.Claims?.FirstOrDefault(x => x.Type == "adminRole")?.Value == "SuperAdmin" || 
+                            Convert.ToBoolean(User?.Claims?.FirstOrDefault(x => x.Type == "viewPayment")?.Value) == true)
                         {
                         <li class="slide">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("Payments","Payment")">
@@ -304,7 +304,8 @@
                         </li>
                         }
 
-                        @if(@User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin" || Convert.ToBoolean( @User.Claims.FirstOrDefault( x => x.Type == "viewStatement" ).Value) == true)
+                       @if(User?.Claims?.FirstOrDefault(x => x.Type == "adminRole")?.Value == "SuperAdmin" || 
+                            Convert.ToBoolean(User?.Claims?.FirstOrDefault(x => x.Type == "viewStatement")?.Value) == true)
                         {
                         <li class="slide">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("Index","Statement")">
@@ -313,7 +314,8 @@
                         </li>
                         }
 
-                        @if(@User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin" || Convert.ToBoolean( @User.Claims.FirstOrDefault( x => x.Type == "viewTicket" ).Value) == true)
+                        @if(User?.Claims?.FirstOrDefault(x => x.Type == "adminRole")?.Value == "SuperAdmin" || 
+                            Convert.ToBoolean(User?.Claims?.FirstOrDefault(x => x.Type == "viewTicket")?.Value) == true)
                         {
                         <li class="slide align-bottom">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("Tickets","Ticket")">
@@ -325,7 +327,7 @@
 
 
 
-                        @if(@User.Claims.FirstOrDefault( x => x.Type == "adminRole" ) != null && @User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin")
+                        @if(@User?.Claims?.FirstOrDefault( x => x.Type == "adminRole" ) != null && @User?.Claims?.FirstOrDefault( x => x.Type == "adminRole" ).Value == "SuperAdmin")
                         {
                         <li class="slide">
                             <a class="side-menu__item" data-bs-toggle="slide" href="@Url.Action("ManageAdminUsers","User")">
