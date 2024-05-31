@@ -104,8 +104,6 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                                 <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadPaymentReport('Excel')">Excel</button>
                               </div>
                               </div>
-                              <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket">
-                            <i class="fe fe-file-text"></i> Create Ticket </button>
                           </div>
                         </div>
                     </div>
@@ -194,11 +192,7 @@ For more information on enabling MVC for empty projects, visit https://go.micros
                     }
                     <td><strong>@item.balance</strong> SAR</td>
                     <td>
-                      <button onclick="createTicketButtonClick('@item.refNo')"  type="button" class="btn btn-primary btn-download statementPrintRowButton"
-                        data-itemId=@item.id data-refNo=@item.refNo data-docNumber=@item.docNumber
-                        data-createDate=@item.createdDate.ToShortDateString() data-type=@item.type data-debit=@item.debit
-                        data-credit=@item.credit data-balance=@item.balance><i class="fe fe-file-text"></i></button>
-                        <div class="download-button-wrapper" onmouseleave="hideDownloadROptions('@item.refNo')">
+                         <div class="download-button-wrapper" onmouseleave="hideDownloadROptions('@item.refNo')">
                           <button type="button" class="btn btn-success btn-ticket productButton"><img onmouseover="showDownloadROptions('@item.refNo')" src="../assets/images/dashboard/downinv.png" /></button>
                           <div id="downloadROption@(item.refNo)" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
                             <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadRecieptReport('pdf', '@item.refNo')">PDF</button>
@@ -223,80 +217,6 @@ For more information on enabling MVC for empty projects, visit https://go.micros
 </div>
 <!-- CONTAINER CLOSED -->
 
-
-<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
-  aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
-    <div class="modal-content">
-
-      <div class="modal-body">
-        <div class="container">
-          <div class="row">
-            <h1>Create Ticket</h1>
-            <h5>Enter the details below to create a ticket.</h5>
-          </div>
-          <form asp-controller="Ticket" asp-action="SaveTicket" method="post" enctype="multipart/form-data">
-
-            <div class="row mb-3">
-
-              <div class="col-md-6">
-                <label>Instrument Type<span style="color:red; margin-left:2px">*</span></label>
-                <input asp-for="ticketViewModel.instrumentType" class="form-select" required value="Statement"
-                  readonly />
-              </div>
-
-
-              <div class="col-md-6">
-                <label>Issue Type<span style="color:red; margin-left:2px">*</span></label>
-                <select asp-for="ticketViewModel.issueType" class="form-select" required
-                  aria-label="Default select example">
-                  @*<option selected>Select your issue type</option>*@
-                  <option value="Complain" selected>Complain</option>
-                  <option value="Dispute">Dispute</option>
-                  <option value="Feedback">Feedback</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-12">
-                <label>Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
-                <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers"
-                  multiple class="form-select"> </select>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-12">
-                <label>Description<span style="color:red; margin-left:2px;">*</span></label>
-                <textarea asp-for="ticketViewModel.description" required placeholder="Give a description of your ticket"
-                  class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-12">
-                <label>Upload Image</label><br>
-                <input type="file" id="myFile" asp-for="ticketViewModel.imageFile" class="btn">
-
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12 text-center">
-                <button type="submit" class="btn" style="width:100%;">Submit</button>
-              </div>
-
-            </div>
-
-          </form>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
 
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
   aria-hidden="true">
@@ -665,27 +585,7 @@ $(document).on("change", ".transactionsTableCheckbox", function () {
   }
 });
 
-  function addReceiptsForTicket() {
- 
-    if (selectedRows.length > 0) {
-      selectedRows.forEach(row => {
-        var data = {
 
-          value: row,
-          text: row,
-
-        };
-
-        var newOption = new Option(data.text, data.value, true, true);
-        $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
-      })
-      $("#testModalCenter1").modal('show');
-    }
-    else {
-      alert('Kindly select a payment transation.')
-    }
-
-  }
 
     function toggleSearch() {
         var searchContainer = document.querySelector('.search-container');
@@ -707,10 +607,10 @@ function hideDownloadOptions() {
     document.getElementById("downloadOptions").style.display = "none";
 }
 function showDownloadROptions(itemId) {
-  document.getElementById('downloadROptions' + itemId).style.display = 'block';
+  document.getElementById('downloadROption' + itemId).style.display = 'block';
 }
 function hideDownloadROptions(itemId) {
-   document.getElementById('downloadROptions' + itemId).style.display = 'nones';
+   document.getElementById('downloadROption' + itemId).style.display = 'nones';
 }
 
 function convertBase64ToPDF(base64String, filename) {
