@@ -1,153 +1,163 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-//using BillingPortalClient.Models;
-using BillingPortalClient.ModelViews;
 using System.Text;
-using BillingSystem.Service;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
+using BillingPortalClient.Models;
+using BillingPortalClient.ModelViews;
+using BillingSystem.Service;
+
 
 namespace BillingPortalClient.Controllers
 {
   public class InvoiceController : BaseController
   {
-    ////Uri baseAddress = new Uri( "https://localhost:7069/api/" );
-    //Uri baseAddress = new Uri( "https://billingportalapis.azurewebsites.net/" );
+    private readonly HttpClient _httpClient;
 
-    //private readonly HttpClient _httpClient;
-
-    //public InvoiceController()
-    //{
-    //  _httpClient = new HttpClient();
-    //  _httpClient.BaseAddress = baseAddress;
-    //}
+       public InvoiceController(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
     public async Task<ActionResult> Index()
     {
-      try
-      {
-        int adminId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminId" ).Value );
-        string adminEmail = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminEmail" ).Value;
-        string adminRole = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminRole" ).Value;
-        string adminFirstName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminFirstName" ).Value;
-        string adminLastName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminLastName" ).Value;
-        string adminStatus = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "adminStatus" ).Value;
 
-        string otpVerifyResult;
+            var claims = HttpContext.User.Claims;
 
-        //List<Invoice> invoices = new List<Invoice>();
-        List<InvoiceRowDTO> invoices = new List<InvoiceRowDTO>();
-        //using( var response = await _httpClient.GetAsync( $"Invoice/GetCustomerInvoicesByAccountNumber/{customerAccountNumber}" ) )
-        //{
-        //  string apiResponse = await response.Content.ReadAsStringAsync();
-        //  invoices = JsonConvert.DeserializeObject<List<Invoice>>( apiResponse );
-        //}
+            string customerIdClaim = claims.FirstOrDefault(x => x.Type == "custCustomerId")?.Value;
+            string customerId = string.IsNullOrEmpty(customerIdClaim) ? string.Empty : customerIdClaim;
 
-        //if(adminRole == "SuperAdmin")
-        //{
-        //  var client = new Client( baseUrl, _httpClient );
-        //  invoices = ( await client.GetAllInvoicesAsync() ).ToList();
-        //}
-        //else
-        //{
-        //  var client = new Client( baseUrl, _httpClient );
-        //  invoiceRowDTOs = ( await client.GetInvoicesByAdminIdAsync(adminId) ).ToList();
-        //}
+             
+            string accountNumberClaim = claims.FirstOrDefault(x => x.Type == "custAccountNumber")?.Value;
+            string customerAccountNumber = string.IsNullOrEmpty(accountNumberClaim) ? string.Empty : accountNumberClaim;
 
-        {
-          var client = new Client( baseUrl, _httpClient );
-          invoices = ( await client.GetInvoicesByAdminIdAsync( adminId ) ).ToList();
-        }
+            string newAccountNumberClaim = claims.FirstOrDefault(x => x.Type == "custNewAccountNumber")?.Value;
+            string _newAccountNumber = string.IsNullOrEmpty(newAccountNumberClaim) ? string.Empty : newAccountNumberClaim;
 
-        InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
-        //invoiceViewModel.invoices = invoices;
-        invoiceViewModel.invoiceRowDTOs = invoices;
+            string accountIdClaim = claims.FirstOrDefault(x => x.Type == "custAccountId")?.Value;
+            int _accountId = string.IsNullOrEmpty(accountIdClaim) ? 0 : Convert.ToInt32(accountIdClaim);
 
-        List<InvoiceRow> invoicesTable = new List<InvoiceRow>();
-        foreach( var item in invoices )
-        {
+            string accountNameClaim = claims.FirstOrDefault(x => x.Type == "custAccountName")?.Value;
+            string _accountName = string.IsNullOrEmpty(accountNameClaim) ? string.Empty : accountNameClaim;
 
+            string arabicNameClaim = claims.FirstOrDefault(x => x.Type == "custArabicName")?.Value;
+            string _arabicName = string.IsNullOrEmpty(arabicNameClaim) ? string.Empty : arabicNameClaim;
 
-          double? paidAmount = 0;
-          double? balanceAmount = 0;
-          string invoiceStatus;
+            string businessUnitIdClaim = claims.FirstOrDefault(x => x.Type == "custBusinessUnitId")?.Value;
+            string _businessUnitId = string.IsNullOrEmpty(businessUnitIdClaim) ? string.Empty : businessUnitIdClaim;
 
-          //if( item.InvoiceStatuses.Count > 0 )
-          //{
-          //  invoiceStatus = item.InvoiceStatuses.FirstOrDefault().Status;
-          //}
-          //else
-          //{
-          //  invoiceStatus = "Unpaid";
-          //}
-
-          if( item.InvoicesPayments.Count > 0 )
-          {
-            foreach( var invoicePayment in item.InvoicesPayments )
-            {
-              paidAmount = Convert.ToDouble( paidAmount + invoicePayment.AmountPaid );
+            Console.WriteLine($"customerId: {customerId}");
+            Console.WriteLine($"customerAccountNumber: {customerAccountNumber}");
+            Console.WriteLine($"_newAccountNumber: {_newAccountNumber}");
+            Console.WriteLine($"_accountId: {_accountId}");
+            Console.WriteLine($"_accountName: {_accountName}");
+            Console.WriteLine($"_arabicName: {_arabicName}");
+            Console.WriteLine($"_businessUnitId: {_businessUnitId}");
+            // Fetch customer invoices
+            List<CustomerInvoice> invoices;
+            string requestUri = new Uri(baseAddress, "Invoice/GetCustomerInvoicesByAccountNumber/" + customerAccountNumber).ToString();
+            using (var response = await _httpClient.GetAsync(requestUri))
+              {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                 Console.WriteLine($"invoices: {apiResponse}");
+                invoices = JsonConvert.DeserializeObject<List<CustomerInvoice>>(apiResponse);    
+                   
             }
-          }
 
-          balanceAmount = item.Debit - paidAmount;
+            if (invoices != null)
+            {
 
-          InvoiceRow invoiceRow = new InvoiceRow();
-          invoiceRow.status = item.Status;
-          invoiceRow.id = item.Id;
-          invoiceRow.paid = paidAmount;
-          invoiceRow.docNumber = item.DocNumber;
-          invoiceRow.balance = balanceAmount;
-          invoiceRow.invoiceDate = Convert.ToDateTime( item.TrxDate );
-          invoiceRow.dueDate = Convert.ToDateTime( item.DueDate );
-          invoiceRow.total = item.Debit;
-          invoiceRow.region = item.Region;
-          invoiceRow.accountNumber = item.AccountNumber;
+              Console.WriteLine($"invoices not null: {invoices}");
+                // Map DTO to ViewModel
+                var invoiceViewModel = new CustomerInvoiceViewModel
+                {
+                    invoices = invoices,
+                    accountNumber = customerAccountNumber,
+                    accountName = _accountName,
+                    arabicName = _arabicName,
+                    newAccountNumber = _newAccountNumber,
+                    businessUnitId = _businessUnitId,
+                    invoiceTable = invoices.Select(item => new InvoiceRow
+                    {
+                        status = item.InvoicePaymentStatus, // Updated property name
+                        id = item.TransactionNumber,
+                        paid = (double)item.TotalPaidAmount, // Updated property name
+                        docNumber = item.DocumentNumber,
+                        balance = (double)item.InvoiceBalanceAmount,
+                        invoiceDate = item.TransactionDate,
+                        dueDate = item.DueDate,
+                        total = (double)item.EnteredAmount
+                    }).OrderByDescending(x => x.invoiceDate).ToList()
+                };
 
-          invoicesTable.Add( invoiceRow );
+                // Serialize the object to a JSON string
+                string invoiceViewModelJson = JsonConvert.SerializeObject(invoiceViewModel, Formatting.Indented);
 
-        }
+                // Log the JSON string to the console
+                Console.WriteLine(invoiceViewModelJson);
 
-        invoiceViewModel.invoiceTable = invoicesTable.OrderByDescending( x => x.invoiceDate ).ToList();
+                // Fetch disputed invoices
+                List<CustomerInvoice> disputedInvoices;
+                string requestUri2 = new Uri(baseAddress, "Invoice/GetCustomerDisputedInvoicesByAccountId/" + _accountId).ToString();
+                using (var response2 = await _httpClient.GetAsync(requestUri2))
+                {
+                     string apiResponse2 = await response2.Content.ReadAsStringAsync();
+                    disputedInvoices = JsonConvert.DeserializeObject<List<CustomerInvoice>>(apiResponse2);
+                }
 
-        List<BillingSystem.Service.Invoice> disputedInvoices = new List<BillingSystem.Service.Invoice>();
-        {
-          var client = new Client( baseUrl, _httpClient );
-          disputedInvoices = ( await client.GetDisputedInvoicesByAdminIdAsync(adminId) ).ToList();
-        }
+                if (disputedInvoices != null){
+                    invoiceViewModel.disputedInvoices = disputedInvoices;
+                }else {
+                  invoiceViewModel.disputedInvoices = new List<CustomerInvoice>();
+                }
 
-        if( disputedInvoices != null )
-        {
-          invoiceViewModel.disputedInvoices = disputedInvoices;
-        }
+                
 
-        //invoiceViewModel.accountNumber = customerAccountNumber;
-        //invoiceViewModel.accountName = _accountName;
+                // Calculate open transactions and overdue amount
+                double? openTransactions = invoiceViewModel.invoiceTable.Sum(item => item.total);
+                double? overdueAmount = invoiceViewModel.invoiceTable.Where(item => item.dueDate < DateTime.Now.Date).Sum(item => item.balance);
 
-        double openTransactions = 0;
-        foreach(var item in invoicesTable)
-        {
-          openTransactions = openTransactions + (double)item.total;
-        }
-        invoiceViewModel.openTransactions = Math.Round( openTransactions, 2 );
+                // Handle null values and convert them to default (0) if needed
+                invoiceViewModel.openTransaction = openTransactions.HasValue ? Math.Round(openTransactions.Value, 2) : 0;
+                invoiceViewModel.overdueAmount = overdueAmount.HasValue ? Math.Round(overdueAmount.Value, 2) : 0;
+                
+                Console.WriteLine($"overdueAmount: {invoiceViewModel.overdueAmount}");
+                return View("Index", invoiceViewModel);
+            }
+            else
+            {
+                // Handle the case when invoices are null
+                // You can redirect to an error page or return a specific view for this case
+                
+                List<InvoiceRow> InvoiceRows = new List<InvoiceRow>();
+                
+                 var invoiceViewModel = new CustomerInvoiceViewModel
+                {
+                    invoices = invoices,
+                    accountNumber = customerAccountNumber,
+                    accountName = _accountName,
+                    arabicName = _arabicName,
+                    newAccountNumber = _newAccountNumber,
+                    businessUnitId = _businessUnitId,
+                    invoiceTable = InvoiceRows
+                };
+                List<CustomerInvoice> disputedInvoices= new List<CustomerInvoice>();
+                invoiceViewModel.disputedInvoices = disputedInvoices;
 
-        double overdueAmount = 0;
-        foreach(var item in invoicesTable)
-        {
-          if(item.dueDate.Date < DateTime.Now.Date)
-          {
-            overdueAmount = overdueAmount + (double)item.balance;
-          }
-        }
-        invoiceViewModel.overdueAmount = Math.Round( overdueAmount, 2 );
+                // Calculate open transactions and overdue amount
+                double? openTransactions = invoiceViewModel.invoiceTable.Sum(item => item.total);
+                double? overdueAmount = invoiceViewModel.invoiceTable.Where(item => item.dueDate < DateTime.Now.Date).Sum(item => item.balance);
 
-        return View( invoiceViewModel );
-      }
-      catch( Exception ex )
-      {
-        throw new Exception(ex.Message );
-      }
+                // Handle null values and convert them to default (0) if needed
+                invoiceViewModel.openTransaction = openTransactions.HasValue ? Math.Round(openTransactions.Value, 2) : 0;
+                invoiceViewModel.overdueAmount = overdueAmount.HasValue ? Math.Round(overdueAmount.Value, 2) : 0;
+               return View("Index", invoiceViewModel);
+            }
+
     }
+
+ 
 
     public async Task<IActionResult> PaymentType()
     {
@@ -164,67 +174,8 @@ namespace BillingPortalClient.Controllers
       return View();
     }
 
-    [HttpPost]
-    public async Task<ActionResult<bool>> testAjax([FromBody] testAjax a)
-    {
 
-      return true;
-    }
 
-    //public async Task<ActionResult> RefreshInvoices()
-    //{
-    //  int _customerId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault().Value );
-    //  string _accountNumber = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "customerAccountNumber" ).Value;
-    //  int _accountId = Convert.ToInt32( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountId" ).Value );
-    //  string _accountName = HttpContext.User.Claims.FirstOrDefault( x => x.Type == "accountName" ).Value;
-    //  bool _isMain = Convert.ToBoolean( HttpContext.User.Claims.FirstOrDefault( x => x.Type == "isMain" ).Value );
-
-    //  List<InvoiceDTO> invoices = new List<InvoiceDTO>();
-    //  using( var response = await _httpClientOracle.GetAsync( $"Invoice/GetCustomerInvoices/{_accountNumber}" ) )
-    //  {
-    //    string apiResponse = await response.Content.ReadAsStringAsync();
-    //    if( JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse ) != null )
-    //    {
-    //      invoices = JsonConvert.DeserializeObject<List<InvoiceDTO>>( apiResponse );
-    //    }
-    //  }
-
-    //  List<BillingSystem.Service.Invoice> custInvoices = new List<BillingSystem.Service.Invoice>();
-    //  foreach( var item in invoices )
-    //  {
-    //    BillingSystem.Service.Invoice invoice = new BillingSystem.Service.Invoice();
-    //    invoice.Id = default;
-    //    invoice.AccountNumber = item.accountNumber;
-    //    invoice.OldAccountId = item.oldAccountId;
-    //    invoice.GlDate = item.glDate;
-    //    invoice.Credit = item.credit;
-    //    invoice.Debit = item.debit;
-    //    invoice.TrxDate = item.trxDate;
-    //    invoice.RefNo = item.refNo;
-    //    invoice.TransactionClass = item.transactionClass;
-    //    invoice.DocNumber = item.docNumber;
-    //    invoice.CustomerPartyId = item.customerPartyId;
-    //    invoice.CustTrxTypeId = item.custTrxTypeId;
-    //    invoice.AccountName = item.accountName;
-    //    invoice.Status = item.status;
-    //    invoice.DueDate = item.dueDate;
-    //    custInvoices.Add( invoice );
-    //  }
-
-    //  BillingSystem.Service.RefreshInvoiceDTO refreshInvoiceDTO = new BillingSystem.Service.RefreshInvoiceDTO();
-    //  refreshInvoiceDTO.AccountNumber = _accountNumber;
-    //  refreshInvoiceDTO.Invoices = custInvoices;
-    //  var json = JsonConvert.SerializeObject( refreshInvoiceDTO );
-    //  var content = new StringContent( json, Encoding.UTF8, "application/json" );
-
-    //  bool invoicesResult;
-    //  using( var response = await _httpClient.PostAsync( $"Invoice/RefreshCustomerInvoices/", content ) )
-    //  {
-    //    string apiResponse = await response.Content.ReadAsStringAsync();
-    //    invoicesResult = JsonConvert.DeserializeObject<bool>( apiResponse );
-    //  }
-
-    //  return RedirectToAction("Index");
-    //}
+    
   }
 }
