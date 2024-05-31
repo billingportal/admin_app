@@ -159,20 +159,90 @@ namespace BillingPortalClient.Controllers
 
  
 
-    public async Task<IActionResult> PaymentType()
+     [HttpPost]
+    public async Task<IActionResult> DownloadInvoiceReport(string buId, string startDate, string endDate, string attachmentType, string customerAccountNumber)
     {
-      return View();
+        try
+        {
+            var request = new
+            {
+                buId = buId,
+                startDate = startDate,
+                endDate = endDate,
+                attachmentType = attachmentType,
+                customerAccountNumber = customerAccountNumber
+            };
+            
+            // Construct the request URI
+            string requestUri = new Uri(baseAddress, "Invoice/processAccountSuppressReport").ToString();
+
+            // Send the POST request with the JSON payload
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(requestUri, request);
+            response.EnsureSuccessStatusCode();
+
+            // Read the response content as JSON string
+            string apiResponse = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the JSON response
+            ApiResponse responseData = JsonConvert.DeserializeObject<ApiResponse>(apiResponse);
+
+            return Json(responseData);
+        }
+        catch (Exception ex)
+        {
+            return Json(new ApiResponse { Result = "Error", Message = ex.Message });
+        }
     }
 
-    public async Task<IActionResult> PaymentMethod()
-    {
-      return View();
-    }
 
-    public async Task<IActionResult> PaymentSummary()
+    [HttpPost]
+    public async Task<IActionResult> DownloadReceiptReport(string buId, string attachmentType, string customerAccountNumber, string transactionType, string transactionNumber)
     {
-      return View();
+        try
+        {
+            var request = new
+            {
+                buId = buId,
+                attachmentType = attachmentType,
+                customerAccountNumber = customerAccountNumber,
+                transactionType = transactionType,
+                transactionNumber = transactionNumber
+            };
+            
+            // Construct the request URI
+            string requestUri = new Uri(baseAddress, "Invoice/processArInvoiceReport").ToString();
+
+            // Send the POST request with the JSON payload
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync(requestUri, request);
+            response.EnsureSuccessStatusCode();
+
+            // Read the response content as JSON string
+            string apiResponse = await response.Content.ReadAsStringAsync();
+
+            // Deserialize the JSON response
+            ApiResponse responseData = JsonConvert.DeserializeObject<ApiResponse>(apiResponse);
+
+            return Json(responseData);
+        }
+        catch (Exception ex)
+        {
+            return Json(new ApiResponse { Result = "Error", Message = ex.Message });
+        }
     }
+    
+
+    private string GetInvoiceNumbers(PaymentViewModel paymentViewModel)
+{
+    // Assuming selectedInvoices is a list of invoice numbers
+    string invoiceNumbers = string.Join(", ", paymentViewModel.selectedInvoices);
+    return invoiceNumbers;
+}
+
+        public async Task<IActionResult> RefreshInvoices()
+        {
+        return RedirectToAction(nameof(Index));
+        }
+
 
 
 
