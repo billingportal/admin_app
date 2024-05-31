@@ -311,6 +311,25 @@ namespace BillingPortalClient.Controllers
                 // Add existing claims to the merged list
                 mergedClaims.AddRange(User.Claims);
 
+                // Define the claim types to be removed
+                var claimTypesToRemove = new[]
+                {
+                    "custCustomerId",
+                    "custAccountId",
+                    "custAccountName",
+                    "custArabicName",
+                    "custAccountNumber",
+                    "custNewAccountNumber",
+                    "custEmail",
+                    "custCity",
+                    "custCourierRoute",
+                    "custRegion",
+                    "custBusinessUnitId"
+                };
+
+                // Remove existing claims with the specified types
+                mergedClaims = mergedClaims.Where(claim => !claimTypesToRemove.Contains(claim.Type)).ToList();
+
 
                 // Add new claims from the method
                 mergedClaims.AddRange(new[]
@@ -351,7 +370,6 @@ namespace BillingPortalClient.Controllers
 
         // Redirect to Invoice/Index after updating claims
          return RedirectToAction("Index", "Invoice");
-        //return RedirectToAction("Index", "Invoice");
     }
 
     

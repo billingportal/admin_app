@@ -50,6 +50,8 @@ builder.Services.AddSignalR( e => {
   e.MaximumReceiveMessageSize = 102400000;
 } );
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddScoped<InvoiceViewModel, InvoiceViewModel>();
 
 var app = builder.Build();

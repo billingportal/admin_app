@@ -1,4 +1,4 @@
-﻿
+
 @using System.Text.Json;
 
 @{
@@ -16,6 +16,8 @@
                 <div class="card-widget">
                     <div class="card overflow-hidden">
                         <div class="card-body c1">
+                       <a href="@Url.Action("ManageAdminUsers","User")" style="color:white">
+
                             <div class="d-flex">
                                 <div class="">
                               <img src="../assets/images/dashboard/coins-icon-purple.png" />
@@ -26,13 +28,14 @@
                             <span class="text-muted fs-12">
                                 Manage User
                               </span>
-                            
+                            </a>
                         </div>
                     </div>
                 </div>
                 <div class="card-widget">
                     <div class="card overflow-hidden">
                         <div class="card-body c2">
+                        <a href="@Url.Action("Index","Customer")" style="color:white">
                             <div class="d-flex">
                                 <div class="">
                                 <img src="../assets/images/dashboard/clock-icon-blue.png" />
@@ -43,6 +46,7 @@
                             <span class="text-muted fs-12">
                               Manage Customer
                                 </span>
+                                </a>
                         </div>
                     </div>
                 </div>
@@ -58,67 +62,68 @@
 <div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-md" role="document">
     <div class="modal-content">
+    <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
       <div class="modal-body">
         <div class="container">
-          <h2 class="text-center" style="color:black;">Create User</h2>
-          <p class="text-center"style="color:black">Enter the details below to create a user.</p>
+          <h1 class="text-center">Create User</h1>
+          <h5 class="text-center">Enter the details below to create a user.</h5>
           <form asp-controller="User" asp-action="AddCustomerUser" method="post">
             <input asp-for="customerUserDTO.accountName" hidden value="@Model.customerUserDTO.accountName" />
             <input asp-for="customerUserDTO.accountNumber" hidden value="@Model.customerUserDTO.accountNumber" />
             <div class="row mb-3">
-              <div class="col-md-12">
-      	        <label style="font-weight:bold;color:black">Name<span style="color:red; margin-left:2px">*</span></label>
-                <input asp-for="customerUserDTO.name" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Name">
-                
-              </div>
-      
-              
-      
-            </div>
 
-            <div class="row mb-3">
-              <div class="col-md-12">
-      	        <label style="font-weight:bold;color:black">Email<span style="color:red; margin-left:2px">*</span></label>
-                <input asp-for="customerUserDTO.email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Email">
-                
+              <div class="col-md-6">
+      	        <label>Name<span style="color:red; margin-left:2px">*</span></label>
+                <input asp-for="customerUserDTO.name" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Name">  
+              </div>
+
+                <div class="col-md-6">
+      	        <label>Email<span style="color:red; margin-left:2px">*</span></label>
+                <input asp-for="customerUserDTO.email" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Email">
               </div>
 
             </div>
-    
+
+
             <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label style="font-weight:bold;color:black">Mobile Number<span style="color:red; margin-left:2px;">*</span></label>
-                  <input asp-for="customerUserDTO.phone" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Mobile Number">
+
+    	        <div class="col-md-6">
+        	        <label>Mobile Number<span style="color:red; margin-left:2px;">*</span></label>
+                  <input asp-for="customerUserDTO.phone" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Number">
         	        
                 </div>
-            </div>
-    
-            <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold;color:black">Designation<span style="color:red; margin-left:2px;">*</span></label>
-                  <input asp-for="customerUserDTO.designation" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter User Designation">
+
+    	        <div class="col-md-6">
+        	        <label>Designation<span style="color:red; margin-left:2px;">*</span></label>
+                  <input asp-for="customerUserDTO.designation" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="text" placeholder="Enter Designation">
 
                 </div>
             </div>
     
             <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold;color:black">Password</label><br>
-                  <input asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
+    	        <div class="col-md-6">
+        	        <label>Password</label><br>
+                  <input asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter Password">
+            
+                </div>
+
+                <div class="col-md-6">
+        	        <label>Confirm Password</label><br>
+                  <input style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Confirm Password">
             
                 </div>
             </div>
             <div class="row">
-              <div class="col-md-4">
+             
+              <div class="col-md-12">
+                  <div class="mt-5"style="margin: 0 auto;text-align: center;">
+                        <button type="submit" class="btn ticketsubmit" style="width: 370px;line-height: 35px;">Submit <i class="fa fa-arrow-right"></i></button>
+                  </div>
 
               </div>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
-
-              </div>
-              <div class="col-md-4">
-
-              </div>
+            
 
             </div>
           </form>
@@ -133,10 +138,13 @@
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-md" role="document">
     <div class="modal-content">
+    <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
       <div class="modal-body">
         <div class="container">
-          <h1>Create User</h1>
-          <h5>Enter the details below to create a user.</h5>
+          <h1>Update User</h1>
+          <h5>Enter the details below to Update a user.</h5>
           <form asp-controller="User" asp-action="UpdateCustomerUser" method="post">
             <input asp-for="customerUserDTO.accountName" hidden value="@Model.customerUserDTO.accountName" />
             <input asp-for="customerUserDTO.accountNumber" hidden value="@Model.customerUserDTO.accountNumber" />
@@ -144,8 +152,9 @@
             
             <div class="row mb-3">
               <div class="col-md-12 d-flex">
-      	        <label style="font-weight:bold;color:black">Active<span style="color:red; margin-left:2px"></span></label>
-                <input id="userStatusCheckbox" asp-for="customerUserDTO.isActive" class="col-2" type="checkbox">
+                  <input asp-for="customerUserDTO.isActive" type="hidden">
+      	        @* <label style="font-weight:bold;color:black">Active<span style="color:red; margin-left:2px"></span></label> *@
+                <input id="userStatusCheckbox" asp-for="customerUserDTO.isActive" class="col-2" type="checkbox" hidden>
               </div>
             </div>
             <div class="row mb-3">
@@ -175,18 +184,17 @@
             </div>
             <div class="row mb-3">
     	        <div class="col-md-12">
-        	        <label style="font-weight:bold;color:black">Password</label><br>
+        	        <label  style="font-weight:bold;color:black">Password</label><br>
                   <input id="userPasswordText" asp-for="customerUserDTO.password" style="width:100%" required maxlength="50" class="input100 border-start-0 form-control ms-0" type="password" placeholder="Enter User Password">
                 </div>
             </div>
 
             <div class="row">
-              <div class="col-md-3">
-              </div>
-              <div class="col-md-6">
-                <button type="submit" class="btn btn-primary" style="width:100% !important;">Update</button>
-              </div>
-              <div class="col-md-3">
+              <div class="col-md-12">
+                  <div class="mt-5"style="margin: 0 auto;text-align: center;">
+                        <button type="submit" class="btn ticketsubmit" style="width: 370px;line-height: 35px;">Submit <i class="fa fa-arrow-right"></i></button>
+                  </div>
+
               </div>
             </div>
 
@@ -199,6 +207,15 @@
 
 
 <script>
+ function closeModal(btn) {
+  // Find the closest modal
+  var modal = $(btn).closest('.modal');
+  console.log("Button clicked:", btn); // Log the button element
+  console.log("Modal found:", modal); // Log the modal element
+   $('#file-datatable').find('input[type="checkbox"]').prop('checked', false);
+  // Close the found modal
+  $(modal).modal('hide');
+}
 
   function openUsersModal()
   {

@@ -20,6 +20,12 @@ namespace BillingPortalClient.Controllers
         _httpClient = httpClient;
     }
 
+    [HttpPost]
+    public async Task<ActionResult> Index(CustomerInvoiceViewModel invoiceViewModel) {
+        return View(invoiceViewModel);
+    }
+
+
     public async Task<ActionResult> Index()
     {
 

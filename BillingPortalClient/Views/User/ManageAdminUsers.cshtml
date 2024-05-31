@@ -1,4 +1,4 @@
-﻿
+
 @using System.Text.Json;
 
 @{
@@ -271,7 +271,7 @@ function displaySelectedFilters() {
                 </div>
                 <div class="card-widget">
                     <div class="card overflow-hidden">
-                        <div class="card-body c2_user">
+                        <div class="card-body c2">
                             <a href="@Url.Action("Index","Customer")" style="color:white">
 
                                 <div class="d-flex">
@@ -402,6 +402,9 @@ function displaySelectedFilters() {
 <div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
+        <button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
             <div class="modal-body">
                 <div class="container">
                     <h2 class="text-center" id="modalTitle" style="color:black;">Create User</h2>
@@ -532,11 +535,9 @@ function displaySelectedFilters() {
                       
                          <input id="modalStatus" asp-for="adminUser.Status" hidden />
                         <div class="row mt-5">
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary" style="width:100% !important;">Submit</button>
+                            <div class="mt-5"style="margin: 0 auto;text-align: center;">
+                                    <button type="submit" class="btn ticketsubmit" style="width: 370px;line-height: 35px;">Submit <i class="fa fa-arrow-right"></i></button>
                             </div>
-                            <div class="col-md-3"></div>
                         </div>
 
                     </form>
@@ -551,7 +552,9 @@ function displaySelectedFilters() {
 <div class="modal fade" id="testModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
         <div class="modal-content">
-
+<button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="z-index:1999; position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
             <div class="modal-body">
               <div class="container">
                   <div class="row">
@@ -600,6 +603,16 @@ function displaySelectedFilters() {
 <script>
 
      var model = @Html.Raw(JsonSerializer.Serialize(Model));
+
+ function closeModal(btn) {
+  // Find the closest modal
+  var modal = $(btn).closest('.modal');
+  console.log("Button clicked:", btn); // Log the button element
+  console.log("Modal found:", modal); // Log the modal element
+   $('#file-datatable').find('input[type="checkbox"]').prop('checked', false);
+  // Close the found modal
+  $(modal).modal('hide');
+}
 
 function toggleSearch() {
   var searchContainer = document.querySelector('.search-container');
