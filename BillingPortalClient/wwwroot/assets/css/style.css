@@ -716,6 +716,10 @@ small#fileHelp {
     padding: 0;
 }
 
+.dt-buttons.btn-group.flex-wrap.customInsetStart {
+    display: none;
+}
+
 select:only-child option:only-child[style*="display: none"] {
     display: none;
   }
