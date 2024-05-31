@@ -1,6 +1,8 @@
 global using BillingPortalClient.ModelViews;
 global using BillingPortalClient.Components;
 global using BillingPortalClient.Hubs;
+global using BillingPortalClient.Services;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
@@ -12,6 +14,9 @@ var builder = WebApplication.CreateBuilder( args );
 // Add services to the container.
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSignalR();
+
+// Register OracleApiServices
+builder.Services.AddScoped<OracleApiServices>();
 
 builder.Services.AddLocalization( options => options.ResourcesPath = "Resources" );
 builder.Services.AddControllersWithViews().AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
@@ -44,6 +49,8 @@ builder.Services.AddSession( options =>
 builder.Services.AddSignalR( e => {
   e.MaximumReceiveMessageSize = 102400000;
 } );
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<InvoiceViewModel, InvoiceViewModel>();
 
