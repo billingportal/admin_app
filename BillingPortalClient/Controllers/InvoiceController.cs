@@ -190,7 +190,7 @@ namespace BillingPortalClient.Controllers
         }
         catch (Exception ex)
         {
-            return Json(new ApiResponse { Result = "Error", Message = ex.Message });
+            return Json(new ApiResponse { result = "Error", message = ex.Message });
         }
     }
 
@@ -226,7 +226,7 @@ namespace BillingPortalClient.Controllers
         }
         catch (Exception ex)
         {
-            return Json(new ApiResponse { Result = "Error", Message = ex.Message });
+            return Json(new ApiResponse { result = "Error", message = ex.Message });
         }
     }
     
