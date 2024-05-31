@@ -10,6 +10,10 @@
 
     public string? AccountName { get; set; }
 
+    public string? ArabicName { get; set; }
+
+    public string? NewAccountNumber { get; set; }
+
     public bool? IsSelected { get; set; }
 
     public virtual Customer? Customer { get; set; }

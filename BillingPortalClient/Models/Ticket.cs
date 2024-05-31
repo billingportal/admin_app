@@ -12,8 +12,6 @@
 
     public int? CustomerId { get; set; }
 
-    public int? InvoiceId { get; set; }
-
     public string? InstumentType { get; set; }
 
     public string? IssueType { get; set; }
