@@ -1,112 +1,121 @@
-using Microsoft.AspNetCore.Mvc;
-using BillingPortalClient.ModelViews;
+using System.Text;
+using System.Net.Http;
 using System.Diagnostics;
-using BillingPortalClient.Models;
-using Newtonsoft.Json;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Text;
-using BillingPortalClient.Components;
-using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
+using BillingPortalClient.ModelViews;
+using BillingPortalClient.Models;
 
 namespace BillingPortalClient.Controllers
 {
-  public class AuthenticationController : BaseController
-  {
-
-
+    public class AuthenticationController : BaseController
+    {
         private readonly ILogger<AuthenticationController> _logger;
 
-    public AuthenticationController( ILogger<AuthenticationController> logger )
-    {
-      _logger = logger;
-
-    }
-    public IActionResult Index()
-    {
-      return View();
-    }
-
-   
-
-    public async Task<ActionResult> Login()
-    {
-      Console.WriteLine( "Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!" );
-      return View();
-    }
-
-    [HttpPost]
-    public async Task<ActionResult> Login(LoginViewModel loginViewModel )
-    {
-      if(!ModelState.IsValid)
-      {
-        return View(loginViewModel);
-      }
-      BillingSystem.Service.Admin loginResult = new BillingSystem.Service.Admin();
-      //Customer loginResult;
-      using( var response = await _httpClient.GetAsync( $"Authentication/loginAdmin/{loginViewModel.email}/{loginViewModel.password}" ) )
-      {
-        string apiResponse = await response.Content.ReadAsStringAsync();
-        loginResult = JsonConvert.DeserializeObject<BillingSystem.Service.Admin>( apiResponse );
-      }
-      if( loginResult != null )
-      {
-        if(loginResult.Status == "Inactive")
+        public AuthenticationController(ILogger<AuthenticationController> logger)
         {
-          ViewBag.loginMessage = "User account is inactive.";
-          return View();
+            _logger = logger;
         }
-        if(loginResult.Status == "Suspended")
+
+        public IActionResult Index()
         {
-          ViewBag.loginMessage = "User account is suspended.";
+            return View();
+        }
+
+        public async Task<ActionResult> Login()
+        {
+          Console.WriteLine( "Hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii!" );
           return View();
         }
 
-        List<Claim> claims = new List<Claim>();
-        claims.Add( new Claim( "adminId", loginResult.Id.ToString() ) );
-        claims.Add( new Claim( "adminRole", loginResult.Role ) );
-        claims.Add( new Claim( "adminFirstName", loginResult.FirstName ) );
-        claims.Add( new Claim( "adminLastName", loginResult.LastName ) );
-        claims.Add( new Claim( "adminEmail", loginResult.Email ) );
-        claims.Add( new Claim( "adminStatus", loginResult.Status ) );
-        if(loginResult.AdminPermissions.Count > 0)
+        [HttpPost]
+        public async Task<ActionResult> Login(LoginViewModel loginViewModel)
         {
-          claims.Add( new Claim( "viewInvoice", loginResult.AdminPermissions.FirstOrDefault().ViewInvoice.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "updateInvoice", loginResult.AdminPermissions.FirstOrDefault().UpdateInvoice.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "viewPayment", loginResult.AdminPermissions.FirstOrDefault().ViewPayment.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "updatePayment", loginResult.AdminPermissions.FirstOrDefault().UpdatePayment.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "viewStatement", loginResult.AdminPermissions.FirstOrDefault().ViewStatement.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "updateStatement", loginResult.AdminPermissions.FirstOrDefault().UpdateStatement.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "viewCustomer", loginResult.AdminPermissions.FirstOrDefault().ViewCustomer.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "updateCustomer", loginResult.AdminPermissions.FirstOrDefault().UpdateCustomer.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "viewTicket", loginResult.AdminPermissions.FirstOrDefault().ViewTicket.ToString(), ClaimValueTypes.Boolean ) );
-          claims.Add( new Claim( "updateTicket", loginResult.AdminPermissions.FirstOrDefault().UpdateTicket.ToString(), ClaimValueTypes.Boolean ) );
+            if (!ModelState.IsValid)
+            {
+                return View(loginViewModel);
+            }
+
+            BillingSystem.Service.Admin loginResult = null;
+
+            try
+            {
+                string requestUri = new Uri(baseAddress, $"Authentication/loginAdmin/{loginViewModel.email}/{loginViewModel.password}").ToString();
+                using (var response = await _httpClient.GetAsync(requestUri))
+                {
+                    response.EnsureSuccessStatusCode();
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    loginResult = JsonConvert.DeserializeObject<BillingSystem.Service.Admin>(apiResponse);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "An error occurred while calling the login API.");
+                ViewBag.loginMessage = "There was an error contacting the login service.";
+                return View(loginViewModel);
+            }
+
+            if (loginResult != null)
+            {
+                if (loginResult.Status == "Inactive")
+                {
+                    ViewBag.loginMessage = "User account is inactive.";
+                    return View();
+                }
+                if (loginResult.Status == "Suspended")
+                {
+                    ViewBag.loginMessage = "User account is suspended.";
+                    return View();
+                }
+
+                var claims = new List<Claim>
+                {
+                    new Claim("adminId", loginResult.Id.ToString()),
+                    new Claim("adminRole", loginResult.Role),
+                    new Claim("adminFirstName", loginResult.FirstName),
+                    new Claim("adminLastName", loginResult.LastName),
+                    new Claim("adminEmail", loginResult.Email),
+                    new Claim("adminStatus", loginResult.Status)
+                };
+
+                if (loginResult.AdminPermissions.Count > 0)
+                {
+                    var permissions = loginResult.AdminPermissions.FirstOrDefault();
+                    claims.Add(new Claim("viewInvoice", permissions.ViewInvoice.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("updateInvoice", permissions.UpdateInvoice.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("viewPayment", permissions.ViewPayment.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("updatePayment", permissions.UpdatePayment.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("viewStatement", permissions.ViewStatement.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("updateStatement", permissions.UpdateStatement.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("viewCustomer", permissions.ViewCustomer.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("updateCustomer", permissions.UpdateCustomer.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("viewTicket", permissions.ViewTicket.ToString(), ClaimValueTypes.Boolean));
+                    claims.Add(new Claim("updateTicket", permissions.UpdateTicket.ToString(), ClaimValueTypes.Boolean));
+                }
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var properties = new AuthenticationProperties
+                {
+                    AllowRefresh = true,
+                    IsPersistent = true
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), properties);
+
+                return RedirectToAction("index", "Home");
+            }
+            else
+            {
+                ViewBag.loginMessage = "Email or Password is not correct.";
+                return View();
+            }
         }
-
-
-
-        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
-          CookieAuthenticationDefaults.AuthenticationScheme);
-
-        AuthenticationProperties properties = new AuthenticationProperties()
-        {
-          AllowRefresh = true,
-          IsPersistent = true
-        };
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
-          new ClaimsPrincipal(claimsIdentity), properties);
-
-       
-        return RedirectToAction( "index", "Home" );
-      }
-      else
-      {
-        ViewBag.loginMessage = "Email or Password is not correct.";
-        return View();
-      }
-    }
 
     public async Task<ActionResult> OTP(string email)
     {
@@ -161,7 +170,6 @@ namespace BillingPortalClient.Controllers
       }
 
       return RedirectToAction( "Login" );
-
 
     }
 
@@ -266,6 +274,87 @@ namespace BillingPortalClient.Controllers
 
       return admin;
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateCustomerClaims([FromBody] Suggestion suggestion)
+    {
+        if (suggestion == null)
+        {
+            return BadRequest("Invalid suggestion data.");
+        }
+
+        Customer customer = null;
+            string requestUri = new Uri(baseAddress, "Customer/GetCustomerByAccountNumber/" + suggestion.accountNumber).ToString();
+            using (var response = await _httpClient.GetAsync(requestUri))
+              {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"api response: {apiResponse}");
+                customer = JsonConvert.DeserializeObject<Customer>(apiResponse);    
+                   
+            }
+
+          
+        if (customer != null)
+            {
+            var customerId = customer.Id.ToString(); 
+            var account = customer.Accounts.FirstOrDefault(); // Get the first account or handle accordingly
+
+            if (account != null)
+            {
+                var accountId = account.Id.ToString();
+                 Console.WriteLine($"customer id: {customerId}");
+
+                 // Create a new list to hold the merged claims
+                var mergedClaims = new List<Claim>();
+
+                // Add existing claims to the merged list
+                mergedClaims.AddRange(User.Claims);
+
+
+                // Add new claims from the method
+                mergedClaims.AddRange(new[]
+                {
+                    new Claim("custCustomerId", customerId ?? string.Empty),
+                    new Claim("custAccountId", accountId ?? string.Empty),
+                    new Claim("custAccountName", suggestion.accountName ?? string.Empty),
+                    new Claim("custArabicName", suggestion.arabicName ?? string.Empty),
+                    new Claim("custAccountNumber", suggestion.accountNumber ?? string.Empty),
+                    new Claim("custNewAccountNumber", suggestion.accountNumber ?? string.Empty),
+                    new Claim("custEmail", suggestion.email ?? string.Empty),
+                    new Claim("custCity", suggestion.city ?? string.Empty),
+                    new Claim("custCourierRoute", suggestion.courierRoute ?? string.Empty),
+                    new Claim("custRegion", suggestion.region ?? string.Empty),
+                    new Claim("custBusinessUnitId", suggestion.businessUnitId ?? string.Empty)
+                });
+
+                // Create the claims identity with the merged claims
+                var claimsIdentity = new ClaimsIdentity(mergedClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var properties = new AuthenticationProperties
+                {
+                            AllowRefresh = true,
+                            IsPersistent = true
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), properties);
+           
+            } else {
+                // Handle the case where no accounts are available
+                Console.WriteLine("No accounts found for the customer.");
+            }
+
+        } else {
+                // Handle the case where no customers are returned
+                Console.WriteLine("No customers found for the given account number.");
+        }
+
+        // Redirect to Invoice/Index after updating claims
+         return RedirectToAction("Index", "Invoice");
+        //return RedirectToAction("Index", "Invoice");
+    }
+
+    
 
 
   }
