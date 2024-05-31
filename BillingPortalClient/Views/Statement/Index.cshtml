@@ -1,112 +1,126 @@
-﻿@using System.Text.Json
+@using System.Text.Json
 @*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    Layout = "_Layout";
+  Layout = "_Layout";
 }
 @model BillingPortalClient.ModelViews.StatementViewModel
 
- <!-- CONTAINER -->
+<!-- CONTAINER -->
 <div class="main-container container-fluid" style="margin-top:1%; padding-left:0; padding-right:0;">
 
-                    
-
-
-    <!-- ROW-1 -->
-    <div class="row widget-row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
-            <div class="row">
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c1">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/flow-icon-purple.png" />
-                                    <h6 class="text title"> All <br />Transactions</h6>
-                                    <h2 class="mb-0 number-font text">@Model.allTransactionCount</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c3">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/coin-icon-orange.png" />
-                                    <h6 class="text title">Debit <br />Amount</h6>
-                                    <h2 class="mb-0 number-font text">SAR @Model.debitAmountTotal</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-widget">
-                    <div class="card overflow-hidden">
-                        <div class="card-body c4">
-                            <div class="d-flex">
-                                <div class="">
-                                <img src="../assets/images/dashboard/coins-icon-green.png" />
-                                    <h6 class="text title">Credit <br />Amount</h6>
-                                    <h2 class="mb-0 number-font text">SAR @Model.creditAmountTotal</h2>
-                                </div>
-                               
-                            </div>
-                            <span class="text-muted fs-12">
-                                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i class="fe fe-refresh-cw"></i> Refresh </a>
-                              </span>
-                        </div>
-                    </div>
-                </div>
-              
-            </div>
-        </div>
-    </div>
-    <!-- ROW-1 END -->
 
 
 
-    <!-- Row -->
-   <div class="row row-sm">
-    <div class="col-lg-12">
-      <div class="card">
-        <div class="card-header" style="padding: 0px;border-bottom:none;display: block;">
-          <div class="row" style="width:100%;">
-            <div class="col-md-7 col-sm-12">
-              <h5 class="card-title text black">Showing details of @Model.accountName</h5>
-              <h5 class="card-sub-title text"><span>Account No: </span><span class="orange">@Model.accountNumber</span>
-              </h5>
-            </div>
-            <div class="col-md-2 col-sm-12 search-container right" style="text-align:right; position: relative; right: 40px;">
-                                <input class="search expandright" id="transactionNumberSelection" type="search" name="q" placeholder="Search">
-                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass.png" /></button>
-            </div>
-            <div class="col-md-2 col-sm-6">
-              <div class="row filters-bar">
-
-                <div class="col-md-6" style="float: left; text-align: center;">
-                  <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
-                </div>
-
-                <div class="col-md-6" style="float: left; text-align: center;">
-                  <div class="btn-export" id="exportButtonsDiv"></div>
+  <!-- ROW-1 -->
+  <div class="row widget-row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+      <div class="row">
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c1">
+              <div class="d-flex">
+                <div class="">
+                  <img src="../assets/images/dashboard/green-icon.png" />
+                  <h6 class="text title"> All <br />Transactions</h6>
+                  <h2 class="mb-0 number-font text">@Model.allTransactionCount.ToString("N2")</h2>
                 </div>
 
               </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh </a>
+              </span>
             </div>
-
           </div>
         </div>
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c2">
+              <div class="d-flex">
+                <div class="">
+                  <img src="../assets/images/dashboard/red-icon.png" />
+                  <h6 class="text title">Debit <br />Amount</h6>
+                  <h2 class="mb-0 number-font text">SAR @Model.debitAmountTotal.ToString("N2")</h2>
+                </div>
+
+              </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh </a>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-widget">
+          <div class="card overflow-hidden">
+            <div class="card-body c3">
+              <div class="d-flex">
+                <div class="">
+                  <img src="../assets/images/dashboard/yellow-icon.png" />
+                  <h6 class="text title">Credit <br />Amount</h6>
+                  <h2 class="mb-0 number-font text">SAR @Model.creditAmountTotal.ToString("N2")</h2>
+                </div>
+
+              </div>
+              <span class="text-muted fs-12">
+                <a href="@Url.Action("RefreshCustomerStatements","Statement")" class="btn btn-primary mt-2"><i
+                    class="fe fe-refresh-cw"></i> Refresh </a>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ROW-1 END -->
+
+
+
+  <!-- Row -->
+  <div class="row row-sm">
+    <div class="col-lg-12">
+      <div class="card" style="margin-bottom:0px;">
+         <div class="card-header" style="padding: 0px;border-bottom:none;display: block;margin-top: 20px;">
+                  <div class="row" style="width: 100%;margin: 0 auto;padding-left: 0px;padding-right: 15px;">
+                    <div class="col-md-4 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                      <h5 class="card-title" style="color:black;" id="accountNameDiv"><span>Showing details of</span> @Model.accountName</h5>
+                     <h5 class="card-sub-title" style="color:black"><span>Account No: </span><span class="orange" id="accountNumberDiv">@Model.accountNumber</span></h5>
+                    </div>
+                    <div class="col-md-8 col-sm-12" style="margin-right: 0px; margin-left: 0px; padding-right: 0px; padding-left: 0px;">
+                        <div class="row" style="justify-content: flex-end;">
+                              <div class="search-container">
+                                <input class="search" id="transactionNumberSelection" type="search" name="q" placeholder="Search">
+                                <button class="btn searchbutton" for="searchright" onclick="toggleSearch()"><img src="../assets/images/dashboard/glass-icon.png"/></button>
+                              </div>
+                              <button class="btn filtering" onclick="filtermodal()"><i class="fa fa-filter"></i> Filters</button>
+                               <div class="export-button-wrapper" onmouseleave="hideDownloadOptions()">
+                                <button class="btn btn-export" id="exportButtonsDiv"><img onmouseover="showDownloadOptions()" src="../assets/images/dashboard/downinv.png" /></button>
+                              
+                              <div id="downloadOptions" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                                <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadPaymentReport('pdf')">PDF</button>
+                                <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadPaymentReport('Excel')">Excel</button>
+                              </div>
+                              </div>
+                              <button type="button" onclick="addReceiptsForTicket()" class="btn btn-success ticket">
+                            <i class="fe fe-file-text"></i> Create Ticket </button>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                   <div class="row" style="width:100%">
+                        <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
+                            <div class="clear-allfilters">
+                                <label>Selected Filters</label>
+                                <a href="#" id="clearAllFilters" class="clear-all-link">Clear All</a>
+                            </div>
+                            <div id="filterSelections"></div>
+                         </div>
+                    </div>
+                  </div>
+                </div>
          <div class="row" style="width:100%">
                         <div id="filters-div" class="justify-content-between align-items-center mt-2 mx-2">
                             <div class="clear-allfilters">
@@ -117,157 +131,169 @@
                          </div>
                     </div>
         <div class="card-body" style="padding-left:0px; padding-right:0px; padding-top:0px;">
+         
+          <div class="table-responsive">
+            <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="border-bottom-0" id="refNumberColumn">Ref No.</th>
+                  <th class="border-bottom-0" id="transactionNumberColumn">Doc No.</th>
+                  <th class="border-bottom-0" id="transactionDateColumn">Date</th>
+                  <th class="border-bottom-0" id="transactionType">Type</th>
+                  <th class="border-bottom-0">Debit</th>
+                  <th class="border-bottom-0">Credit</th>
+                  <th class="border-bottom-0">Balance</th>
+                  <th class="border-bottom-0">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var item in Model.statementRows)
+                {
+                  <tr id="@string.Format("tr{0}",item.id)" data-docNumber="@item.refNo" data-InstrumentTypeAttribute="@item.type"
+                    data-day="@item.createdDate.Day" data-month="@item.createdDate.Month"
+                    data-year="@item.createdDate.Year">
+                    <td><input type="checkbox" id="@string.Format("{0}",item.id)"  class="transactionsTableCheckbox" /></td>
+                    <td><strong>@item.refNo</strong></td>
+                    <td>@item.docNumber</td>
+                    <td>@item.createdDate.ToString("dd MMM, yyyy")</td>
+                    @if (@item.type == "Invoice")
+                    {
+                      <td style="text-align:center"><span class="badge rounded-pill bg-success"
+                          style="font-size:small; width:60px">@item.type</span></td>
+                    }
+                    else if (@item.type == "Paymemt")
+                    {
+                      <td style="text-align:center"><span class="badge rounded-pill bg-danger"
+                          style="font-size:small; width:60px">@item.type</span></td>
 
-                    <div class="table-responsive">
-                        <table id="file-datatable" class="table table-bordered text-nowrap key-buttons border-bottom">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th class="border-bottom-0">Ref No.</th>
-                                    <th class="border-bottom-0">Doc No.</th>
-                                    <th class="border-bottom-0">Account No.</th>
-                                    <th class="border-bottom-0">Region</th>
-                                    <th class="border-bottom-0">Date</th>
-                                    <th class="border-bottom-0">Type</th>
-                                    <th class="border-bottom-0">Debit</th>
-                                    <th class="border-bottom-0">Credit</th>
-                                    <th class="border-bottom-0">Balance</th>
-                                    <th class="border-bottom-0">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                              @foreach(var item in Model.statementRows)
-                                {
-                                  <tr id="@string.Format("tr{0}",item.id)" data-InstrumentTypeAttribute="@item.type" data-day="@item.createdDate.Day" data-month="@item.createdDate.Month" data-year="@item.createdDate.Year">
-                                    <td><input type="checkbox" id="@string.Format("{0}",item.id)" class="receiptsTableCheckbox"/></td>
-                                    <td><strong>@item.refNo</strong></td>
-                                    <td>@item.docNumber</td>
-                                    <td>@item.accountNumber</td>
-                                    <td>@item.region</td>
-                                    <td>@item.createdDate.ToString("dd MMM, yyyy")</td>
-                                     @if(@item.type == "Invoice")
-                                      {
-                                          <td style="text-align:center"><span class="badge rounded-pill bg-success"  style="font-size:small; width:60px">@item.type</span></td>
-                                      }
-                                      else if(@item.type == "Paymemt")
-                                      {
-                                          <td style="text-align:center"><span class="badge rounded-pill bg-danger" style="font-size:small; width:60px">@item.type</span></td>
-                                      }
-                                      else
-                                      {
-                                          <td style="text-align:center"><span class="badge rounded-pill bg-warning"  style="font-size:small; width:60px">@item.type</span></td>
-                                      }
-                                   
-                                   @if(item.debit == 0){
-                                       <td></td>
-                                    }else{
-                                       <td style="color: #C95955;">@item.debit</td>
-                                    }
+                    }
+                    else
+                    {
+                      <td style="text-align:center"><span class="badge rounded-pill bg-warning"
+                          style="font-size:small; width:60px">@item.type</span></td>
 
-                                     @if(item.credit == 0){
-                                       <td></td>
-                                    }else{
-                                       <td style="color: #3BC4B6;">@item.credit</td>
-                                    }
-                                    <td><strong>@item.balance</strong> SAR</td>
-                                    <td>
-                                      <button type="button" class="btn btn-primary btn-download statementPrintRowButton" 
-                                        data-itemId=@item.id
-                                        data-refNo=@item.refNo
-                                        data-docNumber=@item.docNumber
-                                        data-createDate=@item.createdDate.ToShortDateString()
-                                        data-type=@item.type
-                                        data-debit=@item.debit
-                                        data-credit=@item.credit
-                                        data-balance=@item.balance
-                                      ><i class="fe fe-file-text"></i></button>
+                    }
+
+                    @if (item.debit == 0)
+                    {
+                      <td></td>
+                    }
+                    else
+                    {
+                      <td style="color: #C95955;">@item.debit</td>
+                    }
+
+                    @if (item.credit == 0)
+                    {
+                      <td></td>
+                    }
+                    else
+                    {
+                      <td style="color: #3BC4B6;">@item.credit</td>
+                    }
+                    <td><strong>@item.balance</strong> SAR</td>
+                    <td>
+                      <button onclick="createTicketButtonClick('@item.refNo')"  type="button" class="btn btn-primary btn-download statementPrintRowButton"
+                        data-itemId=@item.id data-refNo=@item.refNo data-docNumber=@item.docNumber
+                        data-createDate=@item.createdDate.ToShortDateString() data-type=@item.type data-debit=@item.debit
+                        data-credit=@item.credit data-balance=@item.balance><i class="fe fe-file-text"></i></button>
+                        <div class="download-button-wrapper" onmouseleave="hideDownloadROptions('@item.refNo')">
+                          <button type="button" class="btn btn-success btn-ticket productButton"><img onmouseover="showDownloadROptions('@item.refNo')" src="../assets/images/dashboard/downinv.png" /></button>
+                          <div id="downloadROption@(item.refNo)" style="display: none; position: absolute; z-index: 1; width: 75px; top: 0px;">
+                            <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 45px;" onclick="downloadRecieptReport('pdf', '@item.refNo')">PDF</button>
+                            <button style="display: block;font-size: 12px;padding: 10px 15px;width: 75px;border: 0;position: absolute;top: 80px;" onclick="downloadRecieptReport('Excel', '@item.refNo')">Excel</button>
+                          </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
 
 
-                                      <button data-itemId=@item.id type="button" class="btn btn-success btn-pay ticketModalButton"><i class="fe fe-credit-card"></i></button>
-                                    </td>
-                                  </tr>
-                                }
-                                
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
-    <!-- End Row -->
+  </div>
+  <!-- End Row -->
 
-                       
+
 </div>
 <!-- CONTAINER CLOSED -->
 
-<div class="modal fade" id="testModalCenter1"  role="dialog"  aria-hidden="true">
+
+<div class="modal fade" id="testModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
+
       <div class="modal-body">
         <div class="container">
-          <h1>Create Ticket</h1>
-          <h5>Enter the details below to create a ticket.</h5>
-          <form asp-controller="Ticket" asp-action="SaveTicket" method="post">
+          <div class="row">
+            <h1>Create Ticket</h1>
+            <h5>Enter the details below to create a ticket.</h5>
+          </div>
+          <form asp-controller="Ticket" asp-action="SaveTicket" method="post" enctype="multipart/form-data">
+
             <div class="row mb-3">
+
               <div class="col-md-6">
-      	        <label style="font-weight:bold">Instrument Type<span style="color:red; margin-left:2px">*</span></label>
-                <select asp-for="ticketViewModel.instrumentType" class="form-select" aria-label="Default select example">
-                  <option value="Statement" selected>Statement</option>
-                </select>
+                <label>Instrument Type<span style="color:red; margin-left:2px">*</span></label>
+                <input asp-for="ticketViewModel.instrumentType" class="form-select" required value="Statement"
+                  readonly />
               </div>
-      
+
+
               <div class="col-md-6">
-      	        <label style="font-weight:bold">Issue Type<span style="color:red; margin-left:2px">*</span></label>
-                <select asp-for="ticketViewModel.issueType" class="form-select" aria-label="Default select example">
+                <label>Issue Type<span style="color:red; margin-left:2px">*</span></label>
+                <select asp-for="ticketViewModel.issueType" class="form-select" required
+                  aria-label="Default select example">
+                  @*<option selected>Select your issue type</option>*@
                   <option value="Complain" selected>Complain</option>
                   <option value="Dispute">Dispute</option>
                   <option value="Feedback">Feedback</option>
                 </select>
               </div>
-      
+
             </div>
-    
+
             <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label style="font-weight:bold">Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
-        	            <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers" multiple class="form-select" >
-                      </select>
-                </div>
+              <div class="col-md-12">
+                <label>Instrument Number<span style="color:red; margin-left:2px;">*</span></label>
+                <select asp-for="ticketViewModel.instrumentNumbers" required id="ticketViewModel_instrumentNumbers"
+                  multiple class="form-select"> </select>
+              </div>
             </div>
-    
+
             <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold">Description<span style="color:red; margin-left:2px;">*</span></label>
-        	        <textarea asp-for="ticketViewModel.description" required placeholder="Give a description of your ticket" class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
-                </div>
+              <div class="col-md-12">
+                <label>Description<span style="color:red; margin-left:2px;">*</span></label>
+                <textarea asp-for="ticketViewModel.description" required placeholder="Give a description of your ticket"
+                  class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea>
+              </div>
             </div>
-    
+
             <div class="row mb-3">
-    	        <div class="col-md-12">
-        	        <label  style="font-weight:bold">Upload Image</label><br>
-        	        <input type="file" id="myFile" name="filename" class="btn btn-primary">
-            
-                </div>
+              <div class="col-md-12">
+                <label>Upload Image</label><br>
+                <input type="file" id="myFile" asp-for="ticketViewModel.imageFile" class="btn">
+
+              </div>
             </div>
+
             <div class="row">
-              <div class="col-md-4">
-
-              </div>
-              <div class="col-md-4">
-                <button type="submit" class="btn btn-primary" style="width:100%;">Submit</button>
-
-              </div>
-              <div class="col-md-4">
-
+              <div class="col-md-12 text-center">
+                <button type="submit" class="btn" style="width:100%;">Submit</button>
               </div>
 
             </div>
+
           </form>
         </div>
-
       </div>
+
     </div>
   </div>
 </div>
@@ -276,7 +302,9 @@
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
     <div class="modal-content">
-
+<button onclick="closeModal(this)" type="button" class="close" aria-label="Close" style="position: absolute;top: 10px;right: 10px;border: none;color: #9398A5;background: #F5F6FA 0% 0% no-repeat padding-box;height: 30px;width: 30px;border-radius: 50px;font-size: 19px;">
+        &times;
+      </button>
       <div class="modal-body">
 
         <div class="container">
@@ -333,8 +361,15 @@
   </div>
 </div>
 
+
 <script>
 
+ function closeModal(btn) {
+    // Find the closest modal
+    var modal = $(btn).closest('.modal');
+    // Close the found modal
+    $(modal).modal('hide');
+  }
 // let selectedRows = [];
   let selectedFilters = [];
 
@@ -353,14 +388,7 @@
     var statusCriteria = "all";
 
     $(document).ready(function () {
-        console.log('*******************************************');
-
-        $("#ticketViewModel_instrumentNumbers").select2({
-          width: '100%',
-          templateResult:null,
-          tags:true,
-        })
-
+        console.log('*******************************************')
     }); 
 
      if (!$.fn.DataTable.isDataTable('#file-datatable')) {
@@ -375,9 +403,9 @@
                 this.api().rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var data = this.data();
                     var transactionNumber = data[2].toLowerCase();
-                    var invoiceDate = new Date(data[5]);
+                    var invoiceDate = new Date(data[3]);
                     // Assuming data[4] contains the HTML string
-                    var paymentModeHTML = data[6].toLowerCase();
+                    var paymentModeHTML = data[4].toLowerCase();
 
                     // Create a temporary element to parse the HTML
                     var tempElement = $('<div>').html(paymentModeHTML);
@@ -410,7 +438,7 @@
         displaySelectedFilters();
         if (table) {
             table.rows().invalidate().draw();
-            table.page('first').draw('page');
+            table.search('').draw();
         } else {
             console.log("Table is not defined");
         }
@@ -419,8 +447,7 @@
 
   $("#transactionNumberSelection").on("keyup", function () {
         if (table) {
-            table.rows().invalidate().draw();
-            table.page('first').draw('page');
+            table.search(this.value).draw();
         } else {
             console.log("Table is not defined");
         }
@@ -673,23 +700,166 @@ $(document).on("change", ".transactionsTableCheckbox", function () {
         }
     }
 
+function showDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "block";
+}
+function hideDownloadOptions() {
+    document.getElementById("downloadOptions").style.display = "none";
+}
+function showDownloadROptions(itemId) {
+  document.getElementById('downloadROptions' + itemId).style.display = 'block';
+}
+function hideDownloadROptions(itemId) {
+   document.getElementById('downloadROptions' + itemId).style.display = 'nones';
+}
 
-  $(document).on("click",".ticketModalButton",function(e){
+function convertBase64ToPDF(base64String, filename) {
+    try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded PDF
+        const pdfDataUri = 'data:application/pdf;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        // Create a new document
+        const newWindow = window.open();
+        newWindow.document.open();
+        
+        // Write the PDF content to the document
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+        
+        newWindow.document.close();
+        // Trigger download
+        // const link = document.createElement('a');
+        // link.href = pdfDataUri;
+        // link.download = filename;
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error converting base64 to PDF:', error);
+    }
+}
 
-    var id = this.dataset.itemid;
-
-    var data = {
-      value: id,
-      text: id,
-    };
 
 
-    var newOption = new Option(data.text, data.value, true, true);
-    $('#ticketViewModel_instrumentNumbers').append(newOption).trigger('change');
 
-    $("#testModalCenter1").modal('show');
-  
-  });
+function convertBase64ToExcel(base64String, filename) {
+      try {
+        // Decode base64 string to binary data
+        const binaryString = atob(base64String);
+        
+        // Convert binary string to array buffer
+        const arrayBuffer = new ArrayBuffer(binaryString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryString.length; i++) {
+            uint8Array[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Convert array buffer to base64 encoded Excel file
+        const excelDataUri = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + btoa(String.fromCharCode.apply(null, uint8Array));
+        const link = document.createElement('a');
+        link.href = excelDataUri;
+        link.download = filename;
+        link.click();
+    } catch (error) {
+        console.error('Error converting base64 to Excel:', error);
+    }
+    
+}
 
+function downloadStatementReport(attachmentType) {
+    var buId = "";
+    var startDate = "12-04-2000";
+    var endDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadInvoiceReport',
+        type: 'POST',
+        data: {
+            buId: buId,
+            startDate: startDate,
+            endDate: endDate,
+            attachmentType: attachmentType,
+            customerAccountNumber: customerAccountNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, customerAccountNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, customerAccountNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function downloadRecieptReport(attachmentType, transactionNumber) {
+    var buId = "";
+    var customerAccountNumber = '@Model.accountNumber';
+
+    // Show the download in progress message
+    showDownloadInProgressMessage();
+
+    // Call your controller action to initiate the API call
+    $.ajax({
+        url: '/Invoice/DownloadReceiptReport',
+        type: 'POST',
+        data: {
+            buId :buId,
+            attachmentType : attachmentType,
+            customerAccountNumber : customerAccountNumber,
+            transactionType :"Corporate",
+            transactionNumber : transactionNumber
+        },
+        success: function(response) {
+            if (response.result === "Success") {
+                hideDownloadInProgressMessage();
+                // Convert base64 data to file and download
+                if (attachmentType === "pdf") {
+                    convertBase64ToPDF(response.data, transactionNumber+'.pdf');
+                } else if (attachmentType === "excel") {
+                    convertBase64ToExcel(response.data, transactionNumber+'.xlsx');
+                }
+            } else {
+                alert("Error: " + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", error);
+            alert("An error occurred while downloading the report.");
+        }
+    });
+}
+
+function showDownloadInProgressMessage() {
+    // Assuming you have a div or some element to show the message
+    $('#downloadProgressModal').modal('show');
+}
+
+function hideDownloadInProgressMessage() {
+    // Hide the download progress message
+     $('#downloadProgressModal').modal('hide');
+}
 
 </script>
